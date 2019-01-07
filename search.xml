@@ -1,30 +1,1259 @@
 <?xml version="1.0" encoding="utf-8"?>
-<search>
-  <entry>
-    <title><![CDATA[Java基础知识总结]]></title>
-    <url>%2Fhaianzwh.github.io%2F2017%2F12%2F25%2FJava%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93%2F</url>
-    <content type="text"><![CDATA[本人学习java时，做的java基础知识总结：写代码： 1，明确需求。我要做什么？ 2，分析思路。我要怎么做？1,2,3。 3，确定步骤。每一个思路部分用到哪些语句，方法，和对象。 4，代码实现。用具体的java语言代码把思路体现出来。 学习新技术的四点： 1，该技术是什么？ 2，该技术有什么特点(使用注意)： 3，该技术怎么使用。demo 4，该技术什么时候用？test。 -———————————————————————————————- 一：java概述： 1991 年Sun公司的James Gosling（詹姆斯&middot;高斯林）等人开始开发名称为 Oak 的语言，希望用于控制嵌入在有线电视交换盒、PDA等的微处理器； 1994年将Oak语言更名为Java； Java**的三种技术架构:** JAVAEE**：**Java Platform Enterprise Edition，开发企业环境下的应用程序，主要针对web程序开发； JAVASE**：**Java Platform Standard Edition，完成桌面应用程序的开发，是其它两者的基础； JAVAME**：**Java Platform Micro Edition，开发电子消费产品和嵌入式设备，如手机中的程序； 1**，JDK：Java Development Kit，**java的开发和运行环境，java的开发工具和jre。 2**，JRE：Java Runtime Environment，**java程序的运行环境，java运行的所需的类库+JVM(java虚拟机)。 3**，配置环境变量：**让java jdk\bin目录下的工具，可以在任意目录下运行，原因是，将该工具所在目录告诉了系统，当使用该工具时，由系统帮我们去找指定的目录。 环境变量的配置： ​ 1）：永久配置方式：JAVA_HOME=%安装路径%\Java\jdk ​ path=%JAVA_HOME%\bin ​ 2）：临时配置方式：set path=%path%;C:\Program Files\Java\jdk\bin 特点：系统默认先去当前路径下找要执行的程序，如果没有，再去path中设置的路径下找。 classpath**的配置:** ​ 1）：永久配置方式：classpath=.;c:\;e:\ ​ 2）：临时配置方式：set classpath=.;c:\;e:\ 注意：在定义classpath环境变量时，需要注意的情况 如果没有定义环境变量classpath，java启动jvm后，会在当前目录下查找要运行的类文件； 如果指定了classpath，那么会在指定的目录下查找要运行的类文件。 还会在当前目录找吗？两种情况： ​ 1）：如果classpath的值结尾处有分号，在具体路径中没有找到运行的类，会默认在当前目录再找一次。 ​ 2）：如果classpath的值结果出没有分号，在具体的路径中没有找到运行的类，不会再当前目录找。 ​ 一般不指定分号，如果没有在指定目录下找到要运行的类文件，就报错，这样可以调试程序。 4**，javac命令和java命令做什么事情呢？** ​ 要知道java是分两部分的：一个是编译，一个是运行。 ​ javac**：**负责的是编译的部分，当执行javac时，会启动java的编译器程序。对指定扩展名的.java文件进行编译。 生成了jvm可以识别的字节码文件。也就是class文件，也就是java的运行程序。 ​ java**：**负责运行的部分.会启动jvm.加载运行时所需的类库,并对class文件进行执行. ​ 一个文件要被执行,必须要有一个执行的起始点,这个起始点就是main函数. -——————————————————————————————— 二：java语法基础： 1**，关键字：**其实就是某种语言赋予了特殊含义的单词。 ​ 保留字：其实就是还没有赋予特殊含义，但是准备日后要使用过的单词。 2**，标示符：**其实就是在程序中自定义的名词。比如类名，变量名，函数名。包含 0-9、a-z、$、_ ； ​ 注意： ​ 1**），数字不可以开头。** ​ 2**），不可以使用关键字。** 3**，常量：**是在程序中的不会变化的数据。 4**，变量：**其实就是内存中的一个存储空间，用于存储常量数据。 ​ 作用：方便于运算。因为有些数据不确定。所以确定该数据的名词和存储空间。 ​ 特点：变量空间可以重复使用。 什么时候定义变量？只要是数据不确定的时候，就定义变量。 变量空间的开辟需要什么要素呢？ ​ 1，这个空间要存储什么数据？数据类型。 ​ 2，这个空间叫什么名字啊？变量名称。 ​ 3，这个空间的第一次的数据是什么？ 变量的初始化值。 变量的作用域和生存期: 变量的作用域： ​ 作用域从变量定义的位置开始，到该变量所在的那对大括号结束； 生命周期： ​ 变量从定义的位置开始就在内存中活了； ​ 变量到达它所在的作用域的时候就在内存中消失了； 数据类型： ​ 1**）：基本数据类型**：byte、short、int、long、float、double、char、boolean ​ 2**）：引用数据类型**: 数组、类、接口。 级别从低到高为：byte,char,short(这三个平级)–&gt;int–&gt;float–&gt;long–&gt;double 自动类型转换：从低级别到高级别，系统自动转的； 强制类型转换：什么情况下使用?把一个高级别的数赋给一个别该数的级别低的变量； 运算符号： ​ 1）、算术运算符。 ​ + - / % *%:任何整数模2不是0就是1，所以只要改变被模数就可以实现开关运算。 ​ +:连接符。 ​ ++,– ​ 2）、赋值运算符。 ​ = += -= *= /= %= ​ 3）、比较运算符。 ​ 特点：该运算符的特点是：运算完的结果，要么是true，要么是false。 ​ 4）、逻辑运算符。 ​ &amp; | ^ ! &amp;&amp; || ​ 逻辑运算符除了 ! 外都是用于连接两个boolean类型表达式。 ​ &amp;: 只有两边都为true结果是true。否则就是false。 ​ |:只要两边都为false结果是false，否则就是true ​ ^:异或：和或有点不一样。 ​ 两边结果一样，就为false。 ​ 两边结果不一样，就为true. ​ &amp; 和 &amp;&amp;区别： &amp; ：无论左边结果是什么，右边都参与运算。 ​ &amp;&amp;:**短路与**，如果左边为false，那么右边不参数与运算。 ​ | 和|| 区别：|：两边都运算。 ​ ||**：短路或**，如果左边为true，那么右边不参与运算。 ​ 5）、位运算符:用于操作二进制位的运算符。 ​ &amp; | ^ ​ &lt;&lt; &gt;&gt; &gt;&gt;&gt;(无符号右移) ​ 练习：对两个变量的数据进行互换。不需要第三方变量。 ​ int a = 3,b = 5;–&gt;b = 3,a = 5; ​ a = a + b; a = 8; ​ b = a - b; b = 3; ​ a = a - b; a = 5; ​ a = a ^ b;// ​ b = a ^ b;//b = a ^ b ^ b = a ​ a = a ^ b;//a = a ^ b ^ a = b; ​ 练习：高效的算出 2*8 = 2&lt;&lt;3; 5**，语句。** ​ If switch do while while for ​ 这些语句什么时候用？ ​ 1）、当判断固定个数的值的时候，可以使用if，也可以使用switch。 ​ 但是建议使用switch，效率相对较高。 switch(变量){ case 值:要执行的语句;break; … default:要执行的语句; } 工作原理：用小括号中的变量的值依次和case后面的值进行对比，和哪个case后面的值相同了 ​ 就执行哪个case后面的语句，如果没有相同的则执行default后面的语句； 细节：1）：break是可以省略的，如果省略了就一直执行到遇到break为止； ​ 2）：switch 后面的小括号中的变量应该是byte,char,short,int四种类型中的一种； ​ 3）：default可以写在switch结构中的任意位置；如果将default语句放在了第一行，则不管expression与case中的value是否匹配，程序会从default开始执行直到第一个break出现。 ​ 2）、当判断数据范围，获取判断运算结果boolean类型时，需要使用if。 ​ 3）、当某些语句需要执行很多次时，就用循环结构。 ​ while和for可以进行互换。 ​ 区别在于：如果需要定义变量控制循环次数。建议使用for。因为for循环完毕，变量在内存中释放。 break:作用于switch ，和循环语句，用于跳出，或者称为结束。 break语句单独存在时，下面不要定义其他语句，因为执行不到，编译会失败。当循环嵌套时，break只跳出当前所在循环。要跳出嵌套中的外部循环，只要给循环起名字即可，这个名字称之为标号。 continue:只作用于循环结构，继续循环用的。 作用：结束本次循环，继续下次循环。该语句单独存在时，下面不可以定义语句，执行不到。 6**，函 数：**为了提高代码的复用性，可以将其定义成一个单独的功能，该功能的体现就是java中的函数。函数就是体现之一。 java**中的函数的定义格式：** ​ 修饰符 返回值类型 函数名(参数类型 形式参数1，参数类型 形式参数1，…){ ​ 执行语句； ​ return 返回值； ​ } 当函数没有具体的返回值时，返回的返回值类型用void关键字表示。 如果函数的返回值类型是void时，return语句可以省略不写的，系统会帮你自动加上。 return**的作用：**结束函数。结束功能。 如何定义一个函数？ ​ 函数其实就是一个功能，定义函数就是实现功能，通过两个明确来完成： ​ 1）、明确该功能的运算完的结果，其实是在明确这个函数的返回值类型。 ​ 2）、在实现该功能的过程中是否有未知内容参与了运算，其实就是在明确这个函数的参数列表(参数类型&amp;参数个数)。 函数的作用： 1）、用于定义功能。 2）、用于封装代码提高代码的复用性。 注意：函数中只能调用函数，不能定义函数。 主函数： ​ 1）、保证该类的独立运行。 ​ 2）、因为它是程序的入口。 ​ 3）、因为它在被jvm调用。 函数定义名称是为什么呢？ 答：1）、为了对该功能进行标示，方便于调用。 ​ 2）、为了通过名称就可以明确函数的功能，为了增加代码的阅读性。 重载的定义是：在一个类中，如果出现了两个或者两个以上的同名函数，只要它们的参数的个数，或者参数的类型不同，即可称之为该函数重载了。 如何区分重载：当函数同名时，只看参数列表。和返回值类型没关系。 7**，数 组：用于存储同一类型数据的一个容器。好处：**可以对该容器中的数据进行编号，从0开始。数组用于封装数据，就是一个具体的实体。 如何在java中表现一个数组呢？两种表现形式。 1）、元素类型[] 变量名 = new 元素类型[元素的个数]； 2）、元素类型[] 变量名 = {元素1，元素2…}； 元素类型[] 变量名 = new 元素类型[]{元素1，元素2…}； -——————————————————– //**二分查找法。必须有前提：数组中的元素要有序。** ​ public static int halfSeach_2(int[] arr,int key){ ​ int min,max,mid; ​ min = 0; ​ max = arr.length-1; ​ mid = (max+min)&gt;&gt;1; //(max+min)/2; ​ while(arr[mid]!=key){ ​ if(key&gt;arr[mid]){ ​ min = mid + 1; ​ } ​ else if(key&lt;arr[mid]) ​ max = mid - 1; ​ if(max&lt;min) ​ return -1; ​ mid = (max+min)&gt;&gt;1; ​ } ​ return mid; ​ } -——————————————————– java**分了5片内存。** 1：寄存器。2：本地方法区。3：方法区。4：栈。5：堆。 栈：存储的都是局部变量 ( 函数中定义的变量，函数上的参数，语句中的变量 )； ​ 只要数据运算完成所在的区域结束，该数据就会被释放。 堆：用于存储数组和对象，也就是实体。啥是实体啊？就是用于封装多个数据的。 1：每一个实体都有内存首地址值。 2：堆内存中的变量都有默认初始化值。因为数据类型不同，值也不一样。 3：垃圾回收机制。 -——————————————————————————————— 三：面向对象：★★★★★ 特点：**1**：将复杂的事情简单化。 2**：面向对象将以前的过程中的执行者，变成了指挥者。** 3**：面向对象这种思想是符合现在人们思考习惯的一种思想。** 过程和对象在我们的程序中是如何体现的呢？过程其实就是函数；对象是将函数等一些内容进行了封装。 匿名对象使用场景： 1：当对方法只进行一次调用的时候，可以使用匿名对象。 2：当对象对成员进行多次调用时，不能使用匿名对象。必须给对象起名字。 在类中定义其实都称之为成员。成员有两种： 1：成员变量：其实对应的就是事物的属性。 2：成员函数：其实对应的就是事物的行为。 所以，其实定义类，就是在定义成员变量和成员函数。但是在定义前，必须先要对事物进行属性和行为的分析，才可以用代码来体现。 private int age;//**私有的访问权限最低，只有在本类中的访问有效。** 注意：私有仅仅是封装的一种体现形式而已。 私有的成员：其他类不能直接创建对象访问，所以只有通过本类对外提供具体的访问方式来完成对私有的访问，可以通过对外提供函数的形式对其进行访问。 好处：可以在函数中加入逻辑判断等操作，对数据进行判断等操作。 总结：开发时，记住，属性是用于存储数据的，直接被访问，容易出现安全隐患，所以，类中的属性通常被私有化，并对外提供公共的访问方法。 这个方法一般有两个，规范写法：对于属性 xxx，可以使用setXXX(),getXXX()对其进行操作。 类中怎么没有定义主函数呢？ 注意：主函数的存在，仅为该类是否需要独立运行，如果不需要，主函数是不用定义的。 主函数的解释：保证所在类的独立运行，是程序的入口，被jvm调用。 成员变量和局部变量的区别： 1**：成员变量直接定义在类中。** 局部变量定义在方法中，参数上，语句中。 2**：成员变量在这个类中有效。** 局部变量只在自己所属的大括号内有效，大括号结束，局部变量失去作用域。 3**：成员变量存在于堆内存中，随着对象的产生而存在，消失而消失。** 局部变量存在于栈内存中，随着所属区域的运行而存在，结束而释放。 构造函数：用于给对象进行初始化，是给与之对应的对象进行初始化，它具有针对性，函数中的一种。 特点： 1：该函数的名称和所在类的名称相同。 2：不需要定义返回值类型。 3：该函数没有具体的返回值。 记住：所有对象创建时，都需要初始化才可以使用。 注意事项：一个类在定义时，如果没有定义过构造函数，那么该类中会自动生成一个空参数的构造函数，为了方便该类创建对象，完成初始化。如果在类中自定义了构造函数，那么默认的构造函数就没有了。 一个类中，可以有多个构造函数，因为它们的函数名称都相同，所以只能通过参数列表来区分。所以，一个类中如果出现多个构造函数。它们的存在是以重载体现的。 构造函数和一般函数有什么区别呢？ 1：两个函数定义格式不同。 2：构造函数是在对象创建时，就被调用，用于初始化，而且初始化动作只执行一次。 ​ 一般函数，是对象创建后，需要调用才执行，可以被调用多次。 什么时候使用构造函数呢？ 分析事物时，发现具体事物一出现，就具备了一些特征，那就将这些特征定义到构造函数内。 构造代码块和构造函数有什么区别？ 构造代码块：是给所有的对象进行初始化，也就是说，所有的对象都会调用一个代码块，只要对象一建立，就会调用这个代码块。 构造函数：是给与之对应的对象进行初始化，它具有针对性。 “Person p = new Person();” 创建一个对象都在内存中做了什么事情？ 1：先将硬盘上指定位置的Person.class文件加载进内存。 2：执行main方法时，在栈内存中开辟了main方法的空间(压栈-进栈)，然后在main方法的栈区分配了一个变量p。 3：在堆内存中开辟一个实体空间，分配了一个内存首地址值。new 4：在该实体空间中进行属性的空间分配，并进行了默认初始化。 5：对空间中的属性进行显示初始化。 6：进行实体的构造代码块初始化。 7：调用该实体对应的构造函数，进行构造函数初始化。（） 8：将首地址赋值给p ，p变量就引用了该实体。(指向了该对象) -——————————————————————————————- 封 装**（面向对象特征之一）**：是指隐藏对象的属性和实现细节，仅对外提供公共访问方式。 好处：将变化隔离；便于使用；提高重用性；安全性。 封装原则：将不需要对外提供的内容都隐藏起来，把属性都隐藏，提供公共方法对其访问。 This**：**代表对象，就是所在函数所属对象的引用。 this到底代表什么呢？哪个对象调用了this所在的函数，this就代表哪个对象，就是哪个对象的引用。 开发时，什么时候使用this呢？ 在定义功能时，如果该功能内部使用到了调用该功能的对象，这时就用this来表示这个对象。 this 还可以用于构造函数间的调用。 调用格式：this(实际参数)； this对象后面跟上 . 调用的是成员属性和成员方法(一般方法)； this对象后面跟上 () 调用的是本类中的对应参数的构造函数。 注意：用this调用构造函数，必须定义在构造函数的第一行。因为构造函数是用于初始化的，所以初始化动作一定要执行。**否则编译失败。** static**：★★★ 关键字，是一个修饰符，用于修饰成员(成员变量和成员函数)。** 特点： 1，想要实现对象中的共性数据的对象共享，可以将这个数据进行静态修饰。 2，被静态修饰的成员，可以直接被类名所调用。也就是说，静态的成员多了一种调用方式。类名.静态方式。 3，静态随着类的加载而加载，而且优先于对象存在。 弊端： 1，有些数据是对象特有的数据，是不可以被静态修饰的。因为那样的话，特有数据会变成对象的共享数据。这样对事物的描述就出了问题。所以，在定义静态时，必须要明确，这个数据是否是被对象所共享的。 2，静态方法只能访问静态成员，不可以访问非静态成员。 因为静态方法加载时，优先于对象存在，所以没有办法访问对象中的成员。 3，静态方法中不能使用this，super关键字。 因为this代表对象，而静态在时，有可能没有对象，所以this无法使用。 4，主函数是静态的。 什么时候定义静态成员呢？或者说：定义成员时，到底需不需要被静态修饰呢？ 成员分两种： 1**，成员变量。（数据共享时静态化**） 该成员变量的数据是否是所有对象都一样： 如果是，那么该变量需要被静态修饰，因为是共享的数据。 如果不是，那么就说这是对象的特有数据，要存储到对象中。 2**，成员函数。（方法中没有调用特有数据时就定义成静态**） ​ 如果判断成员函数是否需要被静态修饰呢？ ​ 只要参考，该函数内是否访问了对象中的特有数据： ​ 如果有访问特有数据，那方法不能被静态修饰。 ​ 如果没有访问过特有数据，那么这个方法需要被静态修饰。 成员变量和静态变量的区别： 1，成员变量所属于对象，所以也称为实例变量。 静态变量所属于类，所以也称为类变量。 2，成员变量存在于堆内存中。 静态变量存在于方法区中。 3，成员变量随着对象创建而存在，随着对象被回收而消失。 静态变量随着类的加载而存在，随着类的消失而消失。 4，成员变量只能被对象所调用。 静态变量可以被对象调用，也可以被类名调用。 所以，成员变量可以称为对象的特有数据，静态变量称为对象的共享数据。 静态的注意：静态的生命周期很长。 静态代码块：就是一个有静态关键字标示的一个代码块区域，定义在类中。 作用：可以完成类的初始化，静态代码块随着类的加载而执行，而且只执行一次（new 多个对象就只执行一次）。如果和主函数在同一类中，优先于主函数执行。 Public**：**访问权限最大。 static**：**不需要对象，直接类名即可。 void**：**主函数没有返回值。 Main**：**主函数特定的名称。 (String[] args)**：**主函数的参数，是一个字符串数组类型的参数，jvm调用main方法时，传递的实际参数是 new String[0]。 jvm默认传递的是长度为0的字符串数组，我们在运行该类时，也可以指定具体的参数进行传递。可以在控制台，运行该类时，在后面加入参数。参数之间通过空格隔开。jvm会自动将这些字符串参数作为args数组中的元素，进行存储。 静态代码块、构造代码块、构造函数同时存在时的执行顺序：**静态代码块 &agrave; 构造代码块 &agrave; 构造函数；** 生成Java帮助文档：命令格式：javadoc –d 文件夹名 –auther –version *.java /** //格式 *类描述 *@author 作者名 *@version 版本号 */ /** *方法描述 *@param 参数描述 *@return 返回值描述 */ -——————————————————————————————– 设计模式：解决问题最行之有效的思想。是一套被反复使用、多数人知晓的、经过分类编目的、代码设计经验的总结。使用设计模式是为了可重用代码、让代码更容易被他人理解、保证代码可靠性。 java中有23种设计模式： 单例设计模式：★★★★★ 解决的问题：保证一个类在内存中的对象唯一性。 比如：多程序读取一个配置文件时，建议配置文件封装成对象。会方便操作其中数据，又要保证多个程序读到的是同一个配置文件对象，就需要该配置文件对象在内存中是唯一的。 Runtime()**方法就是单例设计模式进行设计的。** 如何保证对象唯一性呢？ 思想： 1，不让其他程序创建该类对象。 2，在本类中创建一个本类对象。 3，对外提供方法，让其他程序获取这个对象。 步骤： 1**，因为创建对象都需要构造函数初始化，只要将本类中的构造函数私有化，其他程序就无法再创建该类对象；** 2**，就在类中创建一个本类的对象；** 3**，定义一个方法，返回该对象，让其他程序可以通过方法就得到本类对象。（作用：可控）** 代码体现： 1**，私有化构造函数；** 2**，创建私有并静态的本类对象；** 3**，定义公有并静态的方法，返回该对象。** -——————————————– //饿汉式 class Single{ ​ private Single(){} //私有化构造函数。 private static Single s = new Single(); //创建私有并静态的本类对象。 ​ public static Single getInstance(){ //定义公有并静态的方法，返回该对象。 ​ return s; ​ } } -——————————————– //懒汉式:延迟加载方式。 class Single2{ ​ private Single2(){} private static Single2 s = null; ​ public static Single2 getInstance(){ ​ if(s==null) ​ s = new Single2(); ​ return s; ​ } } -———————————————————————————————— 继 承**（面向对象特征之一）** 好处： 1**：提高了代码的复用性。** 2**：让类与类之间产生了关系，提供了另一个特征多态的前提。** 父类的由来：其实是由多个类不断向上抽取共性内容而来的。 java中对于继承，java只支持单继承。java虽然不直接支持多继承，但是保留了这种多继承机制，进行改良。 单继承：一个类只能有一个父类。 多继承：一个类可以有多个父类。 为什么不支持多继承呢？ 因为当一个类同时继承两个父类时，两个父类中有相同的功能，那么子类对象调用该功能时，运行哪一个呢？因为父类中的方法中存在方法体。 但是java支持多重继承。A继承B B继承C C继承D。 多重继承的出现，就有了继承体系。体系中的顶层父类是通过不断向上抽取而来的。它里面定义的该体系最基本最共性内容的功能。 所以，一个体系要想被使用，直接查阅该系统中的父类的功能即可知道该体系的基本用法。那么想要使用一个体系时，需要建立对象。建议建立最子类对象，因为最子类不仅可以使用父类中的功能。还可以使用子类特有的一些功能。 简单说：对于一个继承体系的使用，查阅顶层父类中的内容，创建最底层子类的对象。 子父类出现后，类中的成员都有了哪些特点： 1**：成员变量。** ​ 当子父类中出现一样的属性时，子类类型的对象，调用该属性，值是子类的属性值。 ​ 如果想要调用父类中的属性值，需要使用一个关键字：super ​ This**：**代表是本类类型的对象引用。 ​ Super**：**代表是子类所属的父类中的内存空间引用。 ​ 注意：子父类中通常是不会出现同名成员变量的，因为父类中只要定义了，子类就不用在定义了，直接继承过来用就可以了。 2**：成员函数。** 当子父类中出现了一模一样的方法时，建立子类对象会运行子类中的方法。好像父类中的方法被覆盖掉一样。所以这种情况，是函数的另一个特性：覆盖(复写，重写) 什么时候使用覆盖呢？当一个类的功能内容需要修改时，可以通过覆盖来实现。 3**：构造函数。** 发现子类构造函数运行时，先运行了父类的构造函数。为什么呢? 原因：子类的所有构造函数中的第一行，其实都有一条隐身的语句super(); super(): 表示父类的构造函数，并会调用于参数相对应的父类中的构造函数。而super():是在调用父类中空参数的构造函数。 为什么子类对象初始化时，都需要调用父类中的函数？(为什么要在子类构造函数的第一行加入这个super()?) 因为子类继承父类，会继承到父类中的数据，所以必须要看父类是如何对自己的数据进行初始化的。所以子类在进行对象初始化时，先调用父类的构造函数，这就是子类的实例化过程。 注意：**子类中所有的构造函数都会默认访问父类中的空参数的构造函数，因为每一个子类构造内第一行都有默认的语句super();** 如果父类中没有空参数的构造函数，那么子类的构造函数内，必须通过super语句指定要访问的父类中的构造函数。 如果子类构造函数中用this来指定调用子类自己的构造函数，那么被调用的构造函数也一样会访问父类中的构造函数。 问题：super()和this()是否可以同时出现的构造函数中。 两个语句只能有一个定义在第一行，所以只能出现其中一个。 super()**或者this():为什么一定要定义在第一行？** 因为super()或者this()都是调用构造函数，构造函数用于初始化，所以初始化的动作要先完成。 继承的细节： 什么时候使用继承呢？ 当类与类之间存在着所属关系时，才具备了继承的前提。a是b中的一种。a继承b。狼是犬科中的一种。 英文书中，所属关系：” is a “ 注意：不要仅仅为了获取其他类中的已有成员进行继承。 所以判断所属关系，可以简单看，如果继承后，被继承的类中的功能，都可以被该子类所具备，那么继承成立。如果不是，不可以继承。 细节二： 在方法覆盖时，注意两点： 1：子类覆盖父类时，必须要保证，子类方法的权限必须大于等于父类方法权限可以实现继承。否则，编译失败。 2：覆盖时，要么都静态，要么都不静态。 (静态只能覆盖静态，或者被静态覆盖) 继承的一个弊端：打破了封装性。对于一些类，或者类中功能，是需要被继承，或者复写的。 这时如何解决问题呢？介绍一个关键字，final:最终。 final**特点：** 1**：这个关键字是一个修饰符，可以修饰类，方法，变量。** 2**：被final修饰的类是一个最终类，不可以被继承。** 3**：被final修饰的方法是一个最终方法，不可以被覆盖。** 4**：被final修饰的变量是一个常量，只能赋值一次。** ​ 其实这样的原因的就是给一些固定的数据起个阅读性较强的名称。 ​ 不加final修饰不是也可以使用吗？那么这个值是一个变量，是可以更改的。加了final，程序更为严谨。常量名称定义时，有规范，所有字母都大写，如果由多个单词组成，中间用 _ 连接。 抽象类: abstract 抽象：不具体，看不明白。抽象类表象体现。 在不断抽取过程中，将共性内容中的方法声明抽取，但是方法不一样，没有抽取，这时抽取到的方法，并不具体，需要被指定关键字abstract所标示，声明为抽象方法。 抽象方法所在类一定要标示为抽象类，也就是说该类需要被abstract关键字所修饰。 抽象类的特点： 1**：抽象方法只能定义在抽象类中，抽象类和抽象方法必须由abstract关键字修饰（可以描述类和方法，不可以描述变量）。** 2**：抽象方法只定义方法声明，并不定义方法实现。** 3**：抽象类不可以被创建对象(实例化)。** 4**：只有通过子类继承抽象类并覆盖了抽象类中的所有抽象方法后，该子类才可以实例化。否则，该子类还是一个抽象类。** 抽象类的细节： 1**：抽象类中是否有构造函数？有，用于给子类对象进行初始化。** 2**：抽象类中是否可以定义非抽象方法？** ​ 可以。其实，抽象类和一般类没有太大的区别，都是在描述事物，只不过抽象类在描述事物时，有些功能不具体。所以抽象类和一般类在定义上，都是需要定义属性和行为的。只不过，比一般类多了一个抽象函数。而且比一般类少了一个创建对象的部分。 3**：抽象关键字abstract和哪些不可以共存？final , private , static** 4**：抽象类中可不可以不定义抽象方法？可以。抽象方法目的仅仅为了不让该类创建对象。** -———————————————————————————————- 模板方法设计模式： 解决的问题：当功能内部一部分实现时确定，一部分实现是不确定的。这时可以把不确定的部分暴露出去，让子类去实现。 abstract class GetTime{ ​ public final void getTime(){ //**此功能如果不需要复写，可加final限定** ​ long start = System.currentTimeMillis(); ​ code(); //**不确定的功能部分，提取出来，通过抽象方法实现** ​ long end = System.currentTimeMillis(); ​ System.out.println(“毫秒是：”+(end-start)); ​ } ​ public abstract void code(); //**抽象不确定的功能，让子类复写实现** } class SubDemo extends GetTime{ ​ public void code(){ //**子类复写功能方法** ​ for(int y=0; y&lt;1000; y++){ ​ System.out.println(“y”); ​ } ​ } }]]></content>
-      <categories>
-        <category>Java基础</category>
-      </categories>
-      <tags>
-        <tag>Java基础</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Hexo博客搭建+主题优化+插件配置+常用操作+错误分析]]></title>
-    <url>%2Fhaianzwh.github.io%2F2017%2F12%2F15%2FHexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA%2B%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96%2B%E6%8F%92%E4%BB%B6%E9%85%8D%E7%BD%AE%2B%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C%2B%E9%94%99%E8%AF%AF%E5%88%86%E6%9E%90%2F</url>
-    <content type="text"><![CDATA[如果你和我一样是小白，那么恭喜你！ 你马上就会有一个跟我一样的博客啦！ 博客搭建准备环境 Node.js 下载，并安装。详细步骤：www.simon96.online/2018/11/10/… Git 下载，并安装。详细步骤：www.simon96.online/2018/11/10/… 安装Hexo，在命令行（即Git Bash）运行以下命令： npm install -g hexo-cli 初始化Hexo，在命令行（即Git Bash）依次运行以下命令即可： 以下，即存放Hexo初始化文件的路径， 即站点目录。 1234$ hexo init &lt;folder&gt;$ cd &lt;folder&gt;$ npm install复制代码 新建完成后，在路径下，会产生这些文件和文件夹： 123456789.├── _config.yml├── package.json├── scaffolds├── source| ├── _drafts| └── _posts└── themes复制代码 注： hexo相关命令均在站点目录下，用Git Bash运行。 站点配置文件：站点目录下的_config.yml。 ​ 路径为&lt;folder&gt;\_config.yml 主题配置文件：站点目录下的themes文件夹下的，主题文件夹下的_config.yml。 ​ 路径为&lt;folder&gt;\themes\&lt;主题文件夹&gt;\_config.yml 启动服务器。在路径下，命令行（即Git Bash）输入以下命令，运行即可： hexo server 浏览器访问网址： http://localhost:4000/ 至此，您的Hexo博客已经搭建在本地。 实施方案方案一：GithubPages 创建Github账号 创建仓库， 仓库名为：.github.io 将本地Hexo博客推送到GithubPages 3.1. 安装hexo-deployer-git插件。在命令行（即Git Bash）运行以下命令即可： 12$ npm install hexo-deployer-git --save复制代码 3.2. 添加SSH key。 创建一个 SSH key 。在命令行（即Git Bash）输入以下命令， 回车三下即可： 12$ ssh-keygen -t rsa -C &quot;邮箱地址&quot;复制代码 添加到 github。 复制密钥文件内容（路径形如C:\Users\Administrator\.ssh\id_rsa.pub），粘贴到New SSH Key即可。 测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功： 123$ ssh -T git@github.com$ yes复制代码 3.3. 修改_config.yml（在站点目录下）。文件末尾修改为： 1234567# Deployment## Docs: https://hexo.io/docs/deployment.htmldeploy: type: git repo: git@github.com:&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io.git branch: master复制代码 注意：上面仓库地址写ssh地址，不写http地址。 3.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回INFO Deploy done: git即成功推送： 123$ hexo g$ hexo d复制代码 等待1分钟左右，浏览器访问网址： https://&lt;Github账号名称&gt;.github.io 至此，您的Hexo博客已经搭建在GithubPages, 域名为https://&lt;Github账号名称&gt;.github.io。 方案二：GithubPages + 域名在方案一的基础上，添加自定义域名（您购买的域名）。 域名解析。 类型选择为 CNAME； 主机记录即域名前缀，填写为www； 记录值填写为自定义域名； 解析线路，TTL 默认即可。 仓库设置。 2.1. 打开博客仓库设置：https://github.com/&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io/settings 2.2. 在Custom domain下，填写自定义域名，点击save。 2.3. 在站点目录的source文件夹下，创建并打开CNAME.txt，写入你的域名（如www.simon96.online），保存，并重命名为CNAME。 等待10分钟左右。 浏览器访问自定义域名。 至此，您的Hexo博客已经解析到自定义域名，https://&lt;Github账号名称&gt;.github.io依然可用。 方案三：GithubPages + CodingPages + 域名GithubPages 在国内较慢，百度不收录，而CodingPages 在国外较快。所以在方案二的基础上，添加CodingPages 。 创建Coding账号 创建仓库， 仓库名为： 进入项目里『代码』页面，点击『一键开启静态 Pages』，稍等片刻CodingPages即可部署成功。 将本地Hexo博客推送到CodingPages 4.1. 鉴于创建GithubPages 时，已经生成过公钥。可直接复制密钥文件内容（路径形如C:\Users\Administrator\.ssh\id_rsa.pub）， 粘贴到新增公钥。 4.2. 测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功： 123$ ssh -T git@git.coding.net$ yes复制代码 4.3. 修改_config.yml（在存放Hexo初始化文件的路径下）。文件末尾修改为： 12345678910# Deployment## Docs: https://hexo.io/docs/deployment.htmldeploy:- type: git repo: git@github.com:&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io.git branch: master- type: git repo: git@git.dev.tencent.com:&lt;Coding账号名称&gt;/&lt;Coding账号名称&gt;.git branch: master复制代码 4.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回INFO Deploy done: git即成功推送： 123$ hexo g$ hexo d复制代码 域名解析 添加 CNAME 记录指向 .coding.me 类型选择为 CNAME； 主机记录即域名前缀，填写为www； 记录值填写为自定义域名； 解析线路，TTL 默认即可。 添加 两条A 记录指向 192.30.252.153和192.30.252.154 类型选择为 A； 主机记录即域名前缀，填写为@； 记录值填写为192.30.252.153和192.30.252.154； 解析线路，境外或谷歌。 在『Pages 服务』设置页（https://dev.tencent.com/u/&lt;Coding账号名称&gt;/p/&lt;Coding账号名称&gt;/git/pages/settings）中绑定自定义域名。 至此，您的Hexo博客已经解析到自定义域名，https://&lt;Github账号名称&gt;.github.io和https://&lt;Coding账号名称&gt;.coding.me依然可用。 方案四：云服务器 + 域名该方案需要先购买云服务器和域名。 在云服务器安装Git 和 Nginx。(Git 用于版本管理和部署，Nginx 用于静态博客托管。) 登陆root用户，运行： 123$ yum -y update$ yum install -y git nginx复制代码 Nginx配置 2.1. 创建文件目录(用于博客站点文件存放) 1234cd /usr/local/mkdir hexochmod 775 -R /usr/local/hexo/复制代码 2.2. 添加 index.html(用于检测配置 Nginx 是否成功) 12vim /usr/local/hexo/index.html复制代码 添加以下代码，并保存。 1234567891011&lt;!DOCTYPE html&gt;&lt;html&gt; &lt;head&gt; &lt;title&gt;&lt;/title&gt; &lt;meta charset=&quot;UTF-8&quot;&gt; &lt;/head&gt; &lt;body&gt; &lt;p&gt;Nginx running&lt;/p&gt; &lt;/body&gt;&lt;/html&gt;复制代码 2.3. 配置 Nginx 服务器 12vim /etc/nginx/nginx.conf复制代码 修改server_name和root： 1234567server &#123; listen 80 default_server; listen [::]:80 default_server; server_name www.baidu.com; # 填个人域名 root /usr/local/hexo/; &#125; 复制代码 2.4. 启动nginx服务； 12service nginx start复制代码 2.5. 云服务器浏览器访问个人域名或IP，若跳转index.html，则配置完成，否则检查以上配置。 git配置 3.1. 创建文件目录, 用于私人 Git 仓库搭建, 并更改目录读写权限。 1234cd /usr/local/mkdir hexoRepochmod 775 -R /usr/local/hexoRepo/复制代码 3.2. Git 初始化裸库。 123cd hexoRepo/git init --bare hexo.git复制代码 3.3. 创建 Git 钩子(hook)。 12vim /usr/local/hexoRepo/hexo.git/hooks/post-receive复制代码 3.4. 输入以下信息，用于指定 Git 的源代码 和 Git 配置文件。 1234#!/bin/bashgit --work-tree=/usr/local/hexo --git-dir=/usr/local/hexoRepo/hexo.git checkout -f复制代码 3.5. 保存并退出后, 给该文件添加可执行权限。 12chmod +x /usr/local/hexoRepo/hexo.git/hooks/post-receive复制代码 本地博客推送到云服务器 4.1. 安装hexo-deployer-git插件。在命令行（即Git Bash）运行以下命令即可： 12$ npm install hexo-deployer-git --save复制代码 4.2. 添加SSH key。 创建一个 SSH key 。在命令行（即Git Bash）输入以下命令， 回车三下即可： 12$ ssh-keygen -t rsa -C &quot;邮箱地址&quot;复制代码 添加到 github。 复制密钥文件内容（路径形如C:\Users\Administrator\.ssh\id_rsa.pub），粘贴到New SSH Key即可。 测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功： 123$ ssh -T git@github.com$ yes复制代码 4.3. 修改_config.yml（在站点目录下）。文件末尾修改为： 1234567# Deployment## Docs: https://hexo.io/docs/deployment.htmldeploy: type: git repo: root@xxx.xxx.xxx.xxx:/usr/local/hexoRepo/hexo //用户名@域名或 IP 地址:/usr/local/hexoRepo/hexo branch: master复制代码 注意：上面仓库地址写ssh地址，不写http地址。 4.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回INFO Deploy done: git即成功推送： 123$ hexo g$ hexo d复制代码 等待1分钟左右，浏览器访问个人域名。 至此，您的Hexo博客已经搭建在云服务器, 域名为个人域名。 主题优化选择主题Hexo默认的主题是landscape，推荐以下主题： snippet Hiero JSimple BlueLake 应用主题 下载主题 将下载好的主题文件夹，粘贴到站点目录的themes下。 更改站点配置文件_config.yml 的theme字段，为主题文件夹的名称： 12345# Extensions## Plugins: https://hexo.io/plugins/## Themes: https://hexo.io/themes/theme: &lt;主题文件夹的名称&gt;复制代码 主题优化以上主题都有比较详细的说明文档，本节主要解决主题优化的常见问题。 主题优化一般包括： 设置「RSS」 添加「标签」页面 添加「分类」页面 设置「字体」 问题：引用国外字体镜像较慢。 解决：可以改用国内的。将\themes*\layout_partials\head external-fonts.swig文件中fonts.google.com改成fonts.lug.ustc.edu.cn。 设置「代码高亮主题」 侧边栏社交链接 问题：图标哪里找？ 解决：Font Awesome 开启打赏功能 问题：微信支付宝二维码不美观，规格不一。 解决：在线生成二维码 设置友情链接 腾讯公益404页面 站点建立时间 订阅微信公众号 设置「动画效果」 问题：慢，需要等待 JavaScript 脚本完全加载完毕后才会显示内容。 解决：将主题配置文件_config.yml中，use_motion字段的值设为 false 来关闭动画。 设置「背景动画」 主题优化还包括： 添加背景图在 themes/*/source/css/_custom/custom.styl 中添加如下代码： 12345678body&#123; background:url(/images/bg.jpg); background-size:cover; background-repeat:no-repeat; background-attachment:fixed; background-position:center;&#125;复制代码 修改Logo字体在 themes/*/source/css/_custom/custom.styl 中添加如下代码： 123456789@font-face &#123; font-family: Zitiming; src: url(&apos;/fonts/Zitiming.ttf&apos;);&#125;.site-title &#123; font-size: 40px !important; font-family: &apos;Zitiming&apos; !important;&#125;复制代码 其中字体文件在 themes/next/source/fonts 目录下，里面有个 .gitkeep 的隐藏文件，打开写入你要保留的字体文件，比如我的是就是写入 Zitiming.ttf ，具体字库自己从网上下载即可。 修改内容区域的宽度编辑主题的 source/css/_variables/custom.styl 文件，新增变量： 123456// 修改成你期望的宽度$content-desktop = 700px// 当视窗超过 1600px 后的宽度$content-desktop-large = 900px复制代码 网站标题栏背景颜色1234.site-meta &#123; background: $blue; //修改为自己喜欢的颜色&#125;复制代码 自定义鼠标样式打开 themes/*/source/css/_custom/custom.styl ,在里面写下如下代码： 12345678// 鼠标样式 * &#123; cursor: url(&quot;http://om8u46rmb.bkt.clouddn.com/sword2.ico&quot;),auto!important &#125; :active &#123; cursor: url(&quot;http://om8u46rmb.bkt.clouddn.com/sword1.ico&quot;),auto!important &#125;复制代码 文章加密访问打开 themes/*/layout/_partials/head.swig文件,在 之前插入代码： 1234567891011&lt;script&gt; (function()&#123; if(&apos;&#123;&#123; page.password &#125;&#125;&apos;)&#123; if (prompt(&apos;请输入密码&apos;) !== &apos;&#123;&#123; page.password &#125;&#125;&apos;)&#123; alert(&apos;密码错误&apos;); history.back(); &#125; &#125; &#125;)();&lt;/script&gt;复制代码 写文章时加上password: *： 123456---title: 2018date: 2018-10-25 16:10:03password: 123456---复制代码 实现点击出现桃心效果 在/themes/*/source/js/src下新建文件click.js，接着把以下粘贴到click.js文件中。 代码如下： 123!function(e,t,a)&#123;function n()&#123;c(&quot;.heart&#123;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);&#125;.heart:after,.heart:before&#123;content: &apos;&apos;;width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;&#125;.heart:after&#123;top: -5px;&#125;.heart:before&#123;left: -5px;&#125;&quot;),o(),r()&#125;function r()&#123;for(var e=0;e&lt;d.length;e++)d[e].alpha&lt;=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText=&quot;left:&quot;+d[e].x+&quot;px;top:&quot;+d[e].y+&quot;px;opacity:&quot;+d[e].alpha+&quot;;transform:scale(&quot;+d[e].scale+&quot;,&quot;+d[e].scale+&quot;) rotate(45deg);background:&quot;+d[e].color+&quot;;z-index:99999&quot;);requestAnimationFrame(r)&#125;function o()&#123;var t=&quot;function&quot;==typeof e.onclick&amp;&amp;e.onclick;e.onclick=function(e)&#123;t&amp;&amp;t(),i(e)&#125;&#125;function i(e)&#123;var a=t.createElement(&quot;div&quot;);a.className=&quot;heart&quot;,d.push(&#123;el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()&#125;),t.body.appendChild(a)&#125;function c(e)&#123;var a=t.createElement(&quot;style&quot;);a.type=&quot;text/css&quot;;try&#123;a.appendChild(t.createTextNode(e))&#125;catch(t)&#123;a.styleSheet.cssText=e&#125;t.getElementsByTagName(&quot;head&quot;)[0].appendChild(a)&#125;function s()&#123;return&quot;rgb(&quot;+~~(255*Math.random())+&quot;,&quot;+~~(255*Math.random())+&quot;,&quot;+~~(255*Math.random())+&quot;)&quot;&#125;var d=[];e.requestAnimationFrame=function()&#123;return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e)&#123;setTimeout(e,1e3/60)&#125;&#125;(),n()&#125;(window,document);复制代码 在\themes\*\layout\_layout.swig文件末尾添加： 1234&lt;!-- 页面点击小红心 --&gt;&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/clicklove.js&quot;&gt;&lt;/script&gt;复制代码 静态资源压缩在站点目录下： 12$ npm install gulp -g复制代码 安装gulp插件： 123456npm install gulp-minify-css --savenpm install gulp-uglify --savenpm install gulp-htmlmin --savenpm install gulp-htmlclean --savenpm install gulp-imagemin --save复制代码 在 Hexo 站点下新建 gulpfile.js文件，文件内容如下： 12345678910111213141516171819202122232425262728293031323334353637383940414243444546var gulp = require(&apos;gulp&apos;);var minifycss = require(&apos;gulp-minify-css&apos;);var uglify = require(&apos;gulp-uglify&apos;);var htmlmin = require(&apos;gulp-htmlmin&apos;);var htmlclean = require(&apos;gulp-htmlclean&apos;);var imagemin = require(&apos;gulp-imagemin&apos;);// 压缩css文件gulp.task(&apos;minify-css&apos;, function() &#123; return gulp.src(&apos;./public/**/*.css&apos;) .pipe(minifycss()) .pipe(gulp.dest(&apos;./public&apos;));&#125;);// 压缩html文件gulp.task(&apos;minify-html&apos;, function() &#123; return gulp.src(&apos;./public/**/*.html&apos;) .pipe(htmlclean()) .pipe(htmlmin(&#123; removeComments: true, minifyJS: true, minifyCSS: true, minifyURLs: true, &#125;)) .pipe(gulp.dest(&apos;./public&apos;))&#125;);// 压缩js文件gulp.task(&apos;minify-js&apos;, function() &#123; return gulp.src([&apos;./public/**/.js&apos;,&apos;!./public/js/**/*min.js&apos;]) .pipe(uglify()) .pipe(gulp.dest(&apos;./public&apos;));&#125;);// 压缩 public/demo 目录内图片gulp.task(&apos;minify-images&apos;, function() &#123; gulp.src(&apos;./public/demo/**/*.*&apos;) .pipe(imagemin(&#123; optimizationLevel: 5, //类型：Number 默认：3 取值范围：0-7（优化等级） progressive: true, //类型：Boolean 默认：false 无损压缩jpg图片 interlaced: false, //类型：Boolean 默认：false 隔行扫描gif进行渲染 multipass: false, //类型：Boolean 默认：false 多次优化svg直到完全优化 &#125;)) .pipe(gulp.dest(&apos;./public/uploads&apos;));&#125;);// 默认任务gulp.task(&apos;default&apos;, [ &apos;minify-html&apos;,&apos;minify-css&apos;,&apos;minify-js&apos;,&apos;minify-images&apos;]);复制代码 只需要每次在执行 generate 命令后执行 gulp 就可以实现对静态资源的压缩，压缩完成后执行 deploy 命令同步到服务器： 1234hexo ggulphexo d复制代码 修改访问URL路径默认情况下访问URL路径为：domain/2018/10/18/关于本站,修改为 domain/About/关于本站。 编辑 Hexo 站点下的 _config.yml 文件，修改其中的 permalink字段： 12permalink: :category/:title/复制代码 博文置顶 安装插件 npm install hexo-generator-index-pin-top –save 然后在需要置顶的文章的Front-matter中加上top即可： 1234567---title: 2018date: 2018-10-25 16:10:03top: 10---复制代码 设置置顶标志 打开：/themes/*/layout/_macro/post.swig，定位到 ，插入以下代码即可： 1234567 &#123;% if post.top %&#125; &lt;i class=&quot;fa fa-thumb-tack&quot;&gt;&lt;/i&gt; &lt;font color=7D26CD&gt;置顶&lt;/font&gt; &lt;span class=&quot;post-meta-divider&quot;&gt;|&lt;/span&gt; &#123;% endif %&#125;复制代码 在右上角或者左上角实现fork me on github 选择样式GitHub Ribbons, 修改图片跳转链接,将&lt;a href=&quot;https://github.com/you&quot;&gt;中的链接换为自己Github链接： 打开 themes/next/layout/_layout.swig 文件，把代码复制到&lt;div class=&quot;headband&quot;&gt;&lt;/div&gt;下面。 主页文章添加边框阴影效果打开 themes/*/source/css/_custom/custom.styl ,向里面加代码: 123456789// 主页文章添加阴影效果.post &#123; margin-top: 0px; margin-bottom: 60px; padding: 25px; -webkit-box-shadow: 0 0 5px rgba(202, 203, 203, .5); -moz-box-shadow: 0 0 5px rgba(202, 203, 204, .5);&#125;复制代码 显示当前浏览进度修改themes/*/_config.yml，把 false 改为 true： 123456# Back to top in sidebarb2t: true# Scroll percent label in b2t buttonscrollpercent: true复制代码 创建分类页在终端窗口下，定位到 Hexo 站点目录下，新建： 123$ cd &lt;站点目录&gt;$ hexo new page categories复制代码 加入 广告主要有两种：百度SSP和谷歌Adsense。方法类似： 注册，复制广告代码 部署到网站。 2.1. 新建 theme/*/layout/_custom/google_ad.swig，将 AdSense 上的代码粘贴进去 2.2. 头部。在 theme/*/layout/_custom/head.swig 中也粘贴一份 2.3. 每篇博客。在 theme/*/layout/post.swig 里中在希望看到的地方加上： 123&#123;% include &apos;_custom/google_ad.swig&apos; %&#125;复制代码 例如：在 &lt;div id=&quot;posts&quot; class=&quot;posts-expand&quot;&gt; &lt;/div&gt; 中间插入，总代码如下： 12345678&#123;% block content %&#125; &lt;div id=&quot;posts&quot; class=&quot;posts-expand&quot;&gt; &#123;&#123; post_template.render(page) &#125;&#125; &#123;% include &apos;_custom/google_ad.swig&apos; %&#125; &lt;/div&gt;&#123;% endblock %&#125;复制代码 等待审核通过。如果失败，可再次申请。 添加萌萌哒 安装插件 123npm install --save hexo-helper-live2d复制代码 复制你喜欢的模型名字： Epsilon2.1 Gantzert_Felixander haru miku ni-j nico nietzche nipsilon nito shizuku tsumiki wanko z16 hibiki koharu haruto Unitychan tororo hijiki 将以下代码添加到主题配置文件_config.yml，修改&lt;你喜欢的模型名字&gt;： 123456789101112131415161718live2d: enable: true scriptFrom: local pluginRootPath: live2dw/ pluginJsPath: lib/ pluginModelPath: assets/ tagMode: false log: false model: use: live2d-widget-model-&lt;你喜欢的模型名字&gt; display: position: right width: 150 height: 300 mobile: show: true复制代码 建配置文件 4.1. 在站点目录下建文件夹live2d_models， 4.2. 再在live2d_models下建文件夹&lt;你喜欢的模型名字&gt;, 4.3. 再在&lt;你喜欢的模型名字&gt;下建json文件：&lt;你喜欢的模型名字&gt;.model.json 安装模型。在命令行（即Git Bash）运行以下命令即可： npm install –save live2d-widget-model-&lt;你喜欢的模型名字&gt; 在命令行（即Git Bash）运行以下命令， 在http://127.0.0.1:4000/查看测试结果: hexo clean &amp;&amp; hexo g &amp;&amp; hexo s 插件配置以下插件（评论系统、数据统计与分析、内容分享服务、搜索服务）各选一个即可。 评论系统 推荐指数 优点 缺点 Valine 4 每天30000条评论，10GB的储存 作者评论无标识 来必力/livere 4 多种账号登录 评论无法导出 畅言 3 美观 必须备案域名 gitment 3 简洁 只能登陆github评论 Disqus 1 需要翻*墙 Valine1.1. 获取APP ID 和 APP Key 请先登录或注册 LeanCloud, 进入控制台后点击左下角创建应用， 进入刚刚创建的应用，选择左下角的设置&gt;应用Key，然后就能看到你的APP ID和APP Key了。 1.2. 填写APP ID 和 APP Key到主题配置文件_config.yml 1.3. 运行hexo g&amp;&amp;hexo d推送到博客。 来必力/livere2.1. 登陆 来必力 获取你的 LiveRe UID。 2.2. 填写LiveRe UID到主题配置文件_config.yml 畅言3.1.获取APP ID 和 APP Key 请先登录或注册 畅言, 点击“立即免费获取畅言”， 新建站点，点击管理，点击评论插件&gt;评论管理， 点击后台总览，然后就能看到你的APP ID和APP Key了。 3.2. 填写APP ID 和 APP Key到主题配置文件_config.yml 3.3. 运行hexo g&amp;&amp;hexo d推送到博客。 gitment4.1. 安装插件： npm i –save gitment 4.2. 申请应用 在New OAuth App为你的博客应用一个密钥: 123456Application name:随便写Homepage URL:这个也可以随意写,就写你的博客地址就行Application description:描述,也可以随意写Authorization callback URL:这个必须写你的博客地址复制代码 4.3. 配置 编辑主题配置文件themes/*/_config.yml: 1234567891011121314151617# Gitment# Introduction: https://imsun.net/posts/gitment-introduction/gitment: enable: true mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway count: true # Show comments count in post meta area lazy: false # Comments lazy loading with a button cleanly: false # Hide &apos;Powered by ...&apos; on footer, and more language: # Force language, or auto switch by theme github_user: &#123;you github user id&#125; github_repo: 公开的git仓库,评论会作为那个项目的issue client_id: &#123;刚才申请的ClientID&#125; client_secret: &#123;刚才申请的Client Secret&#125; proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect redirect_protocol: # Protocol of redirect_uri with force_redirect_pro复制代码 Disqus编辑 主题配置文件themes/*/_config.yml， 将 disqus 下的 enable 设定为 true，同时提供您的 shortname。count 用于指定是否显示评论数量。 123456disqus: enable: false shortname: count: true复制代码 数据统计与分析 推荐指数 优点 缺点 不蒜子 4 可直接将访问次数显示在您在网页上（也可不显示） 只计数 百度统计 3 收录慢 不蒜子编辑 主题配置文件 themes/*/_config.yml中的busuanzi_count的配置项即可。 当enable: true时，代表开启全局开关。 若site_uv（本站访客数）、site_pv（本站访客数）、page_pv（本文总阅读量）的值均为false时，不蒜子仅作记录而不会在页面上显示。 注意： 123不蒜子官方因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』！复制代码 解决办法： 找到主题调用不蒜子的swig文件。一般在”\themes*\layout_third-party\analytics\busuanzi-counter.swig” 更改域名 123456把原有的：&lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;域名改一下即可：&lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;复制代码 百度统计 登录 百度统计，定位到站点的代码获取页面 复制统计脚本 id，如图： 编辑 主题配置文件themes/*/_config.yml，修改字段 google_analytics，值设置成你的统计脚本 id。 内容分享服务 推荐指数 优点 缺点 百度分享 4 稳定 不太美观 need-more-share2 4 美观 更新不及时（比如微信分享API） 百度分享编辑 主题配置文件，添加/修改字段 baidushare，值为 true即可。 1234# 百度分享服务baidushare: true复制代码 need-more-share2编辑 主题配置文件，添加/修改字段 needmoreshare2，值为 true即可。 1234needmoreshare2: enable: true复制代码 搜索服务 推荐指数 优点 缺点 Local Search 4 配置方便 Swiftype 2 需注册 Algolia 2 需注册 Local Search添加百度/谷歌/本地 自定义站点内容搜索 安装 hexo-generator-searchdb，在站点的根目录下执行以下命令： 123$ npm install hexo-generator-searchdb --save复制代码 编辑 站点配置文件，新增以下内容到任意位置： 1234567search: path: search.xml field: post format: html limit: 10000复制代码 编辑 主题配置文件，启用本地搜索功能： 12345# Local searchlocal_search: enable: true复制代码 错误分析如果你使用Hexo遇到同样的问题,这里有一些常见问题的解决方案。 YAML Parsing Error1234JS-YAML: incomplete explicit mapping pair; a key node is missed at line 18, column 29: last_updated: Last updated: %s复制代码 参数中包含冒号，请用加引号，如Last updated: %s 1234JS-YAML: bad indentation of a mapping entry at line 18, column 31: last_updated：&quot;Last updated: %s&quot;复制代码 字段后面的冒号必须为英文冒号，如：last_updated: 字段冒号后面必须跟一个空格，如：last_updated: “Last updated: %s” EMFILE Error123Error: EMFILE, too many open files复制代码 生成大量的文件时，可能遇到EMFILE错误。 可以运行以下命令来增加允许同步I / O操作的数量。 123$ ulimit -n 10000复制代码 Process Out of Memory当hexo g时，遇到以下错误： 123FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - process out of memory复制代码 如下，更改hexo-cli文件的第一行，来增大nodejs堆内存.该bug已在新版本修复。 123#!/usr/bin/env node --max_old_space_size=8192复制代码 Git Deployment Problems RPC failed 12345error: RPC failed; result=22, HTTP code = 403fatal: &apos;username.github.io&apos; does not appear to be a git repository复制代码 确保你有你的电脑上设置git正确或尝试使用HTTPS存储库URL。 Error: ENOENT: no such file or directory 这个需要有一定的git的知识，因为可能是由于写错了标签,类别,或文件名，导致本地和github冲突了，Git不能自动合并这一变化所以它打破了自动分支。 解决办法： 检查文章的标签和类别,确保本地和github上是相同的。 合并分支（Commit）。 清除，重构。在站点目录下，命令行（即Git Bash）运行hexo clean和hexo g 手动将站点目录下的public文件夹复制到您的桌面 从你的master分支切换到部署在本地分支。 从桌面复制public文件夹到本地分支。 合并分支到github（Commit）。 切回master分支。 Server Problems123Error: listen EADDRINUSE复制代码 你可能使用相同的端口，同时开启了两个Hexo服务器。如果需要同时开启，可以尝试修改端口设置： 123$ hexo server -p 5000复制代码 Plugin Installation Problems123npm ERR! node-waf configure build复制代码 这个错误可能发生在试图安装一个用Cc++或另一个javascript语言编写的插件。确保您已经安装了正确的编译器在您的计算机上。 Error with DTrace (Mac OS X)12345&#123; [Error: Cannot find module &apos;./build/Release/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;&#123; [Error: Cannot find module &apos;./build/default/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;&#123; [Error: Cannot find module &apos;./build/Debug/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;复制代码 DTrace安装可能有问题，重装: 123$ npm install hexo --no-optional复制代码 详见 #1326 Iterate Data Model on Jade or SwigHexo使用仓库的数据模型。这不是一个数组,所以你可能需要将对象转换为iterable。 1234&#123;% for post in site.posts.toArray() %&#125;&#123;% endfor %&#125;复制代码 Data Not Updated一些数据不能更新或新生成的文件的最后一个版本完全相同。清理缓存，再试一次： 123$ hexo clean复制代码 No command is executed那个不能使用除help、init和version以外的命令行（即Git Bash）时, 有可能时站点目录下的package.json文件，缺少hexo ，如下: 1234567&#123; &quot;hexo&quot;: &#123; &quot;version&quot;: &quot;3.2.2&quot; &#125;&#125;复制代码 Escape ContentsHexo使用Nunjucks渲染的页面. { { } }或{ % % }将解析和可能会引起麻烦， 如果要在博文中出现，必须使用三引号： 1​ Hello {{ sensitive }} ​12复制代码 ENOSPC Error (Linux)如果运行命令$ hexo server 返回一个错误: 123Error: watch ENOSPC ...复制代码 可以通过运行$ npm dedupe或者以下命令行（即Git Bash）： 123$ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf &amp;&amp; sudo sysctl -p复制代码 来增加测试时，你可以看见的文件数量。 EMPERM Error (Windows Subsystem for Linux)如果在Windows Subsystem for Linux，运行命令$ hexo server 返回这个错误: 123Error: watch /path/to/hexo/theme/ EMPERM复制代码 因为目前在Windows Subsystem for Linux中，有些内容更改时，还不能实时更新到hexo服务器。 所以需要重新编译，再启动服务器： 1234$ hexo generate$ hexo server -s复制代码 Template render error有时运行命令$ hexo generate 返回一个错误: 1234FATAL Something&apos;s wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.htmlTemplate render error: (unknown path)复制代码 这意味着有些认不出来单词在你的文件，并且很可能在你的新博文,或者配置文件_config.yml中，比如缩进错误： 错误例子： 12345plugins:hexo-generator-feedhexo-generator-sitemap复制代码 常用操作创建文章命令： 123$ hexo new [layout] &lt;title&gt;复制代码 参数说明： [layout]可以为以下三种： 参数名 功能 文章路径 post 新建博文 source/_posts page 新建页面（如404，分类） source draft 草稿 source/_drafts 草稿可通过一下命令发布： 123$ hexo publish [layout] &lt;title&gt;复制代码 title注意： 不是博文标题， 是博文markdown文件的名字， 也是博文链接的后缀（如https://www.simon96.online/2018/10/12/hexo-tutorial/中的hexo-tutorial） 文章模版 创建模版 在新建文章时，Hexo 会根据 scaffolds 文件夹内相对应的文件来建立文件，例如： $ hexo new blog “simon” ​ 在执行这行指令时，Hexo 会尝试在 scaffolds 文件夹中寻找 blog.md，并根据其内容建立文章。 修改参数 以下是您可以在模版中使用的变量： 变量 描述 layout 布局 title 标题 date 文件建立日期 Front-matter就是博文最上方以 --- 分隔的那部分。 默认可以使用的Front-matter： 参数 描述 默认值 layout 布局 title 标题 date 建立日期 文件建立日期 updated 更新日期 文件更新日期 comments 开启文章的评论功能 true tags 标签（不适用于分页） categories 分类（不适用于分页） permalink 覆盖文章网址]]></content>
-      <categories>
-        <category>Hexo</category>
-      </categories>
-      <tags>
-        <tag>Hexo</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title><![CDATA[Hello World]]></title>
-    <url>%2Fhaianzwh.github.io%2F2017%2F12%2F10%2Fhello-world%2F</url>
-    <content type="text"><![CDATA[Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick StartCreate a new post1$ hexo new "My New Post" More info: Writing Run server1$ hexo server More info: Server Generate static files1$ hexo generate More info: Generating Deploy to remote sites1$ hexo deploy More info: Deployment]]></content>
-  </entry>
+<search> 
+  
+    
+    <entry>
+      <title><![CDATA[Java基础知识总结]]></title>
+      <url>/haianzwh.github.io/2017/12/25/Java%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86%E6%80%BB%E7%BB%93/</url>
+      <content type="html"><![CDATA[<h3 id="本人学习java时，做的java基础知识总结："><a href="#本人学习java时，做的java基础知识总结：" class="headerlink" title="本人学习java时，做的java基础知识总结："></a>本人学习java时，做的java基础知识总结：</h3><p><strong>写代码：</strong></p>
+<p>1，明确需求。我要做什么？</p>
+<p>2，分析思路。我要怎么做？1,2,3。</p>
+<p>3，确定步骤。每一个思路部分用到哪些语句，方法，和对象。</p>
+<p>4，代码实现。用具体的java语言代码把思路体现出来。</p>
+<p><strong>学习新技术的四点：</strong></p>
+<p>1，该技术是什么？</p>
+<p>2，该技术有什么特点(使用注意)：</p>
+<p>3，该技术怎么使用。demo</p>
+<p>4，该技术什么时候用？test。</p>
+<p>-———————————————————————————————-</p>
+<p><strong>一：java概述：</strong></p>
+<p>1991 年Sun公司的James Gosling（詹姆斯&middot;高斯林）等人开始开发名称为 Oak 的语言，希望用于控制嵌入在有线电视交换盒、PDA等的微处理器；</p>
+<p>1994年将Oak语言更名为Java；</p>
+<p><strong>Java**</strong>的三种技术架构:**</p>
+<p><strong>JAVAEE**</strong>：**Java Platform Enterprise Edition，开发企业环境下的应用程序，主要针对web程序开发；</p>
+<p><strong>JAVASE**</strong>：**Java Platform Standard Edition，完成桌面应用程序的开发，是其它两者的基础；</p>
+<p><strong>JAVAME**</strong>：**Java Platform Micro Edition，开发电子消费产品和嵌入式设备，如手机中的程序；</p>
+<p><strong>1**</strong>，JDK：Java Development Kit，**java的开发和运行环境，java的开发工具和jre。</p>
+<p><strong>2**</strong>，JRE：Java Runtime Environment，**java程序的运行环境，java运行的所需的类库+JVM(java虚拟机)。</p>
+<p><strong>3**</strong>，配置环境变量：**让java jdk\bin目录下的工具，可以在任意目录下运行，原因是，将该工具所在目录告诉了系统，当使用该工具时，由系统帮我们去找指定的目录。</p>
+<p><strong>环境变量的配置：</strong></p>
+<p>​    1<strong>）：</strong>永久配置方式：JAVA_HOME=%安装路径%\Java\jdk</p>
+<p>​                      path=%JAVA_HOME%\bin</p>
+<p>​    2<strong>）：</strong>临时配置方式：set path=%path%;C:\Program Files\Java\jdk\bin</p>
+<p>特点：系统默认先去当前路径下找要执行的程序，如果没有，再去path中设置的路径下找。</p>
+<p><strong>classpath**</strong>的配置:**</p>
+<p>​    1<strong>）：</strong>永久配置方式：classpath=.;c:\;e:\</p>
+<p>​    2<strong>）：</strong>临时配置方式：set classpath=.;c:\;e:\</p>
+<p><strong>注意：</strong>在定义classpath环境变量时，需要注意的情况</p>
+<p>如果没有定义环境变量classpath，java启动jvm后，会在当前目录下查找要运行的类文件；</p>
+<p>如果指定了classpath，那么会在指定的目录下查找要运行的类文件。</p>
+<p>还会在当前目录找吗？两种情况：</p>
+<p>​    1<strong>）：</strong>如果classpath的值结尾处有分号，在具体路径中没有找到运行的类，会默认在当前目录再找一次。</p>
+<p>​    2<strong>）：</strong>如果classpath的值结果出没有分号，在具体的路径中没有找到运行的类，不会再当前目录找。</p>
+<p>​    一般不指定分号，如果没有在指定目录下找到要运行的类文件，就报错，这样可以调试程序。</p>
+<p><strong>4**</strong>，javac命令和java命令做什么事情呢？**</p>
+<p>​    要知道java是分两部分的：一个是编译，一个是运行。</p>
+<p>​    <strong>javac**</strong>：**负责的是编译的部分，当执行javac时，会启动java的编译器程序。对指定扩展名的.java文件进行编译。 生成了jvm可以识别的字节码文件。也就是class文件，也就是java的运行程序。</p>
+<p>​    <strong>java**</strong>：**负责运行的部分.会启动jvm.加载运行时所需的类库,并对class文件进行执行.</p>
+<p>​    一个文件要被执行,必须要有一个执行的起始点,这个起始点就是main函数.</p>
+<p>-———————————————————————————————</p>
+<p><strong>二：java语法基础：</strong></p>
+<p><strong>1**</strong>，关键字：**其实就是某种语言赋予了特殊含义的单词。</p>
+<p>​    保留字：其实就是还没有赋予特殊含义，但是准备日后要使用过的单词。</p>
+<p><strong>2**</strong>，标示符：**其实就是在程序中自定义的名词。比如类名，变量名，函数名。包含 0-9、a-z、$、_ ；</p>
+<p>​    注意：</p>
+<p>​    <strong>1**</strong>），数字不可以开头。**</p>
+<p>​    <strong>2**</strong>），不可以使用关键字。**</p>
+<p><strong>3**</strong>，常量：**是在程序中的不会变化的数据。</p>
+<p><strong>4**</strong>，变量：**其实就是内存中的一个存储空间，用于存储常量数据。</p>
+<p>​    作用：方便于运算。因为有些数据不确定。所以确定该数据的名词和存储空间。</p>
+<p>​    特点：变量空间可以重复使用。</p>
+<p><strong>什么时候定义变量？</strong>只要是数据不确定的时候，就定义变量。</p>
+<p><strong>变量空间的开辟需要什么要素呢？</strong></p>
+<p>​    1，这个空间要存储什么数据？数据类型。</p>
+<p>​    2，这个空间叫什么名字啊？变量名称。</p>
+<p>​    3，这个空间的第一次的数据是什么？ 变量的初始化值。</p>
+<p><strong>变量的作用域和生存期:</strong></p>
+<p>变量的作用域：</p>
+<p>​    作用域从变量定义的位置开始，到该变量所在的那对大括号结束；</p>
+<p>生命周期：</p>
+<p>​    变量从定义的位置开始就在内存中活了；</p>
+<p>​    变量到达它所在的作用域的时候就在内存中消失了；</p>
+<p><strong>数据类型：</strong></p>
+<p>​    <strong>1**</strong>）：基本数据类型**：byte、short、int、long、float、double、char、boolean</p>
+<p>​    <strong>2**</strong>）：引用数据类型**: 数组、类、接口。</p>
+<p><strong>级别从低到高为：</strong>byte,char,short(这三个平级)–&gt;int–&gt;float–&gt;long–&gt;double</p>
+<p><strong>自动类型转换：</strong>从低级别到高级别，系统自动转的；</p>
+<p><strong>强制类型转换：</strong>什么情况下使用?把一个高级别的数赋给一个别该数的级别低的变量；</p>
+<p><strong>运算符号：</strong></p>
+<p>​    1）、算术运算符。</p>
+<p>​        + - <em> / %   <em>*%:</em></em>任何整数模2不是0就是1，所以只要改变被模数就可以实现开关运算。</p>
+<p>​        +:连接符。</p>
+<p>​        ++,–</p>
+<p>​    2）、赋值运算符。</p>
+<p>​        =  += -= *= /= %=</p>
+<p>​    3）、比较运算符。</p>
+<p>​        特点：该运算符的特点是：运算完的结果，要么是true，要么是false。</p>
+<p>​    4）、逻辑运算符。</p>
+<p>​        &amp;  |  ^  !   &amp;&amp;   ||</p>
+<p>​        逻辑运算符除了 !  外都是用于连接两个boolean类型表达式。</p>
+<p>​        &amp;: 只有两边都为true结果是true。否则就是false。</p>
+<p>​        |:只要两边都为false结果是false，否则就是true</p>
+<p>​        ^:异或：和或有点不一样。</p>
+<p>​             两边结果一样，就为false。</p>
+<p>​             两边结果不一样，就为true.</p>
+<p>​        <strong>&amp;</strong> <strong>和 &amp;&amp;区别：</strong> &amp; ：无论左边结果是什么，右边都参与运算。</p>
+<p>​                      <strong>&amp;&amp;:**</strong>短路与**，如果左边为false，那么右边不参数与运算。</p>
+<p>​        <strong>|</strong> <strong>和|| 区别：</strong>|：两边都运算。</p>
+<p>​                    <strong>||**</strong>：短路或**，如果左边为true，那么右边不参与运算。</p>
+<p>​    5）、位运算符:用于操作二进制位的运算符。</p>
+<p>​        &amp;  |  ^</p>
+<p>​        &lt;&lt;  &gt;&gt;   &gt;&gt;&gt;(无符号右移)</p>
+<p>​    <strong>练习：对两个变量的数据进行互换。不需要第三方变量。</strong></p>
+<p>​            int a  = 3,b = 5;–&gt;b = 3,a = 5;</p>
+<p>​            a = a + b; a = 8;</p>
+<p>​            b = a - b; b = 3;</p>
+<p>​            a = a - b; a = 5;</p>
+<p>​            a = a ^ b;//</p>
+<p>​            b = a ^ b;//b = a ^ b ^ b = a</p>
+<p>​            a = a ^ b;//a = a ^ b ^ a = b;</p>
+<p>​        练习：高效的算出 2*8 = 2&lt;&lt;3;</p>
+<p><strong>5**</strong>，语句。**</p>
+<p>​    If  switch  do while   while  for</p>
+<p>​    这些语句什么时候用？</p>
+<p>​    1）、当判断固定个数的值的时候，可以使用if，也可以使用switch。</p>
+<p>​    但是建议使用switch，效率相对较高。</p>
+<p>switch(变量){</p>
+<p>   case 值:要执行的语句;break;</p>
+<p>   …</p>
+<p>   default:要执行的语句;</p>
+<p>}</p>
+<p> 工作原理：用小括号中的变量的值依次和case后面的值进行对比，和哪个case后面的值相同了</p>
+<p>​           就执行哪个case后面的语句，如果没有相同的则执行default后面的语句；</p>
+<p> 细节：1）：break是可以省略的，如果省略了就一直执行到遇到break为止；</p>
+<p>​       2）：switch 后面的小括号中的变量应该是byte,char,short,int四种类型中的一种；</p>
+<p>​       3）：default可以写在switch结构中的任意位置；<strong>如果将default语句放在了第一行，则不管expression与case中的value是否匹配，程序会从default开始执行直到第一个break出现。</strong></p>
+<p>​    2）、当判断数据范围，获取判断运算结果boolean类型时，需要使用if。</p>
+<p>​    3）、当某些语句需要执行很多次时，就用循环结构。</p>
+<p>​    while和for可以进行互换。</p>
+<p>​    区别在于：如果需要定义变量控制循环次数。建议使用for。因为for循环完毕，变量在内存中释放。</p>
+<p><strong>break:</strong>作用于switch ，和循环语句，用于跳出，或者称为结束。</p>
+<p>break语句单独存在时，下面不要定义其他语句，因为执行不到，编译会失败。当循环嵌套时，break只跳出当前所在循环。要跳出嵌套中的外部循环，只要给循环起名字即可，这个名字称之为<strong>标号</strong>。</p>
+<p><strong>continue:</strong>只作用于循环结构，继续循环用的。</p>
+<p>作用：结束本次循环，继续下次循环。该语句单独存在时，下面不可以定义语句，执行不到。</p>
+<p><strong>6**</strong>，函 数：**为了提高代码的复用性，可以将其定义成一个单独的功能，该功能的体现就是java中的函数。函数就是体现之一。</p>
+<p><strong>java**</strong>中的函数的定义格式：**</p>
+<p>​    <strong>修饰符 返回值类型 函数名(参数类型 形式参数1，参数类型 形式参数1，…){</strong></p>
+<p>​       <strong>执行语句；</strong></p>
+<p>​       <strong>return</strong> <strong>返回值；</strong></p>
+<p>​    <strong>}</strong></p>
+<p>当函数没有具体的返回值时，返回的返回值类型用void关键字表示。</p>
+<p>如果函数的返回值类型是void时，return语句可以省略不写的，系统会帮你自动加上。</p>
+<p><strong>return**</strong>的作用：**结束函数。结束功能。</p>
+<p><strong>如何定义一个函数？</strong></p>
+<p>​    函数其实就是一个功能，定义函数就是实现功能，通过两个明确来完成：</p>
+<p>​    1）、明确该功能的运算完的结果，其实是在明确这个函数的返回值类型。</p>
+<p>​    2）、在实现该功能的过程中是否有未知内容参与了运算，其实就是在明确这个函数的参数列表(参数类型&amp;参数个数)。</p>
+<p><strong>函数的作用：</strong></p>
+<p>1）、用于定义功能。</p>
+<p>2）、用于封装代码提高代码的复用性。</p>
+<p>注意：函数中只能调用函数，不能定义函数。</p>
+<p><strong>主函数：</strong></p>
+<p>​    1）、保证该类的独立运行。</p>
+<p>​    2）、因为它是程序的入口。</p>
+<p>​    3）、因为它在被jvm调用。</p>
+<p><strong>函数定义名称是为什么呢？</strong></p>
+<p>答：1）、为了对该功能进行标示，方便于调用。</p>
+<p>​    2）、为了通过名称就可以明确函数的功能，为了增加代码的阅读性。</p>
+<p><strong>重载</strong>的定义是：在一个类中，如果出现了两个或者两个以上的同名函数，只要它们的参数的个数，或者参数的类型不同，即可称之为该函数重载了。</p>
+<p><strong>如何区分重载：</strong>当函数同名时，只看参数列表。和返回值类型没关系。</p>
+<p><strong>7**</strong>，数 组：<strong>用于存储同一类型数据的一个容器。</strong>好处：**可以对该容器中的数据进行编号，从0开始。数组用于封装数据，就是一个具体的实体。</p>
+<p>如何在java中表现一个数组呢？两种表现形式。</p>
+<p>1）、元素类型[] 变量名 = new 元素类型[元素的个数]；</p>
+<p>2）、元素类型[] 变量名 = {元素1，元素2…}；</p>
+<p>元素类型[] 变量名 = new 元素类型[]{元素1，元素2…}；</p>
+<p>-——————————————————–</p>
+<p><strong>//**</strong>二分查找法。必须有前提：数组中的元素要有序。**</p>
+<p>​    public static int halfSeach_2(int[] arr,int key){</p>
+<p>​        int min,max,mid;</p>
+<p>​        min = 0;</p>
+<p>​        max = arr.length-1;</p>
+<p>​        mid = (max+min)&gt;&gt;1; <strong>//(max+min)/2;</strong></p>
+<p>​        while(arr[mid]!=key){</p>
+<p>​            if(key&gt;arr[mid]){</p>
+<p>​                min = mid + 1;</p>
+<p>​            }</p>
+<p>​            else if(key&lt;arr[mid])</p>
+<p>​                max = mid - 1;</p>
+<p>​            if(max&lt;min)</p>
+<p>​                return -1;</p>
+<p>​            mid = (max+min)&gt;&gt;1;</p>
+<p>​        }</p>
+<p>​        return mid;</p>
+<p>​    }</p>
+<p>-——————————————————–</p>
+<p><strong>java**</strong>分了5片内存。**</p>
+<p>1<strong>：</strong>寄存器。2<strong>：</strong>本地方法区。3<strong>：</strong>方法区。4<strong>：</strong>栈。5<strong>：</strong>堆。</p>
+<p><strong>栈：</strong>存储的都是局部变量 ( 函数中定义的变量，函数上的参数，语句中的变量 )；</p>
+<p>​    只要数据运算完成所在的区域结束，该数据就会被释放。</p>
+<p><strong>堆：</strong>用于存储数组和对象，也就是<strong>实体</strong>。啥是实体啊？就是用于封装多个数据的。</p>
+<p>1<strong>：</strong>每一个实体都有内存首地址值。</p>
+<p>2<strong>：</strong>堆内存中的变量都有默认初始化值。因为数据类型不同，值也不一样。</p>
+<p>3<strong>：</strong>垃圾回收机制。</p>
+<p>-———————————————————————————————</p>
+<p><strong>三：面向对象：★★★★★</strong></p>
+<p><strong>特点：**</strong>1<strong>**：将复杂的事情简单化。</strong></p>
+<p><strong>2**</strong>：面向对象将以前的过程中的执行者，变成了指挥者。**</p>
+<p><strong>3**</strong>：面向对象这种思想是符合现在人们思考习惯的一种思想。**</p>
+<p>过程和对象在我们的程序中是如何体现的呢？<strong>过程</strong>其实就是函数；<strong>对象</strong>是将函数等一些内容进行了封装。</p>
+<p><strong>匿名对象使用场景</strong>：</p>
+<p>1<strong>：</strong>当对方法只进行一次调用的时候，可以使用匿名对象。</p>
+<p>2<strong>：</strong>当对象对成员进行多次调用时，不能使用匿名对象。必须给对象起名字。</p>
+<p>在类中定义其实都称之为成员。成员有两种：</p>
+<p>1<strong>：成员变量</strong>：其实对应的就是事物的属性。</p>
+<p>2<strong>：成员函数</strong>：其实对应的就是事物的行为。</p>
+<p>所以，其实定义类，就是在定义成员变量和成员函数。但是在定义前，必须先要对事物进行属性和行为的分析，才可以用代码来体现。</p>
+<p><strong>private</strong> int age;<strong>//**</strong>私有的访问权限最低，只有在本类中的访问有效。**</p>
+<p>注意：私有仅仅是封装的一种体现形式而已。</p>
+<p><strong>私有的成员：</strong>其他类不能直接创建对象访问，所以只有通过本类对外提供具体的访问方式来完成对私有的访问，可以通过对外提供函数的形式对其进行访问。</p>
+<p><strong>好处：</strong>可以在函数中加入逻辑判断等操作，对数据进行判断等操作。</p>
+<p><strong>总结：开发时，记住，属性是用于存储数据的，直接被访问，容易出现安全隐患，所以，类中的属性通常被私有化，并对外提供公共的访问方法。</strong></p>
+<p><strong>这个方法一般有两个，规范写法：对于属性 xxx，可以使用setXXX(),getXXX()对其进行操作。</strong></p>
+<p>类中怎么没有定义主函数呢？</p>
+<p><strong>注意：主函数的存在，仅为该类是否需要独立运行，如果不需要，主函数是不用定义的。</strong></p>
+<p><strong>主函数的解释：</strong>保证所在类的独立运行，是程序的入口，被jvm调用。</p>
+<p><strong>成员变量和局部变量的区别：</strong></p>
+<p><strong>1**</strong>：成员变量直接定义在类中。**</p>
+<p>   <strong>局部变量定义在方法中，参数上，语句中。</strong></p>
+<p><strong>2**</strong>：成员变量在这个类中有效。**</p>
+<p><strong>局部变量只在自己所属的大括号内有效，大括号结束，局部变量失去作用域。</strong></p>
+<p><strong>3**</strong>：成员变量存在于堆内存中，随着对象的产生而存在，消失而消失。**</p>
+<p><strong>局部变量存在于栈内存中，随着所属区域的运行而存在，结束而释放。</strong></p>
+<p><strong>构造函数</strong>：用于给对象进行初始化，是给与之对应的对象进行初始化，它具有针对性，函数中的一种。</p>
+<p><strong>特点</strong>：</p>
+<p>1<strong>：</strong>该函数的名称和所在类的名称相同。</p>
+<p>2<strong>：</strong>不需要定义返回值类型。</p>
+<p>3<strong>：</strong>该函数没有具体的返回值。</p>
+<p><strong>记住：所有对象创建时，都需要初始化才可以使用。</strong></p>
+<p><strong>注意事项：</strong>一个类在定义时，如果没有定义过构造函数，那么该类中会自动生成一个空参数的构造函数，为了方便该类创建对象，完成初始化。如果在类中自定义了构造函数，那么默认的构造函数就没有了。</p>
+<p>一个类中，可以有多个构造函数，因为它们的函数名称都相同，所以只能通过参数列表来区分。所以，<strong>一个类中如果出现多个构造函数。它们的存在是以重载体现的。</strong></p>
+<p><strong>构造函数和一般函数有什么区别呢？</strong></p>
+<p>1<strong>：</strong>两个函数定义格式不同。</p>
+<p>2<strong>：</strong>构造函数是在对象创建时，就被调用，用于初始化，<strong>而且初始化动作只执行一次。</strong></p>
+<p>​    一般函数，是对象创建后，需要调用才执行，可以被调用多次。</p>
+<p><strong>什么时候使用构造函数呢？</strong></p>
+<p>分析事物时，发现具体事物一出现，就具备了一些特征，那就将这些特征定义到构造函数内。</p>
+<p><strong>构造代码块和构造函数有什么区别？</strong></p>
+<p><strong>构造代码块：</strong>是给所有的对象进行初始化，也就是说，所有的对象都会调用一个代码块，只要对象一建立，就会调用这个代码块。</p>
+<p><strong>构造函数：</strong>是给与之对应的对象进行初始化，它具有针对性。</p>
+<p><strong>“Person p = new Person();”</strong></p>
+<p><strong>创建一个对象都在内存中做了什么事情？</strong></p>
+<p>1<strong>：</strong>先将硬盘上指定位置的Person.class文件加载进内存。</p>
+<p>2<strong>：</strong>执行main方法时，在栈内存中开辟了main方法的空间(压栈-进栈)，然后在main方法的栈区分配了一个变量p。</p>
+<p>3<strong>：</strong>在堆内存中开辟一个实体空间，分配了一个内存首地址值。new</p>
+<p>4<strong>：</strong>在该实体空间中进行属性的空间分配，并进行了默认初始化。</p>
+<p>5<strong>：</strong>对空间中的属性进行显示初始化。</p>
+<p>6<strong>：</strong>进行实体的构造代码块初始化。</p>
+<p>7<strong>：</strong>调用该实体对应的构造函数，进行构造函数初始化。（）</p>
+<p>8<strong>：</strong>将首地址赋值给p ，p变量就引用了该实体。(指向了该对象)</p>
+<p>-——————————————————————————————-</p>
+<p><strong>封 装**</strong>（面向对象特征之一）<strong>**：</strong>是指隐藏对象的属性和实现细节，仅对外提供公共访问方式。</p>
+<p><strong>好处：将变化隔离；便于使用；提高重用性；安全性。</strong></p>
+<p><strong>封装原则：</strong>将不需要对外提供的内容都隐藏起来，把属性都隐藏，提供公共方法对其访问。</p>
+<p><strong>This**</strong>：<strong>**代表对象，就是所在函数所属对象的引用。</strong></p>
+<p>this到底代表什么呢？<strong>哪个对象调用了this所在的函数，this就代表哪个对象，就是哪个对象的引用。</strong></p>
+<p>开发时，什么时候使用this呢？</p>
+<p>在定义功能时，如果该功能内部使用到了调用该功能的对象，这时就用this来表示这个对象。</p>
+<p>this 还可以用于构造函数间的调用。</p>
+<p><strong>调用格式：this(实际参数)；</strong></p>
+<p>this对象后面跟上 <strong>.</strong>  调用的是成员属性和成员方法(一般方法)；</p>
+<p>this对象后面跟上 () 调用的是本类中的对应参数的构造函数。</p>
+<p><strong>注意：用this调用构造函数，必须定义在构造函数的第一行。因为构造函数是用于初始化的，所以初始化动作一定要执行。**</strong>否则编译失败。**</p>
+<p><strong>static**</strong>：★★★<strong> </strong>关键字，是一个修饰符，用于修饰成员(成员变量和成员函数)。**</p>
+<p>特点：</p>
+<p>1，<strong>想要实现对象中的共性数据的对象共享，可以将这个数据进行静态修饰。</strong></p>
+<p>2，<strong>被静态修饰的成员，可以直接被类名所调用。</strong>也就是说，静态的成员多了一种调用方式。<strong>类名.静态方式</strong>。</p>
+<p>3，<strong>静态随着类的加载而加载，而且优先于对象存在。</strong></p>
+<p><strong>弊端：</strong></p>
+<p>1，有些数据是对象特有的数据，是不可以被静态修饰的。因为那样的话，特有数据会变成对象的共享数据。这样对事物的描述就出了问题。所以，在定义静态时，必须要明确，这个数据是否是被对象所共享的。</p>
+<p>2，<strong>静态方法只能访问静态成员，不可以访问非静态成员。</strong></p>
+<p>因为静态方法加载时，优先于对象存在，所以没有办法访问对象中的成员。</p>
+<p>3，<strong>静态方法中不能使用this，super关键字。</strong></p>
+<p>因为this代表对象，而静态在时，有可能没有对象，所以this无法使用。</p>
+<p>4，主函数是静态的。</p>
+<p><strong>什么时候定义静态成员呢？</strong>或者说：定义成员时，到底需不需要被静态修饰呢？</p>
+<p>成员分两种：</p>
+<p><strong>1**</strong>，成员变量。<strong>（</strong>数据共享时静态化**）</p>
+<p><strong>该成员变量的数据是否是所有对象都一样：</strong></p>
+<p>如果是，那么该变量需要被静态修饰，因为是共享的数据。</p>
+<p>如果不是，那么就说这是对象的特有数据，要存储到对象中。</p>
+<p><strong>2**</strong>，成员函数。<strong>（</strong>方法中没有调用特有数据时就定义成静态**）</p>
+<p>​    如果判断成员函数是否需要被静态修饰呢？</p>
+<p>​    只要参考，该函数内是否访问了对象中的特有数据：</p>
+<p>​    如果有访问特有数据，那方法不能被静态修饰。</p>
+<p>​    如果没有访问过特有数据，那么这个方法需要被静态修饰。</p>
+<p><strong>成员变量和静态变量的区别：</strong></p>
+<p>1，成员变量所属于对象，所以也称为实例变量。</p>
+<p>静态变量所属于类，所以也称为类变量。</p>
+<p>2，成员变量存在于堆内存中。</p>
+<p>静态变量存在于方法区中。</p>
+<p>3，成员变量随着对象创建而存在，随着对象被回收而消失。</p>
+<p>静态变量随着类的加载而存在，随着类的消失而消失。</p>
+<p>4，成员变量只能被对象所调用。</p>
+<p>静态变量可以被对象调用，也可以被类名调用。</p>
+<p><strong>所以，成员变量可以称为对象的特有数据，静态变量称为对象的共享数据。</strong></p>
+<p><strong>静态的注意：静态的生命周期很长。</strong></p>
+<p><strong>静态代码块：</strong>就是一个有静态关键字标示的一个代码块区域，定义在类中。</p>
+<p><strong>作用：可以完成类的初始化，静态代码块随着类的加载而执行，而且只执行一次（new 多个对象就只执行一次）。如果和主函数在同一类中，优先于主函数执行。</strong></p>
+<p><strong>Public**</strong>：**访问权限最大。</p>
+<p><strong>static**</strong>：**不需要对象，直接类名即可。</p>
+<p><strong>void**</strong>：**主函数没有返回值。</p>
+<p><strong>Main**</strong>：**主函数特定的名称。</p>
+<p><strong>(String[] args)**</strong>：**主函数的参数，是一个字符串数组类型的参数，jvm调用main方法时，传递的实际参数是 new String[0]。</p>
+<p>jvm默认传递的是长度为0的字符串数组，我们在运行该类时，也可以指定具体的参数进行传递。可以在控制台，运行该类时，在后面加入参数。参数之间通过空格隔开。jvm会自动将这些字符串参数作为args数组中的元素，进行存储。</p>
+<p><strong>静态代码块、构造代码块、构造函数同时存在时的执行顺序：**</strong>静态代码块<strong> </strong>&agrave;<strong> </strong>构造代码块<strong> </strong>&agrave;<strong> </strong>构造函数；**</p>
+<p><strong>生成Java帮助文档：</strong>命令格式：javadoc –d 文件夹名 –auther –version *.java</p>
+<p>/**     //格式</p>
+<p>*类描述</p>
+<p>*<a href="http://my.oschina.net/arthor" target="_blank" rel="noopener">@author</a> 作者名</p>
+<p>*@version 版本号</p>
+<p>*/</p>
+<p>/**</p>
+<p>*方法描述</p>
+<p>*@param  参数描述</p>
+<p>*@return  返回值描述</p>
+<p>*/</p>
+<p>-——————————————————————————————–</p>
+<p><strong>设计模式</strong>：解决问题最行之有效的思想。是一套被反复使用、多数人知晓的、经过分类编目的、代码设计经验的总结。使用设计模式是为了可重用代码、让代码更容易被他人理解、保证代码可靠性。</p>
+<p>java中有23种设计模式：</p>
+<p><strong>单例设计模式：★★★★★</strong></p>
+<p>解决的问题：<strong>保证一个类在内存中的对象唯一性。</strong></p>
+<p>比如：多程序读取一个配置文件时，建议配置文件封装成对象。会方便操作其中数据，又要保证多个程序读到的是同一个配置文件对象，就需要该配置文件对象在内存中是唯一的。</p>
+<p><strong>Runtime()**</strong>方法就是单例设计模式进行设计的。**</p>
+<p><strong>如何保证对象唯一性呢？</strong></p>
+<p>思想：</p>
+<p>1，不让其他程序创建该类对象。</p>
+<p>2，在本类中创建一个本类对象。</p>
+<p>3，对外提供方法，让其他程序获取这个对象。</p>
+<p><strong>步骤：</strong></p>
+<p><strong>1**</strong>，因为创建对象都需要构造函数初始化，只要将本类中的构造函数私有化，其他程序就无法再创建该类对象；**</p>
+<p><strong>2**</strong>，就在类中创建一个本类的对象；**</p>
+<p><strong>3**</strong>，定义一个方法，返回该对象，让其他程序可以通过方法就得到本类对象。（作用：可控）**</p>
+<p><strong>代码体现：</strong></p>
+<p><strong>1**</strong>，私有化构造函数；**</p>
+<p><strong>2**</strong>，创建私有并静态的本类对象；**</p>
+<p><strong>3**</strong>，定义公有并静态的方法，返回该对象。**</p>
+<p>-——————————————–</p>
+<p>//饿汉式</p>
+<p>class Single{</p>
+<p>​    private Single(){} //<strong>私有化构造函数。</strong></p>
+<p>private static Single s = new Single(); //<strong>创建私有并静态的本类对象。</strong></p>
+<p>​    public static Single getInstance(){ //<strong>定义公有并静态的方法，返回该对象。</strong></p>
+<p>​        return s;</p>
+<p>​    }</p>
+<p>}</p>
+<p>-——————————————–</p>
+<p>//懒汉式:延迟加载方式。</p>
+<p>class Single2{</p>
+<p>​    private Single2(){}</p>
+<p>private static Single2 s = null;</p>
+<p>​    public static Single2 getInstance(){</p>
+<p>​        if(s==null)</p>
+<p>​            s = new Single2();</p>
+<p>​        return s;</p>
+<p>​    }</p>
+<p>}</p>
+<p>-————————————————————————————————</p>
+<p><strong>继 承**</strong>（面向对象特征之一）**</p>
+<p><strong>好处：</strong></p>
+<p><strong>1**</strong>：提高了代码的复用性。**</p>
+<p><strong>2**</strong>：让类与类之间产生了关系，提供了另一个特征多态的前提。**</p>
+<p>父类的由来：其实是由多个类不断向上抽取共性内容而来的。</p>
+<p>java中对于继承，java只支持单继承。java虽然不直接支持多继承，但是保留了这种多继承机制，进行改良。</p>
+<p>单继承：一个类只能有一个父类。</p>
+<p>多继承：一个类可以有多个父类。</p>
+<p><strong>为什么不支持多继承呢？</strong></p>
+<p>因为当一个类同时继承两个父类时，两个父类中有相同的功能，那么子类对象调用该功能时，运行哪一个呢？因为父类中的方法中存在方法体。</p>
+<p>但是java支持多重继承。A继承B  B继承C  C继承D。</p>
+<p>多重继承的出现，就有了继承体系。体系中的顶层父类是通过不断向上抽取而来的。它里面定义的该体系最基本最共性内容的功能。</p>
+<p>所以，一个体系要想被使用，直接查阅该系统中的父类的功能即可知道该体系的基本用法。那么想要使用一个体系时，需要建立对象。建议建立最子类对象，因为最子类不仅可以使用父类中的功能。还可以使用子类特有的一些功能。</p>
+<p><strong>简单说：对于一个继承体系的使用，查阅顶层父类中的内容，创建最底层子类的对象。</strong></p>
+<p><strong>子父类出现后，类中的成员都有了哪些特点：</strong></p>
+<p><strong>1**</strong>：成员变量。**</p>
+<p>​     当子父类中出现一样的属性时，子类类型的对象，调用该属性，值是子类的属性值。</p>
+<p>​     如果想要调用父类中的属性值，需要使用一个关键字：<strong>super</strong></p>
+<p>​     <strong>This**</strong>：<strong>**代表是本类类型的对象引用。</strong></p>
+<p>​     <strong>Super**</strong>：<strong>**代表是子类所属的父类中的内存空间引用。</strong></p>
+<p>​     注意：子父类中通常是不会出现同名成员变量的，因为父类中只要定义了，子类就不用在定义了，直接继承过来用就可以了。</p>
+<p><strong>2**</strong>：成员函数。**</p>
+<p>当子父类中出现了一模一样的方法时，建立子类对象会运行子类中的方法。好像父类中的方法被覆盖掉一样。所以这种情况，是函数的另一个特性：<strong>覆盖(复写，重写)</strong></p>
+<p><strong>什么时候使用覆盖呢？当一个类的功能内容需要修改时，可以通过覆盖来实现。</strong></p>
+<p><strong>3**</strong>：构造函数。**</p>
+<p>发现子类构造函数运行时，先运行了父类的构造函数。为什么呢?</p>
+<p>原因：子类的<strong>所有构造函数中的第一行</strong>，其实都有一条隐身的语句super();</p>
+<p><strong>super():</strong> 表示父类的构造函数，并会调用于参数相对应的父类中的构造函数。而super():是在调用父类中空参数的构造函数。</p>
+<p>为什么子类对象初始化时，都需要调用父类中的函数？(为什么要在子类构造函数的第一行加入这个super()?)</p>
+<p>因为子类继承父类，会继承到父类中的数据，所以必须要看父类是如何对自己的数据进行初始化的。所以子类在进行对象初始化时，先调用父类的构造函数，这就是<strong>子类的实例化过程</strong>。</p>
+<p><strong>注意：**</strong>子类中所有的构造函数都会默认访问父类中的空参数的构造函数，因为每一个子类构造内第一行都有默认的语句super();**</p>
+<p><strong>如果父类中没有空参数的构造函数，那么子类的构造函数内，必须通过super语句指定要访问的父类中的构造函数。</strong></p>
+<p><strong>如果子类构造函数中用this来指定调用子类自己的构造函数，那么被调用的构造函数也一样会访问父类中的构造函数。</strong></p>
+<p><strong>问题：super()和this()是否可以同时出现的构造函数中。</strong></p>
+<p>两个语句只能有一个定义在第一行，所以只能出现其中一个。</p>
+<p><strong>super()**</strong>或者this():为什么一定要定义在第一行？**</p>
+<p>因为super()或者this()都是调用构造函数，构造函数用于初始化，所以初始化的动作要先完成。</p>
+<p><strong>继承的细节：</strong></p>
+<p><strong>什么时候使用继承呢？</strong></p>
+<p>当类与类之间存在着所属关系时，才具备了继承的前提。a是b中的一种。a继承b。狼是犬科中的一种。</p>
+<p>英文书中，所属关系：” is a “</p>
+<p>注意：不要仅仅为了获取其他类中的已有成员进行继承。</p>
+<p><strong>所以判断所属关系，可以简单看，如果继承后，被继承的类中的功能，都可以被该子类所具备，那么继承成立。如果不是，不可以继承。</strong></p>
+<p>细节二：</p>
+<p><strong>在方法覆盖时，注意两点：</strong></p>
+<p>1：子类覆盖父类时，必须要保证，子类方法的权限必须大于等于父类方法权限可以实现继承。否则，编译失败。</p>
+<p>2：覆盖时，要么都静态，要么都不静态。 (静态只能覆盖静态，或者被静态覆盖)</p>
+<p>继承的一个弊端：打破了封装性。对于一些类，或者类中功能，是需要被继承，或者复写的。</p>
+<p>这时如何解决问题呢？介绍一个关键字，<strong>final</strong>:最终。</p>
+<p><strong>final**</strong>特点：**</p>
+<p><strong>1**</strong>：这个关键字是一个修饰符，可以修饰类，方法，变量。**</p>
+<p><strong>2**</strong>：被final修饰的类是一个最终类，不可以被继承。**</p>
+<p><strong>3**</strong>：被final修饰的方法是一个最终方法，不可以被覆盖。**</p>
+<p><strong>4**</strong>：被final修饰的变量是一个常量，只能赋值一次。**</p>
+<p>​    其实这样的原因的就是给一些固定的数据起个阅读性较强的名称。</p>
+<p>​    不加final修饰不是也可以使用吗？那么这个值是一个变量，是可以更改的。加了final，程序更为严谨。常量名称定义时，有规范，所有字母都大写，如果由多个单词组成，中间用 <strong>_</strong> 连接。</p>
+<p><strong>抽象类:</strong> <strong>abstract</strong></p>
+<p>抽象：不具体，看不明白。抽象类表象体现。</p>
+<p>在不断抽取过程中，将共性内容中的方法声明抽取，但是方法不一样，没有抽取，这时抽取到的方法，并不具体，需要被指定关键字abstract所标示，声明为抽象方法。</p>
+<p>抽象方法所在类一定要标示为抽象类，也就是说该类需要被abstract关键字所修饰。</p>
+<p><strong>抽象类的特点：</strong></p>
+<p><strong>1**</strong>：抽象方法只能定义在抽象类中，抽象类和抽象方法必须由abstract关键字修饰（可以描述类和方法，不可以描述变量）。**</p>
+<p><strong>2**</strong>：抽象方法只定义方法声明，并不定义方法实现。**</p>
+<p><strong>3**</strong>：抽象类不可以被创建对象(实例化)。**</p>
+<p><strong>4**</strong>：只有通过子类继承抽象类并覆盖了抽象类中的<strong><strong>所有</strong></strong>抽象方法后，该子类才可以实例化。否则，该子类还是一个抽象类。**</p>
+<p><strong>抽象类的细节：</strong></p>
+<p><strong>1**</strong>：抽象类中是否有构造函数？有，用于给子类对象进行初始化。**</p>
+<p><strong>2**</strong>：抽象类中是否可以定义非抽象方法？**</p>
+<p>​    可以。其实，抽象类和一般类没有太大的区别，都是在描述事物，只不过抽象类在描述事物时，有些功能不具体。所以抽象类和一般类在定义上，都是需要定义属性和行为的。只不过，比一般类多了一个抽象函数。而且比一般类少了一个创建对象的部分。</p>
+<p><strong>3**</strong>：抽象关键字abstract和哪些不可以共存？final , private , static**</p>
+<p><strong>4**</strong>：抽象类中可不可以不定义抽象方法？可以。抽象方法目的仅仅为了不让该类创建对象。**</p>
+<p>-———————————————————————————————-</p>
+<p><strong>模板方法设计模式：</strong></p>
+<p>解决的问题：当功能内部一部分实现时确定，一部分实现是不确定的。这时可以把不确定的部分暴露出去，让子类去实现。</p>
+<p>abstract class GetTime{</p>
+<p>​    public <strong>final</strong> void getTime(){ <strong>//**</strong>此功能如果不需要复写，可加final限定**</p>
+<p>​        long start = System.currentTimeMillis();</p>
+<p>​        <strong>code(); //**</strong>不确定的功能部分，提取出来，通过抽象方法实现**</p>
+<p>​        long end = System.currentTimeMillis();</p>
+<p>​        System.out.println(“毫秒是：”+(end-start));</p>
+<p>​    }</p>
+<p>​    <strong>public abstract void code(); //**</strong>抽象不确定的功能，让子类复写实现**</p>
+<p>}</p>
+<p>class SubDemo extends GetTime{</p>
+<p>​    <strong>public void code()</strong>{ <strong>//**</strong>子类复写功能方法**</p>
+<p>​        for(int y=0; y&lt;1000; y++){</p>
+<p>​            System.out.println(“y”);</p>
+<p>​        }</p>
+<p>​    }</p>
+<p>}</p>
+]]></content>
+      
+        <categories>
+            
+            <category> Java基础 </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Java基础 </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hexo博客搭建+主题优化+插件配置+常用操作+错误分析]]></title>
+      <url>/haianzwh.github.io/2017/12/15/Hexo%E5%8D%9A%E5%AE%A2%E6%90%AD%E5%BB%BA+%E4%B8%BB%E9%A2%98%E4%BC%98%E5%8C%96+%E6%8F%92%E4%BB%B6%E9%85%8D%E7%BD%AE+%E5%B8%B8%E7%94%A8%E6%93%8D%E4%BD%9C+%E9%94%99%E8%AF%AF%E5%88%86%E6%9E%90/</url>
+      <content type="html"><![CDATA[<p>如果你和我一样是小白，那么恭喜你！</p>
+<p>你马上就会有一个跟我一样的博客啦！</p>
+<h3 id="博客搭建"><a href="#博客搭建" class="headerlink" title="博客搭建"></a>博客搭建</h3><h4 id="准备环境"><a href="#准备环境" class="headerlink" title="准备环境"></a>准备环境</h4><ol>
+<li><p><a href="https://link.juejin.im/?target=http%3A%2F%2Fnodejs.org%2F" target="_blank" rel="noopener">Node.js</a> 下载，并安装。详细步骤：<a href="https://link.juejin.im/?target=https%3A%2F%2Fwww.simon96.online%2F2018%2F11%2F10%2Fhexo-env%2F" target="_blank" rel="noopener">www.simon96.online/2018/11/10/…</a></p>
+</li>
+<li><p><a href="https://link.juejin.im/?target=http%3A%2F%2Fgit-scm.com%2F" target="_blank" rel="noopener">Git</a> 下载，并安装。详细步骤：<a href="https://link.juejin.im/?target=https%3A%2F%2Fwww.simon96.online%2F2018%2F11%2F10%2Fhexo-env%2F" target="_blank" rel="noopener">www.simon96.online/2018/11/10/…</a></p>
+</li>
+<li><p>安装Hexo，在命令行（即Git Bash）运行以下命令：</p>
+<blockquote>
+<p>npm install -g hexo-cli</p>
+</blockquote>
+</li>
+<li><p>初始化Hexo，在命令行（即Git Bash）依次运行以下命令即可：</p>
+<p>以下，即存放Hexo初始化文件的路径， 即站点目录。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo init &lt;folder&gt;</span><br><span class="line">$ cd &lt;folder&gt;</span><br><span class="line">$ npm install</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>新建完成后，在路径下，会产生这些文件和文件夹：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── _config.yml</span><br><span class="line">├── package.json</span><br><span class="line">├── scaffolds</span><br><span class="line">├── source</span><br><span class="line">|   ├── _drafts</span><br><span class="line">|   └── _posts</span><br><span class="line">└── themes</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p><strong>注</strong>：</p>
+<ul>
+<li><p>hexo相关命令均在<strong>站点目录</strong>下，用<strong>Git Bash</strong>运行。</p>
+</li>
+<li><p>站点配置文件：站点目录下的<code>_config.yml</code>。</p>
+<p>​  路径为<code>&lt;folder&gt;\_config.yml</code></p>
+</li>
+<li><p>主题配置文件：站点目录下的<code>themes</code>文件夹下的，主题文件夹下的<code>_config.yml</code>。</p>
+<p>​  路径为<code>&lt;folder&gt;\themes\&lt;主题文件夹&gt;\_config.yml</code></p>
+</li>
+</ul>
+</li>
+<li><p>启动服务器。在路径下，命令行（即Git Bash）输入以下命令，运行即可：</p>
+<blockquote>
+<p>hexo server</p>
+</blockquote>
+</li>
+<li><p>浏览器访问网址： <code>http://localhost:4000/</code></p>
+</li>
+</ol>
+<p>至此，您的Hexo博客已经搭建在本地。</p>
+<h4 id="实施方案"><a href="#实施方案" class="headerlink" title="实施方案"></a>实施方案</h4><h5 id="方案一：GithubPages"><a href="#方案一：GithubPages" class="headerlink" title="方案一：GithubPages"></a>方案一：GithubPages</h5><ol>
+<li><p>创建<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com" target="_blank" rel="noopener">Github</a>账号</p>
+</li>
+<li><p>创建仓库， 仓库名为：<github账号名称>.github.io</github账号名称></p>
+</li>
+<li><p>将本地Hexo博客推送到GithubPages</p>
+<p>3.1. 安装<code>hexo-deployer-git</code>插件。在命令行（即Git Bash）运行以下命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>3.2. 添加SSH key。</p>
+<ul>
+<li><p>创建一个 SSH key 。在命令行（即Git Bash）输入以下命令， 回车三下即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;邮箱地址&quot;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加到 github。 复制密钥文件内容（路径形如<code>C:\Users\Administrator\.ssh\id_rsa.pub</code>），粘贴到<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fsettings%2Fkeys" target="_blank" rel="noopener">New SSH Key</a>即可。</p>
+</li>
+<li><p>测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br><span class="line">$ yes</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>3.3. 修改<code>_config.yml</code>（在站点目录下）。文件末尾修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: git@github.com:&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io.git</span><br><span class="line">  branch: master</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>注意：上面仓库地址写ssh地址，不写http地址。</p>
+<p>3.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回<code>INFO Deploy done: git</code>即成功推送：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br><span class="line">$ hexo d</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>等待1分钟左右，浏览器访问网址： <code>https://&lt;Github账号名称&gt;.github.io</code></p>
+</li>
+</ol>
+<p>至此，您的Hexo博客已经搭建在GithubPages, 域名为<code>https://&lt;Github账号名称&gt;.github.io</code>。</p>
+<h5 id="方案二：GithubPages-域名"><a href="#方案二：GithubPages-域名" class="headerlink" title="方案二：GithubPages + 域名"></a>方案二：GithubPages + 域名</h5><p>在方案一的基础上，添加自定义域名（您购买的域名）。</p>
+<ol>
+<li><p>域名解析。</p>
+<p>类型选择为 CNAME；</p>
+<p>主机记录即域名前缀，填写为www；</p>
+<p>记录值填写为自定义域名；</p>
+<p>解析线路，TTL 默认即可。</p>
+</li>
+<li><p>仓库设置。</p>
+<p>2.1. 打开博客仓库设置：<code>https://github.com/&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io/settings</code></p>
+<p>2.2. 在Custom domain下，填写自定义域名，点击<code>save</code>。</p>
+<p>2.3. 在站点目录的<code>source</code>文件夹下，创建并打开<code>CNAME.txt</code>，写入你的域名（如<code>www.simon96.online</code>），保存，并重命名为<code>CNAME</code>。</p>
+</li>
+<li><p>等待10分钟左右。</p>
+<p>浏览器访问自定义域名。</p>
+<p>至此，您的Hexo博客已经解析到自定义域名，<code>https://&lt;Github账号名称&gt;.github.io</code>依然可用。</p>
+</li>
+</ol>
+<h5 id="方案三：GithubPages-CodingPages-域名"><a href="#方案三：GithubPages-CodingPages-域名" class="headerlink" title="方案三：GithubPages + CodingPages + 域名"></a>方案三：GithubPages + CodingPages + 域名</h5><p>GithubPages 在国内较慢，百度不收录，而CodingPages 在国外较快。所以在方案二的基础上，添加CodingPages 。</p>
+<ol>
+<li><p>创建<a href="https://link.juejin.im/?target=https%3A%2F%2Fcoding.net%2F" target="_blank" rel="noopener">Coding</a>账号</p>
+</li>
+<li><p>创建仓库， 仓库名为：<coding账号名称></coding账号名称></p>
+</li>
+<li><p>进入项目里『代码』页面，点击『一键开启静态 Pages』，稍等片刻CodingPages即可部署成功。</p>
+</li>
+<li><p>将本地Hexo博客推送到CodingPages</p>
+<p>4.1. 鉴于创建GithubPages 时，已经生成过公钥。可直接复制密钥文件内容（路径形如<code>C:\Users\Administrator\.ssh\id_rsa.pub</code>）， 粘贴到<a href="https://link.juejin.im/?target=https%3A%2F%2Fdev.tencent.com%2Fuser%2Faccount%2Fsetting%2Fkeys" target="_blank" rel="noopener">新增公钥</a>。</p>
+<p>4.2. 测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@git.coding.net</span><br><span class="line">$ yes</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>4.3. 修改<code>_config.yml</code>（在存放Hexo初始化文件的路径下）。文件末尾修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">- type: git</span><br><span class="line">  repo: git@github.com:&lt;Github账号名称&gt;/&lt;Github账号名称&gt;.github.io.git</span><br><span class="line">  branch: master</span><br><span class="line">- type: git</span><br><span class="line">  repo: git@git.dev.tencent.com:&lt;Coding账号名称&gt;/&lt;Coding账号名称&gt;.git</span><br><span class="line">  branch: master</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>4.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回<code>INFO Deploy done: git</code>即成功推送：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br><span class="line">$ hexo d</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>域名解析</p>
+<ol>
+<li><p>添加 CNAME 记录指向 <coding账号名称>.coding.me</coding账号名称></p>
+<p>类型选择为 CNAME；</p>
+<p>主机记录即域名前缀，填写为www；</p>
+<p>记录值填写为自定义域名；</p>
+<p>解析线路，TTL 默认即可。</p>
+</li>
+<li><p>添加 两条A 记录指向 192.30.252.153和192.30.252.154</p>
+<p>类型选择为 A；</p>
+<p>主机记录即域名前缀，填写为@；</p>
+<p>记录值填写为192.30.252.153和192.30.252.154；</p>
+<p>解析线路，境外或谷歌。</p>
+</li>
+<li><p>在『Pages 服务』设置页（<code>https://dev.tencent.com/u/&lt;Coding账号名称&gt;/p/&lt;Coding账号名称&gt;/git/pages/settings</code>）中绑定自定义域名。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>至此，您的Hexo博客已经解析到自定义域名，<code>https://&lt;Github账号名称&gt;.github.io</code>和<code>https://&lt;Coding账号名称&gt;.coding.me</code>依然可用。</p>
+<h5 id="方案四：云服务器-域名"><a href="#方案四：云服务器-域名" class="headerlink" title="方案四：云服务器 + 域名"></a>方案四：云服务器 + 域名</h5><p>该方案需要先购买云服务器和域名。</p>
+<ol>
+<li><p>在云服务器安装Git 和 Nginx。(Git 用于版本管理和部署，Nginx 用于静态博客托管。)</p>
+<p>登陆root用户，运行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ yum -y update</span><br><span class="line">$ yum install -y git nginx</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Nginx配置</p>
+<p>2.1. 创建文件目录(用于博客站点文件存放)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">mkdir hexo</span><br><span class="line">chmod 775 -R /usr/local/hexo/</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>2.2. 添加 index.html(用于检测配置 Nginx 是否成功)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/hexo/index.html</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>添加以下代码，并保存。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">  &lt;head&gt;</span><br><span class="line">    &lt;title&gt;&lt;/title&gt;</span><br><span class="line">    &lt;meta charset=&quot;UTF-8&quot;&gt;</span><br><span class="line">  &lt;/head&gt;</span><br><span class="line">  &lt;body&gt;</span><br><span class="line">    &lt;p&gt;Nginx running&lt;/p&gt;</span><br><span class="line">  &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>2.3. 配置 Nginx 服务器</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /etc/nginx/nginx.conf</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>修改server_name和root：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">      listen       80 default_server;</span><br><span class="line">      listen       [::]:80 default_server;</span><br><span class="line">      server_name  www.baidu.com; # 填个人域名      </span><br><span class="line">      root         /usr/local/hexo/;</span><br><span class="line">  &#125;      </span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>2.4. 启动nginx服务；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">service nginx start</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>2.5. 云服务器浏览器访问个人域名或IP，若跳转index.html，则配置完成，否则检查以上配置。</p>
+</li>
+<li><p>git配置</p>
+<p>3.1. 创建文件目录, 用于私人 Git 仓库搭建, 并更改目录读写权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd /usr/local/</span><br><span class="line">mkdir hexoRepo</span><br><span class="line">chmod 775 -R /usr/local/hexoRepo/</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>3.2. Git 初始化裸库。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd hexoRepo/</span><br><span class="line">git init --bare hexo.git</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>3.3. 创建 Git 钩子(hook)。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">vim /usr/local/hexoRepo/hexo.git/hooks/post-receive</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>3.4. 输入以下信息，用于指定 Git 的源代码 和 Git 配置文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">git --work-tree=/usr/local/hexo --git-dir=/usr/local/hexoRepo/hexo.git checkout -f</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>3.5. 保存并退出后, 给该文件添加可执行权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">chmod +x /usr/local/hexoRepo/hexo.git/hooks/post-receive</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>本地博客推送到云服务器</p>
+<p>4.1. 安装<code>hexo-deployer-git</code>插件。在命令行（即Git Bash）运行以下命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>4.2. 添加SSH key。</p>
+<ul>
+<li><p>创建一个 SSH key 。在命令行（即Git Bash）输入以下命令， 回车三下即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa -C &quot;邮箱地址&quot;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加到 github。 复制密钥文件内容（路径形如<code>C:\Users\Administrator\.ssh\id_rsa.pub</code>），粘贴到<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fsettings%2Fkeys" target="_blank" rel="noopener">New SSH Key</a>即可。</p>
+</li>
+<li><p>测试是否添加成功。在命令行（即Git Bash）依次输入以下命令，返回“You’ve successfully authenticated”即成功：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh -T git@github.com</span><br><span class="line">$ yes</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>4.3. 修改<code>_config.yml</code>（在站点目录下）。文件末尾修改为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># Deployment</span><br><span class="line">## Docs: https://hexo.io/docs/deployment.html</span><br><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repo: root@xxx.xxx.xxx.xxx:/usr/local/hexoRepo/hexo  //用户名@域名或 IP 地址:/usr/local/hexoRepo/hexo</span><br><span class="line">  branch: master</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>注意：上面仓库地址写ssh地址，不写http地址。</p>
+<p>4.4. 推送到GithubPages。在命令行（即Git Bash）依次输入以下命令， 返回<code>INFO Deploy done: git</code>即成功推送：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo g</span><br><span class="line">$ hexo d</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>等待1分钟左右，浏览器访问个人域名。</p>
+<p>至此，您的Hexo博客已经搭建在云服务器, 域名为个人域名。</p>
+</li>
+</ol>
+<h3 id="主题优化"><a href="#主题优化" class="headerlink" title="主题优化"></a>主题优化</h3><h4 id="选择主题"><a href="#选择主题" class="headerlink" title="选择主题"></a>选择主题</h4><p>Hexo默认的主题是landscape，推荐以下主题：</p>
+<ol>
+<li><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fshenliyang%2Fhexo-theme-snippet%23hexo-theme-snippet" target="_blank" rel="noopener">snippet</a></li>
+<li><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2FiTimeTraveler%2Fhexo-theme-hiero%23hiero" target="_blank" rel="noopener">Hiero</a></li>
+<li><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Ftangkunyin%2Fhexo-theme-jsimple%23jsimple" target="_blank" rel="noopener">JSimple</a></li>
+<li><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fchaooo%2Fhexo-theme-BlueLake%23bluelake" target="_blank" rel="noopener">BlueLake</a></li>
+</ol>
+<h4 id="应用主题"><a href="#应用主题" class="headerlink" title="应用主题"></a>应用主题</h4><ol>
+<li>下载主题</li>
+<li>将下载好的主题文件夹，粘贴到站点目录的<code>themes</code>下。</li>
+<li>更改站点配置文件<code>_config.yml</code> 的theme字段，为主题文件夹的名称：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https://hexo.io/plugins/</span><br><span class="line">## Themes: https://hexo.io/themes/</span><br><span class="line">theme: &lt;主题文件夹的名称&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="主题优化-1"><a href="#主题优化-1" class="headerlink" title="主题优化"></a>主题优化</h4><p>以上主题都有比较详细的说明文档，本节主要解决主题优化的常见问题。</p>
+<p>主题优化一般包括：</p>
+<ul>
+<li><p><strong>设置「RSS」</strong></p>
+</li>
+<li><p><strong>添加「标签」页面</strong></p>
+</li>
+<li><p><strong>添加「分类」页面</strong></p>
+</li>
+<li><p><strong>设置「字体」</strong></p>
+<p>问题：引用国外字体镜像较慢。</p>
+<p>解决：可以改用国内的。将\themes*\layout_partials\head <a href="https://link.juejin.im/?target=http%3A%2F%2Fexternal-fonts.xn--swigfonts-tl6n82exz9i.google.xn--comfonts-rr7pz6w.lug.ustc.edu.cn" target="_blank" rel="noopener">external-fonts.swig文件中fonts.google.com改成fonts.lug.ustc.edu.cn</a>。</p>
+</li>
+<li><p><strong>设置「代码高亮主题」</strong></p>
+</li>
+<li><p><strong>侧边栏社交链接</strong></p>
+<p>问题：图标哪里找？</p>
+<p>解决：<a href="https://link.juejin.im/?target=https%3A%2F%2Ffontawesome.com%2Ficons%3Fd%3Dgallery" target="_blank" rel="noopener">Font Awesome</a></p>
+</li>
+<li><p><strong>开启打赏功能</strong></p>
+<p>问题：微信支付宝二维码不美观，规格不一。</p>
+<p>解决：<a href="https://link.juejin.im/?target=https%3A%2F%2Fcli.im%2Fweixin" target="_blank" rel="noopener">在线生成二维码</a></p>
+</li>
+<li><p><strong>设置友情链接</strong></p>
+</li>
+<li><p><strong>腾讯公益404页面</strong></p>
+</li>
+<li><p><strong>站点建立时间</strong></p>
+</li>
+<li><p><strong>订阅微信公众号</strong></p>
+</li>
+<li><p><strong>设置「动画效果」</strong></p>
+<p>问题：慢，需要等待 JavaScript 脚本完全加载完毕后才会显示内容。 解决：将主题配置文件<code>_config.yml</code>中，use_motion字段的值设为 <code>false</code> 来关闭动画。</p>
+</li>
+<li><p><strong>设置「背景动画」</strong></p>
+</li>
+</ul>
+<p>主题优化还包括：</p>
+<h5 id="添加背景图"><a href="#添加背景图" class="headerlink" title="添加背景图"></a>添加背景图</h5><p>在 themes/*/source/css/_custom/custom.styl 中添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">body&#123;</span><br><span class="line">    background:url(/images/bg.jpg);</span><br><span class="line">    background-size:cover;</span><br><span class="line">    background-repeat:no-repeat;</span><br><span class="line">    background-attachment:fixed;</span><br><span class="line">    background-position:center;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="修改Logo字体"><a href="#修改Logo字体" class="headerlink" title="修改Logo字体"></a>修改Logo字体</h5><p>在 <code>themes/*/source/css/_custom/custom.styl</code> 中添加如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@font-face &#123;</span><br><span class="line">    font-family: Zitiming;</span><br><span class="line">    src: url(&apos;/fonts/Zitiming.ttf&apos;);</span><br><span class="line">&#125;</span><br><span class="line">.site-title &#123;</span><br><span class="line">    font-size: 40px !important;</span><br><span class="line">    font-family: &apos;Zitiming&apos; !important;</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>其中字体文件在 <code>themes/next/source/fonts</code> 目录下，里面有个 <code>.gitkeep</code> 的隐藏文件，打开写入你要保留的字体文件，比如我的是就是写入 <code>Zitiming.ttf</code> ，具体字库自己从网上下载即可。</p>
+<h5 id="修改内容区域的宽度"><a href="#修改内容区域的宽度" class="headerlink" title="修改内容区域的宽度"></a>修改内容区域的宽度</h5><p>编辑主题的 <code>source/css/_variables/custom.styl</code> 文件，新增变量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// 修改成你期望的宽度</span><br><span class="line">$content-desktop = 700px</span><br><span class="line"></span><br><span class="line">// 当视窗超过 1600px 后的宽度</span><br><span class="line">$content-desktop-large = 900px</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="网站标题栏背景颜色"><a href="#网站标题栏背景颜色" class="headerlink" title="网站标题栏背景颜色"></a>网站标题栏背景颜色</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.site-meta &#123;</span><br><span class="line">  background: $blue; //修改为自己喜欢的颜色</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="自定义鼠标样式"><a href="#自定义鼠标样式" class="headerlink" title="自定义鼠标样式"></a>自定义鼠标样式</h5><p>打开 <code>themes/*/source/css/_custom/custom.styl</code> ,在里面写下如下代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 鼠标样式</span><br><span class="line">  * &#123;</span><br><span class="line">      cursor: url(&quot;http://om8u46rmb.bkt.clouddn.com/sword2.ico&quot;),auto!important</span><br><span class="line">  &#125;</span><br><span class="line">  :active &#123;</span><br><span class="line">      cursor: url(&quot;http://om8u46rmb.bkt.clouddn.com/sword1.ico&quot;),auto!important</span><br><span class="line">  &#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="文章加密访问"><a href="#文章加密访问" class="headerlink" title="文章加密访问"></a>文章加密访问</h5><p>打开 <code>themes/*/layout/_partials/head.swig</code>文件,在 <code></code> 之前插入代码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">    (function()&#123;</span><br><span class="line">        if(&apos;&#123;&#123; page.password &#125;&#125;&apos;)&#123;</span><br><span class="line">            if (prompt(&apos;请输入密码&apos;) !== &apos;&#123;&#123; page.password &#125;&#125;&apos;)&#123;</span><br><span class="line">                alert(&apos;密码错误&apos;);</span><br><span class="line">                history.back();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>写文章时加上<code>password: *</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 2018</span><br><span class="line">date: 2018-10-25 16:10:03</span><br><span class="line">password: 123456</span><br><span class="line">---</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="实现点击出现桃心效果"><a href="#实现点击出现桃心效果" class="headerlink" title="实现点击出现桃心效果"></a>实现点击出现桃心效果</h5><ol>
+<li>在<code>/themes/*/source/js/src</code>下新建文件<code>click.js</code>，接着把以下粘贴到<code>click.js</code>文件中。 代码如下：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">!function(e,t,a)&#123;function n()&#123;c(&quot;.heart&#123;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);&#125;.heart:after,.heart:before&#123;content: &apos;&apos;;width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: fixed;&#125;.heart:after&#123;top: -5px;&#125;.heart:before&#123;left: -5px;&#125;&quot;),o(),r()&#125;function r()&#123;for(var e=0;e&lt;d.length;e++)d[e].alpha&lt;=0?(t.body.removeChild(d[e].el),d.splice(e,1)):(d[e].y--,d[e].scale+=.004,d[e].alpha-=.013,d[e].el.style.cssText=&quot;left:&quot;+d[e].x+&quot;px;top:&quot;+d[e].y+&quot;px;opacity:&quot;+d[e].alpha+&quot;;transform:scale(&quot;+d[e].scale+&quot;,&quot;+d[e].scale+&quot;) rotate(45deg);background:&quot;+d[e].color+&quot;;z-index:99999&quot;);requestAnimationFrame(r)&#125;function o()&#123;var t=&quot;function&quot;==typeof e.onclick&amp;&amp;e.onclick;e.onclick=function(e)&#123;t&amp;&amp;t(),i(e)&#125;&#125;function i(e)&#123;var a=t.createElement(&quot;div&quot;);a.className=&quot;heart&quot;,d.push(&#123;el:a,x:e.clientX-5,y:e.clientY-5,scale:1,alpha:1,color:s()&#125;),t.body.appendChild(a)&#125;function c(e)&#123;var a=t.createElement(&quot;style&quot;);a.type=&quot;text/css&quot;;try&#123;a.appendChild(t.createTextNode(e))&#125;catch(t)&#123;a.styleSheet.cssText=e&#125;t.getElementsByTagName(&quot;head&quot;)[0].appendChild(a)&#125;function s()&#123;return&quot;rgb(&quot;+~~(255*Math.random())+&quot;,&quot;+~~(255*Math.random())+&quot;,&quot;+~~(255*Math.random())+&quot;)&quot;&#125;var d=[];e.requestAnimationFrame=function()&#123;return e.requestAnimationFrame||e.webkitRequestAnimationFrame||e.mozRequestAnimationFrame||e.oRequestAnimationFrame||e.msRequestAnimationFrame||function(e)&#123;setTimeout(e,1e3/60)&#125;&#125;(),n()&#125;(window,document);</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<ol>
+<li>在<code>\themes\*\layout\_layout.swig</code>文件末尾添加：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 页面点击小红心 --&gt;</span><br><span class="line">&lt;script type=&quot;text/javascript&quot; src=&quot;/js/src/clicklove.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="静态资源压缩"><a href="#静态资源压缩" class="headerlink" title="静态资源压缩"></a>静态资源压缩</h5><p>在站点目录下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ npm install gulp -g</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>安装gulp插件：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">npm install gulp-minify-css --save</span><br><span class="line">npm install gulp-uglify --save</span><br><span class="line">npm install gulp-htmlmin --save</span><br><span class="line">npm install gulp-htmlclean --save</span><br><span class="line">npm install gulp-imagemin --save</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>在 <code>Hexo</code> 站点下新建 <code>gulpfile.js</code>文件，文件内容如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">var gulp = require(&apos;gulp&apos;);</span><br><span class="line">var minifycss = require(&apos;gulp-minify-css&apos;);</span><br><span class="line">var uglify = require(&apos;gulp-uglify&apos;);</span><br><span class="line">var htmlmin = require(&apos;gulp-htmlmin&apos;);</span><br><span class="line">var htmlclean = require(&apos;gulp-htmlclean&apos;);</span><br><span class="line">var imagemin = require(&apos;gulp-imagemin&apos;);</span><br><span class="line">// 压缩css文件</span><br><span class="line">gulp.task(&apos;minify-css&apos;, function() &#123;</span><br><span class="line">  return gulp.src(&apos;./public/**/*.css&apos;)</span><br><span class="line">  .pipe(minifycss())</span><br><span class="line">  .pipe(gulp.dest(&apos;./public&apos;));</span><br><span class="line">&#125;);</span><br><span class="line">// 压缩html文件</span><br><span class="line">gulp.task(&apos;minify-html&apos;, function() &#123;</span><br><span class="line">  return gulp.src(&apos;./public/**/*.html&apos;)</span><br><span class="line">  .pipe(htmlclean())</span><br><span class="line">  .pipe(htmlmin(&#123;</span><br><span class="line">    removeComments: true,</span><br><span class="line">    minifyJS: true,</span><br><span class="line">    minifyCSS: true,</span><br><span class="line">    minifyURLs: true,</span><br><span class="line">  &#125;))</span><br><span class="line">  .pipe(gulp.dest(&apos;./public&apos;))</span><br><span class="line">&#125;);</span><br><span class="line">// 压缩js文件</span><br><span class="line">gulp.task(&apos;minify-js&apos;, function() &#123;</span><br><span class="line">    return gulp.src([&apos;./public/**/.js&apos;,&apos;!./public/js/**/*min.js&apos;])</span><br><span class="line">        .pipe(uglify())</span><br><span class="line">        .pipe(gulp.dest(&apos;./public&apos;));</span><br><span class="line">&#125;);</span><br><span class="line">// 压缩 public/demo 目录内图片</span><br><span class="line">gulp.task(&apos;minify-images&apos;, function() &#123;</span><br><span class="line">    gulp.src(&apos;./public/demo/**/*.*&apos;)</span><br><span class="line">        .pipe(imagemin(&#123;</span><br><span class="line">           optimizationLevel: 5, //类型：Number  默认：3  取值范围：0-7（优化等级）</span><br><span class="line">           progressive: true, //类型：Boolean 默认：false 无损压缩jpg图片</span><br><span class="line">           interlaced: false, //类型：Boolean 默认：false 隔行扫描gif进行渲染</span><br><span class="line">           multipass: false, //类型：Boolean 默认：false 多次优化svg直到完全优化</span><br><span class="line">        &#125;))</span><br><span class="line">        .pipe(gulp.dest(&apos;./public/uploads&apos;));</span><br><span class="line">&#125;);</span><br><span class="line">// 默认任务</span><br><span class="line">gulp.task(&apos;default&apos;, [</span><br><span class="line">  &apos;minify-html&apos;,&apos;minify-css&apos;,&apos;minify-js&apos;,&apos;minify-images&apos;</span><br><span class="line">]);</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>只需要每次在执行 <code>generate</code> 命令后执行 <code>gulp</code> 就可以实现对静态资源的压缩，压缩完成后执行 <code>deploy</code> 命令同步到服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">hexo g</span><br><span class="line">gulp</span><br><span class="line">hexo d</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="修改访问URL路径"><a href="#修改访问URL路径" class="headerlink" title="修改访问URL路径"></a>修改访问URL路径</h5><p>默认情况下访问URL路径为：<code>domain/2018/10/18/关于本站</code>,修改为 <code>domain/About/关于本站</code>。 编辑 <code>Hexo</code> 站点下的 <code>_config.yml</code> 文件，修改其中的 <code>permalink</code>字段：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">permalink: :category/:title/</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="博文置顶"><a href="#博文置顶" class="headerlink" title="博文置顶"></a>博文置顶</h5><ol>
+<li><p>安装插件</p>
+<p><img src="https://juejin.im/equation?tex=npm%20uninstall%20hexo-generator-index%20--save" alt="npm uninstall hexo-generator-index --save"> npm install hexo-generator-index-pin-top –save</p>
+</li>
+</ol>
+<p>然后在需要置顶的文章的Front-matter中加上top即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: 2018</span><br><span class="line">date: 2018-10-25 16:10:03</span><br><span class="line">top: 10</span><br><span class="line">---</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<ol>
+<li>设置置顶标志</li>
+</ol>
+<p>打开：/themes/*/layout/_macro/post.swig，定位到</p>
+<p>，插入以下代码即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">      &#123;% if post.top %&#125;</span><br><span class="line">        &lt;i class=&quot;fa fa-thumb-tack&quot;&gt;&lt;/i&gt;</span><br><span class="line">        &lt;font color=7D26CD&gt;置顶&lt;/font&gt;</span><br><span class="line">        &lt;span class=&quot;post-meta-divider&quot;&gt;|&lt;/span&gt;</span><br><span class="line">      &#123;% endif %&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="在右上角或者左上角实现fork-me-on-github"><a href="#在右上角或者左上角实现fork-me-on-github" class="headerlink" title="在右上角或者左上角实现fork me on github"></a>在右上角或者左上角实现fork me on github</h5><ol>
+<li>选择样式<a href="https://link.juejin.im/?target=https%3A%2F%2Fblog.github.com%2F2008-12-19-github-ribbons%2F" target="_blank" rel="noopener">GitHub Ribbons</a>,</li>
+<li>修改图片跳转链接,将<code>&lt;a href=&quot;https://github.com/you&quot;&gt;</code>中的链接换为自己Github链接：</li>
+<li>打开 <code>themes/next/layout/_layout.swig</code> 文件，把代码复制到<code>&lt;div class=&quot;headband&quot;&gt;&lt;/div&gt;</code>下面。</li>
+</ol>
+<h5 id="主页文章添加边框阴影效果"><a href="#主页文章添加边框阴影效果" class="headerlink" title="主页文章添加边框阴影效果"></a>主页文章添加边框阴影效果</h5><p>打开 <code>themes/*/source/css/_custom/custom.styl</code> ,向里面加代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">// 主页文章添加阴影效果</span><br><span class="line">.post &#123;</span><br><span class="line">   margin-top: 0px;</span><br><span class="line">   margin-bottom: 60px;</span><br><span class="line">   padding: 25px;</span><br><span class="line">   -webkit-box-shadow: 0 0 5px rgba(202, 203, 203, .5);</span><br><span class="line">   -moz-box-shadow: 0 0 5px rgba(202, 203, 204, .5);</span><br><span class="line">&#125;</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="显示当前浏览进度"><a href="#显示当前浏览进度" class="headerlink" title="显示当前浏览进度"></a>显示当前浏览进度</h5><p>修改<code>themes/*/_config.yml</code>，把 <code>false</code> 改为 <code>true</code>：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Back to top in sidebar</span><br><span class="line">b2t: true</span><br><span class="line"></span><br><span class="line"># Scroll percent label in b2t button</span><br><span class="line">scrollpercent: true</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="创建分类页"><a href="#创建分类页" class="headerlink" title="创建分类页"></a>创建分类页</h5><p>在终端窗口下，定位到 <code>Hexo</code> 站点目录下，新建：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd &lt;站点目录&gt;</span><br><span class="line">$ hexo new page categories</span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="加入-广告"><a href="#加入-广告" class="headerlink" title="加入 广告"></a>加入 广告</h5><p>主要有两种：<a href="https://link.juejin.im/?target=https%3A%2F%2Fssp.baidu.com%2Fstatic%2Fregister.html" target="_blank" rel="noopener">百度SSP</a>和<a href="https://link.juejin.im/?target=https%3A%2F%2Fwww.google.com%2Fadsense%2Fstart%2F%23%2F%3Fmodal_active%3Dnone" target="_blank" rel="noopener">谷歌Adsense</a>。方法类似：</p>
+<ol>
+<li><p>注册，复制广告代码</p>
+</li>
+<li><p>部署到网站。</p>
+<p>2.1. 新建 <code>theme/*/layout/_custom/google_ad.swig</code>，将 AdSense 上的代码粘贴进去</p>
+<p>2.2. 头部。在 <code>theme/*/layout/_custom/head.swig</code> 中也粘贴一份</p>
+<p>2.3. 每篇博客。在 <code>theme/*/layout/post.swig</code> 里中在希望看到的地方加上：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% include &apos;_custom/google_ad.swig&apos; %&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>例如：在 <code>&lt;div id=&quot;posts&quot; class=&quot;posts-expand&quot;&gt; &lt;/div&gt;</code> 中间插入，总代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;% block content %&#125;</span><br><span class="line">  &lt;div id=&quot;posts&quot; class=&quot;posts-expand&quot;&gt;</span><br><span class="line">    &#123;&#123; post_template.render(page) &#125;&#125;</span><br><span class="line">    &#123;% include &apos;_custom/google_ad.swig&apos; %&#125;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&#123;% endblock %&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>等待审核通过。如果失败，可再次申请。</p>
+</li>
+</ol>
+<h5 id="添加萌萌哒"><a href="#添加萌萌哒" class="headerlink" title="添加萌萌哒"></a>添加萌萌哒</h5><ol>
+<li><p>安装插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-helper-live2d</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>复制你喜欢的模型名字：</p>
+<p>Epsilon2.1</p>
+</li>
+</ol>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d95beefee24?imageslim" alt="img"></p>
+<p>   Gantzert_Felixander</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d95b1115d1f?imageslim" alt="img"></p>
+<p>   haru</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d95af5e3539?imageslim" alt="img"></p>
+<p>   miku</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d9593c85eba?imageslim" alt="img"></p>
+<p>   ni-j</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d957bf38a1c?imageslim" alt="img"></p>
+<p>   nico</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d9577ac56dc?imageslim" alt="img"></p>
+<p>   nietzche</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d9557c80451?imageslim" alt="img"></p>
+<p>   nipsilon</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d953d3e556c?imageslim" alt="img"></p>
+<p>   nito</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d94fcbbdf9b?imageslim" alt="img"></p>
+<p>   shizuku</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d94fbfdd253?imageslim" alt="img"></p>
+<p>   tsumiki</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d94b21640ad?imageslim" alt="img"></p>
+<p>   wanko</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d94a3086fbf?imageslim" alt="img"></p>
+<p>   z16</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d944d195e64?imageslim" alt="img"></p>
+<p>   hibiki</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d93b7a7edd3?imageslim" alt="img"></p>
+<p>   koharu</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d940eca4201?imageslim" alt="img"></p>
+<p>   haruto</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d93fc85182f?imageslim" alt="img"></p>
+<p>   Unitychan</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d93f63905c8?imageslim" alt="img"></p>
+<p>   tororo</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d93efd7a55c?imageslim" alt="img"></p>
+<p>   hijiki</p>
+<p>   <img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d93f55c4595?imageslim" alt="img"></p>
+<ol>
+<li><p>将以下代码添加到主题配置文件<code>_config.yml</code>，修改&lt;你喜欢的模型名字&gt;：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">live2d:</span><br><span class="line">  enable: true</span><br><span class="line">  scriptFrom: local</span><br><span class="line">  pluginRootPath: live2dw/</span><br><span class="line">  pluginJsPath: lib/</span><br><span class="line">  pluginModelPath: assets/</span><br><span class="line">  tagMode: false</span><br><span class="line">  log: false</span><br><span class="line">  model:</span><br><span class="line">    use: live2d-widget-model-&lt;你喜欢的模型名字&gt;</span><br><span class="line">  display:</span><br><span class="line">    position: right</span><br><span class="line">    width: 150</span><br><span class="line">    height: 300</span><br><span class="line">  mobile:</span><br><span class="line">    show: true</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>建配置文件</p>
+<p>4.1. 在站点目录下建文件夹<code>live2d_models</code>，</p>
+<p>4.2. 再在<code>live2d_models</code>下建文件夹<code>&lt;你喜欢的模型名字&gt;</code>,</p>
+<p>4.3. 再在<code>&lt;你喜欢的模型名字&gt;</code>下建json文件：&lt;你喜欢的模型名字&gt;.model.json</p>
+</li>
+<li><p>安装模型。在命令行（即Git Bash）运行以下命令即可：</p>
+<blockquote>
+<p>npm install –save live2d-widget-model-&lt;你喜欢的模型名字&gt;</p>
+</blockquote>
+</li>
+<li><p>在命令行（即Git Bash）运行以下命令， 在<code>http://127.0.0.1:4000/</code>查看测试结果:</p>
+<blockquote>
+<p>hexo clean &amp;&amp; hexo g &amp;&amp; hexo s</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="插件配置"><a href="#插件配置" class="headerlink" title="插件配置"></a>插件配置</h3><p>以下插件（评论系统、数据统计与分析、内容分享服务、搜索服务）各选一个即可。</p>
+<h4 id="评论系统"><a href="#评论系统" class="headerlink" title="评论系统"></a>评论系统</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>推荐指数</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://link.juejin.im/?target=https%3A%2F%2Fvaline.js.org%2F" target="_blank" rel="noopener">Valine</a></td>
+<td>4</td>
+<td>每天30000条评论，10GB的储存</td>
+<td>作者评论无标识</td>
+</tr>
+<tr>
+<td><a href="https://link.juejin.im/?target=https%3A%2F%2Flivere.com%2F" target="_blank" rel="noopener">来必力/livere</a></td>
+<td>4</td>
+<td>多种账号登录</td>
+<td>评论无法导出</td>
+</tr>
+<tr>
+<td><a href="https://link.juejin.im/?target=http%3A%2F%2Fchangyan.kuaizhan.com%2F" target="_blank" rel="noopener">畅言</a></td>
+<td>3</td>
+<td>美观</td>
+<td>必须备案域名</td>
+</tr>
+<tr>
+<td><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fimsun%2Fgitment" target="_blank" rel="noopener">gitment</a></td>
+<td>3</td>
+<td>简洁</td>
+<td>只能登陆github评论</td>
+</tr>
+<tr>
+<td>Disqus</td>
+<td>1</td>
+<td></td>
+<td>需要翻*墙</td>
+</tr>
+</tbody>
+</table>
+<h5 id="Valine"><a href="#Valine" class="headerlink" title="Valine"></a>Valine</h5><p>1.1. 获取APP ID 和 APP Key</p>
+<p>请先登录或注册 <a href="https://link.juejin.im/?target=https%3A%2F%2Fleancloud.cn%2F" target="_blank" rel="noopener">LeanCloud</a>, 进入控制台后点击左下角创建应用，</p>
+<p>进入刚刚创建的应用，选择左下角的<code>设置</code>&gt;<code>应用Key</code>，然后就能看到你的<code>APP ID</code>和<code>APP Key</code>了。</p>
+<p>1.2. 填写APP ID 和 APP Key到主题配置文件<code>_config.yml</code></p>
+<p>1.3. 运行<code>hexo g&amp;&amp;hexo d</code>推送到博客。</p>
+<h5 id="来必力-livere"><a href="#来必力-livere" class="headerlink" title="来必力/livere"></a>来必力/livere</h5><p>2.1. 登陆 <a href="https://link.juejin.im/?target=https%3A%2F%2Flivere.com%2F" target="_blank" rel="noopener">来必力</a> 获取你的 LiveRe UID。</p>
+<p>2.2. 填写LiveRe UID到主题配置文件<code>_config.yml</code></p>
+<h5 id="畅言"><a href="#畅言" class="headerlink" title="畅言"></a>畅言</h5><p>3.1.获取APP ID 和 APP Key</p>
+<p>请先登录或注册 <a href="https://link.juejin.im/?target=http%3A%2F%2Fchangyan.kuaizhan.com%2F" target="_blank" rel="noopener">畅言</a>, 点击“立即免费获取畅言”，</p>
+<p>新建站点，点击管理，点击评论插件&gt;评论管理，</p>
+<p>点击后台总览，然后就能看到你的<code>APP ID</code>和<code>APP Key</code>了。</p>
+<p>3.2. 填写APP ID 和 APP Key到主题配置文件<code>_config.yml</code></p>
+<p>3.3. 运行<code>hexo g&amp;&amp;hexo d</code>推送到博客。</p>
+<h5 id="gitment"><a href="#gitment" class="headerlink" title="gitment"></a>gitment</h5><p>4.1. 安装插件：</p>
+<blockquote>
+<p>npm i –save gitment</p>
+</blockquote>
+<p>4.2. 申请应用</p>
+<p>在<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fsettings%2Fapplications%2Fnew" target="_blank" rel="noopener">New OAuth App</a>为你的博客应用一个密钥:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Application name:随便写</span><br><span class="line">Homepage URL:这个也可以随意写,就写你的博客地址就行</span><br><span class="line">Application description:描述,也可以随意写</span><br><span class="line">Authorization callback URL:这个必须写你的博客地址</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>4.3. 配置</p>
+<p>编辑主题配置文件<code>themes/*/_config.yml</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># Gitment</span><br><span class="line"># Introduction: https://imsun.net/posts/gitment-introduction/</span><br><span class="line">gitment:</span><br><span class="line">  enable: true</span><br><span class="line">  mint: true # RECOMMEND, A mint on Gitment, to support count, language and proxy_gateway</span><br><span class="line">  count: true # Show comments count in post meta area</span><br><span class="line">  lazy: false # Comments lazy loading with a button</span><br><span class="line">  cleanly: false # Hide &apos;Powered by ...&apos; on footer, and more</span><br><span class="line">  language: # Force language, or auto switch by theme</span><br><span class="line">  github_user: &#123;you github user id&#125;</span><br><span class="line">  github_repo: 公开的git仓库,评论会作为那个项目的issue</span><br><span class="line">  client_id: &#123;刚才申请的ClientID&#125;</span><br><span class="line">  client_secret: &#123;刚才申请的Client Secret&#125;</span><br><span class="line">  proxy_gateway: # Address of api proxy, See: https://github.com/aimingoo/intersect</span><br><span class="line">  redirect_protocol: # Protocol of redirect_uri with force_redirect_pro</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="Disqus"><a href="#Disqus" class="headerlink" title="Disqus"></a>Disqus</h5><p>编辑 主题配置文件<code>themes/*/_config.yml</code>， 将 disqus 下的 enable 设定为 true，同时提供您的 shortname。count 用于指定是否显示评论数量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">disqus:</span><br><span class="line">  enable: false</span><br><span class="line">  shortname:</span><br><span class="line">  count: true</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="数据统计与分析"><a href="#数据统计与分析" class="headerlink" title="数据统计与分析"></a>数据统计与分析</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>推荐指数</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://link.juejin.im/?target=http%3A%2F%2Fibruce.info%2F2015%2F04%2F04%2Fbusuanzi%2F" target="_blank" rel="noopener">不蒜子</a></td>
+<td>4</td>
+<td>可直接将访问次数显示在您在网页上（也可不显示）</td>
+<td>只计数</td>
+</tr>
+<tr>
+<td>百度统计</td>
+<td>3</td>
+<td></td>
+<td>收录慢</td>
+</tr>
+</tbody>
+</table>
+<h5 id="不蒜子"><a href="#不蒜子" class="headerlink" title="不蒜子"></a>不蒜子</h5><p>编辑 主题配置文件 <code>themes/*/_config.yml</code>中的<code>busuanzi_count</code>的配置项即可。</p>
+<ul>
+<li>当<code>enable: true</code>时，代表开启全局开关。</li>
+<li>若<code>site_uv</code>（本站访客数）、<code>site_pv</code>（本站访客数）、<code>page_pv</code>（本文总阅读量）的值均为<code>false</code>时，不蒜子仅作记录而不会在页面上显示。</li>
+</ul>
+<p>注意：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">不蒜子官方因七牛强制过期原有的『dn-lbstatics.qbox.me』域名（预计2018年10月初），与客服沟通数次无果，即使我提出为此付费也不行，只能更换域名到『busuanzi.ibruce.info』！</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>解决办法：</p>
+<ol>
+<li><p>找到主题调用不蒜子的swig文件。一般在”\themes*\layout_third-party\analytics\busuanzi-counter.swig”</p>
+</li>
+<li><p>更改域名</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">把原有的：</span><br><span class="line">&lt;script async src=&quot;//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">域名改一下即可：</span><br><span class="line">&lt;script async src=&quot;//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js&quot;&gt;&lt;/script&gt;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h5 id="百度统计"><a href="#百度统计" class="headerlink" title="百度统计"></a>百度统计</h5><ol>
+<li><p>登录 <a href="https://link.juejin.im/?target=http%3A%2F%2Ftongji.baidu.com%2F" target="_blank" rel="noopener">百度统计</a>，定位到站点的代码获取页面</p>
+</li>
+<li><p>复制统计脚本 id，如图： </p>
+<p><img src="https://user-gold-cdn.xitu.io/2018/11/14/16711d92ce3142f4?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" alt="img"></p>
+</li>
+<li><p>编辑 主题配置文件<code>themes/*/_config.yml</code>，修改字段 <code>google_analytics</code>，值设置成你的统计脚本 id。</p>
+</li>
+</ol>
+<h4 id="内容分享服务"><a href="#内容分享服务" class="headerlink" title="内容分享服务"></a>内容分享服务</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>推荐指数</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="https://link.juejin.im/?target=http%3A%2F%2Fshare.baidu.com%2F" target="_blank" rel="noopener">百度分享</a></td>
+<td>4</td>
+<td>稳定</td>
+<td>不太美观</td>
+</tr>
+<tr>
+<td><a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Frevir%2Fneed-more-share2" target="_blank" rel="noopener">need-more-share2</a></td>
+<td>4</td>
+<td>美观</td>
+<td>更新不及时（比如微信分享API）</td>
+</tr>
+</tbody>
+</table>
+<h5 id="百度分享"><a href="#百度分享" class="headerlink" title="百度分享"></a>百度分享</h5><p>编辑 主题配置文件，添加/修改字段 <code>baidushare</code>，值为 <code>true</code>即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 百度分享服务</span><br><span class="line">baidushare: true</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h5 id="need-more-share2"><a href="#need-more-share2" class="headerlink" title="need-more-share2"></a>need-more-share2</h5><p>编辑 主题配置文件，添加/修改字段 <code>needmoreshare2</code>，值为 <code>true</code>即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">needmoreshare2:</span><br><span class="line">  enable: true</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="搜索服务"><a href="#搜索服务" class="headerlink" title="搜索服务"></a>搜索服务</h4><table>
+<thead>
+<tr>
+<th></th>
+<th>推荐指数</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local Search</td>
+<td>4</td>
+<td>配置方便</td>
+<td></td>
+</tr>
+<tr>
+<td>Swiftype</td>
+<td>2</td>
+<td></td>
+<td>需注册</td>
+</tr>
+<tr>
+<td>Algolia</td>
+<td>2</td>
+<td></td>
+<td>需注册</td>
+</tr>
+</tbody>
+</table>
+<h5 id="Local-Search"><a href="#Local-Search" class="headerlink" title="Local Search"></a>Local Search</h5><p>添加百度/谷歌/本地 自定义站点内容搜索</p>
+<ol>
+<li><p>安装 <code>hexo-generator-searchdb</code>，在站点的根目录下执行以下命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑 站点配置文件，新增以下内容到任意位置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">search:</span><br><span class="line">  path: search.xml</span><br><span class="line">  field: post</span><br><span class="line">  format: html</span><br><span class="line">  limit: 10000</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编辑 主题配置文件，启用本地搜索功能：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Local search</span><br><span class="line">local_search:</span><br><span class="line">  enable: true</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="错误分析"><a href="#错误分析" class="headerlink" title="错误分析"></a>错误分析</h3><p>如果你使用Hexo遇到同样的问题,这里有一些常见问题的解决方案。</p>
+<h4 id="YAML-Parsing-Error"><a href="#YAML-Parsing-Error" class="headerlink" title="YAML Parsing Error"></a>YAML Parsing Error</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JS-YAML: incomplete explicit mapping pair; a key node is missed at line 18, column 29:</span><br><span class="line">      last_updated: Last updated: %s</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<ol>
+<li>参数中包含冒号，请用加引号，如<code>Last updated: %s</code></li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JS-YAML: bad indentation of a mapping entry at line 18, column 31:</span><br><span class="line">      last_updated：&quot;Last updated: %s&quot;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<ol>
+<li>字段后面的冒号必须为<strong>英文冒号</strong>，如：last_updated:</li>
+<li>字段冒号后面必须跟一个空格，如：last_updated: “Last updated: %s”</li>
+</ol>
+<h4 id="EMFILE-Error"><a href="#EMFILE-Error" class="headerlink" title="EMFILE Error"></a>EMFILE Error</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error: EMFILE, too many open files</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>生成大量的文件时，可能遇到EMFILE错误。</p>
+<p>可以运行以下命令来增加允许同步I / O操作的数量。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ulimit -n 10000</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Process-Out-of-Memory"><a href="#Process-Out-of-Memory" class="headerlink" title="Process Out of Memory"></a>Process Out of Memory</h4><p>当<code>hexo g</code>时，遇到以下错误：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">FATAL ERROR: CALL_AND_RETRY_LAST Allocation failed - process out of memory</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>如下，更改<code>hexo-cli</code>文件的第一行，来增大nodejs堆内存.该bug已在<a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fhexojs%2Fhexo%2Fissues%2F1735" target="_blank" rel="noopener">新版本</a>修复。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">#!/usr/bin/env node --max_old_space_size=8192</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Git-Deployment-Problems"><a href="#Git-Deployment-Problems" class="headerlink" title="Git Deployment Problems"></a>Git Deployment Problems</h4><ol>
+<li>RPC failed</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">error: RPC failed; result=22, HTTP code = 403</span><br><span class="line"></span><br><span class="line">fatal: &apos;username.github.io&apos; does not appear to be a git repository</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>确保你有你的电脑上设置git正确或尝试使用HTTPS存储库URL。</p>
+<ol>
+<li>Error: ENOENT: no such file or directory</li>
+</ol>
+<p>这个需要有一定的git的知识，因为可能是由于写错了标签,类别,或文件名，导致本地和github冲突了，Git不能自动合并这一变化所以它打破了自动分支。</p>
+<p>解决办法：</p>
+<ol>
+<li>检查文章的标签和类别,确保本地和github上是相同的。</li>
+<li>合并分支（Commit）。</li>
+<li>清除，重构。在站点目录下，命令行（即Git Bash）运行<code>hexo clean</code>和<code>hexo g</code></li>
+<li>手动将站点目录下的<code>public</code>文件夹复制到您的桌面</li>
+<li>从你的master分支切换到部署在本地分支。</li>
+<li>从桌面复制<code>public</code>文件夹到本地分支。</li>
+<li>合并分支到github（Commit）。</li>
+<li>切回master分支。</li>
+</ol>
+<h4 id="Server-Problems"><a href="#Server-Problems" class="headerlink" title="Server Problems"></a>Server Problems</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error: listen EADDRINUSE</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>你可能使用相同的端口，同时开启了两个Hexo服务器。如果需要同时开启，可以尝试修改端口设置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server -p 5000</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Plugin-Installation-Problems"><a href="#Plugin-Installation-Problems" class="headerlink" title="Plugin Installation Problems"></a>Plugin Installation Problems</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm ERR! node-waf configure build</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>这个错误可能发生在试图安装一个用Cc++或另一个javascript语言编写的插件。确保您已经安装了正确的编译器在您的计算机上。</p>
+<h4 id="Error-with-DTrace-Mac-OS-X"><a href="#Error-with-DTrace-Mac-OS-X" class="headerlink" title="Error with DTrace (Mac OS X)"></a>Error with DTrace (Mac OS X)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123; [Error: Cannot find module &apos;./build/Release/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;</span><br><span class="line">&#123; [Error: Cannot find module &apos;./build/default/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;</span><br><span class="line">&#123; [Error: Cannot find module &apos;./build/Debug/DTraceProviderBindings&apos;] code: &apos;MODULE_NOT_FOUND&apos; &#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>DTrace安装可能有问题，重装:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo --no-optional</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>详见 <a href="https://link.juejin.im/?target=https%3A%2F%2Fgithub.com%2Fhexojs%2Fhexo%2Fissues%2F1326%23issuecomment-113871796" target="_blank" rel="noopener">#1326</a></p>
+<h4 id="Iterate-Data-Model-on-Jade-or-Swig"><a href="#Iterate-Data-Model-on-Jade-or-Swig" class="headerlink" title="Iterate Data Model on Jade or Swig"></a>Iterate Data Model on Jade or Swig</h4><p>Hexo使用仓库的数据模型。这不是一个数组,所以你可能需要将对象转换为iterable。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;% for post in site.posts.toArray() %&#125;</span><br><span class="line">&#123;% endfor %&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Data-Not-Updated"><a href="#Data-Not-Updated" class="headerlink" title="Data Not Updated"></a>Data Not Updated</h4><p>一些数据不能更新或新生成的文件的最后一个版本完全相同。清理缓存，再试一次：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="No-command-is-executed"><a href="#No-command-is-executed" class="headerlink" title="No command is executed"></a>No command is executed</h4><p>那个不能使用除<code>help</code>、<code>init</code>和<code>version</code>以外的命令行（即Git Bash）时, 有可能时站点目录下的<code>package.json</code>文件，缺少<code>hexo</code> ，如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;hexo&quot;: &#123;</span><br><span class="line">    &quot;version&quot;: &quot;3.2.2&quot;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Escape-Contents"><a href="#Escape-Contents" class="headerlink" title="Escape Contents"></a>Escape Contents</h4><p>Hexo使用Nunjucks渲染的页面. <code>{ { } }</code>或<code>{ % % }</code>将解析和可能会引起麻烦， 如果要在博文中出现，必须使用三引号：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">​</span><br></pre></td></tr></table></figure>
+
+Hello {{ sensitive }}
+
+<p>​<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure></p>
+<h4 id="ENOSPC-Error-Linux"><a href="#ENOSPC-Error-Linux" class="headerlink" title="ENOSPC Error (Linux)"></a>ENOSPC Error (Linux)</h4><p>如果运行命令<code>$ hexo server</code> 返回一个错误:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error: watch ENOSPC ...</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>可以通过运行<code>$ npm dedupe</code>或者以下命令行（即Git Bash）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf &amp;&amp; sudo sysctl -p</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>来增加测试时，你可以看见的文件数量。</p>
+<h4 id="EMPERM-Error-Windows-Subsystem-for-Linux"><a href="#EMPERM-Error-Windows-Subsystem-for-Linux" class="headerlink" title="EMPERM Error (Windows Subsystem for Linux)"></a>EMPERM Error (Windows Subsystem for Linux)</h4><p>如果在Windows Subsystem for Linux，运行命令<code>$ hexo server</code> 返回这个错误:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Error: watch /path/to/hexo/theme/ EMPERM</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>因为目前在Windows Subsystem for Linux中，有些内容更改时，还不能实时更新到hexo服务器。</p>
+<p>所以需要重新编译，再启动服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br><span class="line">$ hexo server -s</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h4 id="Template-render-error"><a href="#Template-render-error" class="headerlink" title="Template render error"></a>Template render error</h4><p>有时运行命令<code>$ hexo generate</code> 返回一个错误:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">FATAL Something&apos;s wrong. Maybe you can find the solution here: http://hexo.io/docs/troubleshooting.html</span><br><span class="line">Template render error: (unknown path)</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>这意味着有些认不出来单词在你的文件，并且很可能在你的新博文,或者配置文件<code>_config.yml</code>中，比如缩进错误：</p>
+<p>错误例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">plugins:</span><br><span class="line">hexo-generator-feed</span><br><span class="line">hexo-generator-sitemap</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<h3 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h3><h4 id="创建文章"><a href="#创建文章" class="headerlink" title="创建文章"></a>创建文章</h4><p>命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new [layout] &lt;title&gt;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<p>参数说明：</p>
+<ul>
+<li>[layout]可以为以下三种：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>参数名</th>
+<th>功能</th>
+<th>文章路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>post</td>
+<td>新建博文</td>
+<td>source/_posts</td>
+</tr>
+<tr>
+<td>page</td>
+<td>新建页面（如404，分类）</td>
+<td>source</td>
+</tr>
+<tr>
+<td>draft</td>
+<td>草稿</td>
+<td>source/_drafts</td>
+</tr>
+</tbody>
+</table>
+<p>草稿可通过一下命令发布：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ hexo publish [layout] &lt;title&gt;</span><br><span class="line"></span><br><span class="line">复制代码</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>title注意：</p>
+<p>不是博文标题，</p>
+<p>是博文markdown文件的名字，</p>
+<p>也是博文链接的后缀（如<code>https://www.simon96.online/2018/10/12/hexo-tutorial/</code>中的hexo-tutorial）</p>
+</li>
+</ul>
+<h4 id="文章模版"><a href="#文章模版" class="headerlink" title="文章模版"></a>文章模版</h4><ul>
+<li><p>创建模版</p>
+<p>在新建文章时，Hexo 会根据 <code>scaffolds</code> 文件夹内相对应的文件来建立文件，例如：</p>
+</li>
+</ul>
+<blockquote>
+<p>$ hexo new blog “simon”</p>
+</blockquote>
+<p>​   在执行这行指令时，Hexo 会尝试在 <code>scaffolds</code> 文件夹中寻找 <code>blog.md</code>，并根据其内容建立文章。</p>
+<ul>
+<li><p>修改参数</p>
+<p>以下是您可以在模版中使用的变量：</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>变量</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>layout</td>
+<td>布局</td>
+</tr>
+<tr>
+<td>title</td>
+<td>标题</td>
+</tr>
+<tr>
+<td>date</td>
+<td>文件建立日期</td>
+</tr>
+</tbody>
+</table>
+<h4 id="Front-matter"><a href="#Front-matter" class="headerlink" title="Front-matter"></a>Front-matter</h4><p>就是博文最上方以 <code>---</code> 分隔的那部分。</p>
+<p>默认可以使用的Front-matter：</p>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>描述</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>layout</code></td>
+<td>布局</td>
+<td></td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>标题</td>
+<td></td>
+</tr>
+<tr>
+<td><code>date</code></td>
+<td>建立日期</td>
+<td>文件建立日期</td>
+</tr>
+<tr>
+<td><code>updated</code></td>
+<td>更新日期</td>
+<td>文件更新日期</td>
+</tr>
+<tr>
+<td><code>comments</code></td>
+<td>开启文章的评论功能</td>
+<td>true</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>标签（不适用于分页）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>categories</code></td>
+<td>分类（不适用于分页）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>permalink</code></td>
+<td>覆盖文章网址</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+]]></content>
+      
+        <categories>
+            
+            <category> Hexo </category>
+            
+        </categories>
+        
+        
+        <tags>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hello World]]></title>
+      <url>/haianzwh.github.io/2017/12/10/hello-world/</url>
+      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+      
+        
+    </entry>
+    
+  
+  
 </search>
