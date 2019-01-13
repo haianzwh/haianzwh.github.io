@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/haianzwh.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/haianzwh.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/haianzwh.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/haianzwh.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/haianzwh.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/haianzwh.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/haianzwh.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码剖析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="开头aop部分的解析器由AopNamespaceHandler注册，其init方法: @Overridepublic void init() {    registerBeanDefinitionParser(“config”, new ConfigBeanDefinitionParser());    registe">
+<meta name="keywords" content="源码剖析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-aop">
+<meta property="og:url" content="http://haianzwh.github.io/2018/06/08/Spring-aop/index.html">
+<meta property="og:site_name" content="蘸酒拭剑">
+<meta property="og:description" content="开头aop部分的解析器由AopNamespaceHandler注册，其init方法: @Overridepublic void init() {    registerBeanDefinitionParser(“config”, new ConfigBeanDefinitionParser());    registerBeanDefinitionParser(“aspectj-autoproxy">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-13T11:14:35.711Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring-aop">
+<meta name="twitter:description" content="开头aop部分的解析器由AopNamespaceHandler注册，其init方法: @Overridepublic void init() {    registerBeanDefinitionParser(“config”, new ConfigBeanDefinitionParser());    registerBeanDefinitionParser(“aspectj-autoproxy">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/haianzwh.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://haianzwh.github.io/2018/06/08/Spring-aop/"/>
+
+
+
+
+
+  <title>Spring-aop | 蘸酒拭剑</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/haianzwh.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蘸酒拭剑</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Unless i do not want to win <br> Otherwise nothing make me lose.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="/haianzwh.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于">
+          <a href="/haianzwh.github.io/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/haianzwh.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-日志">
+          <a href="/haianzwh.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            日志
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-简历">
+          <a href="/haianzwh.github.io/resume" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            简历
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://haianzwh.github.io/haianzwh.github.io/2018/06/08/Spring-aop/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="haianzwh">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/00649eqogy1fyw15ah7hhj3021021mx0.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘸酒拭剑">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring-aop</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-08T18:12:44+08:00">
+                2018-06-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/haianzwh.github.io/categories/源码剖析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码剖析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>开头<br>aop部分的解析器由AopNamespaceHandler注册，其init方法:</p>
+<p>@Override<br>public void init() {<br>    registerBeanDefinitionParser(“config”, new ConfigBeanDefinitionParser());<br>    registerBeanDefinitionParser(“aspectj-autoproxy”, new AspectJAutoProxyBeanDefinitionParser());<br>    registerBeanDefinitionDecorator(“scoped-proxy”, new ScopedProxyBeanDefinitionDecorator());<br>}<br>aop:config<br>此标签用以配置pointcut, advisor, aspect，实例:</p>
+<p><aop:config><br>    <aop:pointcut expression="execution(* exam.service..*.*(..))" id="transaction"><br>    <aop:advisor advice-ref="txAdvice" pointcut-ref="transaction"><br>    <aop:aspect ref=""><br></aop:aspect></aop:advisor></aop:pointcut></aop:config><br>ConfigBeanDefinitionParser.parse:</p>
+<p>@Override<br>public BeanDefinition parse(Element element, ParserContext parserContext) {<br>    CompositeComponentDefinition compositeDef =<br>            new CompositeComponentDefinition(element.getTagName(),<br>            parserContext.extractSource(element));<br>    parserContext.pushContainingComponent(compositeDef);<br>    // 是否生成代理类<br>    configureAutoProxyCreator(parserContext, element);<br>    List<element> childElts = DomUtils.getChildElements(element);<br>    for (Element elt: childElts) {<br>        String localName = parserContext.getDelegate().getLocalName(elt);<br>        if (POINTCUT.equals(localName)) {<br>            parsePointcut(elt, parserContext);<br>        } else if (ADVISOR.equals(localName)) {<br>            parseAdvisor(elt, parserContext);<br>        } else if (ASPECT.equals(localName)) {<br>            parseAspect(elt, parserContext);<br>        }<br>    }<br>    parserContext.popAndRegisterContainingComponent();<br>    return null;<br>}<br>解析<br>解析的过程主要分为以下几个部分。</element></p>
+<p>proxy-target-class &amp; expose-proxy<br>对应着aop:config的两个属性，前者代表是否为被代理这生成CGLIB子类，默认false，只为接口生成代理子类(话说如果不生成子类那么怎么拦截?)。后者代表是否将代理bean暴露给用户，如果暴露，可以通过Spring AopContext类获得，默认不暴露。</p>
+<p>解析的过程无非就是属性的读取，不再详细说明。</p>
+<p>aop:pointcut<br>pointcut的解析是一个生成一个BeanDefinition并将其id, expression等属性保存在BeanDefinition中。注意以下几点:</p>
+<p>BeanDefinition的ID来自于id属性，如果没有，那么自动生成。<br>BeanDefinition的class是AspectJExpressionPointcut。<br>BeanDefinition的scope为prototype。<br>AspectJExpressionPointcut类图:</p>
+<p>AspectJExpressionPointcut类图</p>
+<p>aop:advisor<br>首先是其所有属性的示例:</p>
+<p><aop:advisor id="" order="" advice-ref="aopAdvice" pointcut="" pointcut-ref=""><br>advisor概念是Spring独有的，来自于上古时代，应该是较早时候的aop概念的实现: AOP Alliance (Java/J2EE AOP standards)。Spring官方的说法: aop-schema-advisors。</aop:advisor></p>
+<p>其相关的包/类就在spring-aop下:</p>
+<p>aopalliance包</p>
+<p>advice-ref是必须的属性，并且这里的advice必须实现org.aopalliance.aop.Advice的子接口。这些子接口指的什么呢，见Spring官方文档: aop-api-advice-types。比如org.aopalliance.intercept.MethodInterceptor。</p>
+<p>最常见的用途就是结合事务使用:</p>
+<p><tx:advice id="txAdvice" transaction-manager="transactionManager"><br>    <tx:attributes><br>        <tx:method name="get*" read-only="true" propagation="NOT_SUPPORTED"><br>        <tx:method name="find*" read-only="true" propagation="NOT_SUPPORTED"><br>        <tx:method name="*" propagation="REQUIRED"><br>    </tx:method></tx:method></tx:method></tx:attributes><br></tx:advice></p>
+<p><aop:config><br>    <aop:pointcut expression="execution(* exam.service..*.*(..))" id="transaction"><br>    <aop:advisor advice-ref="txAdvice" pointcut-ref="transaction"><br></aop:advisor></aop:pointcut></aop:config><br>解析的套路和楼上类似，只不过此处的beanClass是DefaultBeanFactoryPointcutAdvisor，其类图:</p>
+<p>DefaultBeanFactoryPointcutAdvisor类图</p>
+<p>另外注意对于pointcut和pointcut-ref两者处理的区别，对于pointcut属性，Spring会同样创建一个AspectJExpressionPointcut类型的BeanDefinition，对于pointcut-ref会生成一个RuntimeBeanReference对象指向原pointcut的引用。此类的类图:</p>
+<p>RuntimeBeanReference类图</p>
+<p>可以看出，这种aop的实现需要实现各种接口，所以不应该再使用此种方式进行aop，除了Spring内部的实现。</p>
+<p>aop:aspect<br>配置举例:</p>
+<bean id="aopAdvice" class="base.aop.AopDemoAdvice"><br><!-- 必须配置，因为被代理的对象必须在Spring容器中 --><br><bean id="aopDemo" class="base.aop.AopDemo"><br><aop:config><br>    <aop:pointcut id="pointcut" expression="execution(* base.aop.AopDemo.send())"><br>    <aop:aspect ref="aopAdvice"><br>        <aop:before method="beforeSend" pointcut-ref="pointcut"><br>        <aop:after method="afterSend" pointcut-ref="pointcut"><br>    </aop:after></aop:before></aop:aspect><br></aop:pointcut></aop:config><br>解析形成的BeanDefinition结构如下:<br><br>AspectComponentDefinition<br>    beanRefArray<br>        RuntimeBeanReference(aop:aspect的ref属性)<br>    beanDefArray<br>        // 被注册<br>        RootBeanDefinition(aop:declare-parents)<br>            beanClass: DeclareParentsAdvisor<br>            ConstructorArg<br>                implement-interface<br>                types-matching<br>                default-impl<br>                delegate-ref<br>        // 被注册<br>        RootBeanDefinition(aop:before,aop:after…)<br>            beanClass: AspectJPointcutAdvisor<br>            ConstructorArg<br>                RootBeanDefinition<br>                    beanClass: 由子标签决定<br>                    ConstructorArg<br>                        RootBeanDefinition<br>                            beanClass: MethodLocatingFactoryBean<br>                            properties<br>                                targetBeanName: aspectName<br>                                methodName: method属性<br>                        RootBeanDefinition<br>                            beanClass: SimpleBeanFactoryAwareAspectInstanceFactory<br>                            properties<br>                                aspectBeanName: aspectName<br>                        //还有pointcut定义和引用…<br>结构图里面的aspectName来自于aop:aspect的ref属性，此属性是必须配置的，因为Spring要知道aop:before等标签指定的方法是哪个bean/类/对象的方法。<br><br>aop:declare-parents<br>对于aop:declare-parents子标签，其决定的是代理子类应该实现哪些接口:<br><br><aop:declare-parents types-matching="" implement-interface=""><br>此标签最终被解析成为beanClass为DeclareParentsAdvisor的BeanDefinition，并注册到容器中。其类图:<br><br>DeclareParentsAdvisor类图<br><br>其它<br>此处的其它指的是aop:before, aop:after等最核心的标签。其最终被解析为beanClass为AspectJPointcutAdvisor的BeanDefinition，类图:<br><br>AspectJPointcutAdvisor类图<br><br>正如上面结构图里所描述的，其构造参数为一个BeanDefintion，此对象的beanClass是不确定的，由aop:before/after中的before和after决定，代码:<br><br>private Class&lt;?&gt; getAdviceClass(Element adviceElement, ParserContext parserContext) {<br>    String elementName = parserContext.getDelegate().getLocalName(adviceElement);<br>    if (BEFORE.equals(elementName)) {<br>        return AspectJMethodBeforeAdvice.class;<br>    } else if (AFTER.equals(elementName)) {<br>        return AspectJAfterAdvice.class;<br>    } else if (AFTER_RETURNING_ELEMENT.equals(elementName)) {<br>        return AspectJAfterReturningAdvice.class;<br>    } else if (AFTER_THROWING_ELEMENT.equals(elementName)) {<br>        return AspectJAfterThrowingAdvice.class;<br>    } else if (AROUND.equals(elementName)) {<br>        return AspectJAroundAdvice.class;<br>    }<br>}<br>而此BeanDefintion的构造参数又由以下三个部分组成:<br><br>MethodLocatingFactoryBean<br>第一个便是beanClass为此类型的BeanDefinition。其内部有一个methodName属性，存储的便是标签的method属性的值。其类图:<br><br>MethodLocatingFactoryBean类图<br><br>这个东西是干什么用的呢?其实是用于在指定的advice(aop:aspect的ref属性)中得到Method对象。入口在setBeanFactory方法:<br><br>@Override<br>public void setBeanFactory(BeanFactory beanFactory) {<br>    Class&lt;?&gt; beanClass = beanFactory.getType(this.targetBeanName);<br>    this.method = BeanUtils.resolveSignature(this.methodName, beanClass);<br>}<br>SimpleBeanFactoryAwareAspectInstanceFactory<br>其类图:<br><br>SimpleBeanFactoryAwareAspectInstanceFactory类图<br><br>此类用于在BeanFactory中定位aspect bean，这个bean指的是谁?<br><br><bean id="aopAdvice" class="base.aop.AopDemoAdvice"><br>就是它!查找很简单:<br><br>@Override<br>public Object getAspectInstance() {<br>    return this.beanFactory.getBean(this.aspectBeanName);<br>}<br>总结<br>从整个aop:aspect标签最终被解析为一个AspectJPointcutAdvisor来看，Spring在实现上仍将其作为Advisor的概念。<br><br>代理子类生成<br>关键在于AspectJAwareAdvisorAutoProxyCreator，此对象在ConfigBeanDefinitionParser的configureAutoProxyCreator方法中注册，其类图:<br><br>AspectJAwareAdvisorAutoProxyCreator类图<br><br>那么子类生成的入口在哪里呢?<br><br>入口<br>从AspectJAwareAdvisorAutoProxyCreator的类图中可以看出，此类实现了SmartInstantiationAwareBeanPostProcessor接口，所以很容易想到入口应该位于此接口及其父接口(BeanPostProcessor)的相关方法中。实际上确实是这样的。<br><br>postProcessBeforeInstantiation<br>调用时机<br>先来回顾一下此方法在Bean创建的过程中的调用时机。<br><br>AbstractAutowireCapableBeanFactory.createBean部分源码:<br><br>//// Give BeanPostProcessors a chance to return a proxy instead of the target bean instance.<br>Object bean = resolveBeforeInstantiation(beanName, mbdToUse);<br>if (bean != null) {<br>    return bean;<br>}<br>Object beanInstance = doCreateBean(beanName, mbdToUse, args);<br>可以看出，调用发生在Bean实例的创建之前。<br><br>源码<br>AbstractAutoProxyCreator.postProcessBeforeInstantiation:<br><br>@Override<br>public Object postProcessBeforeInstantiation(Class&lt;?&gt; beanClass, String beanName) {<br>    Object cacheKey = getCacheKey(beanClass, beanName);<br>    if (beanName == null || !this.targetSourcedBeans.contains(beanName)) {<br>        if (this.advisedBeans.containsKey(cacheKey)) {<br>            return null;<br>        }<br>        if (isInfrastructureClass(beanClass) || shouldSkip(beanClass, beanName)) {<br>            this.advisedBeans.put(cacheKey, Boolean.FALSE);<br>            return null;<br>        }<br>    }<br>    if (beanName != null) {<br>        TargetSource targetSource = getCustomTargetSource(beanClass, beanName);<br>        if (targetSource != null) {<br>            this.targetSourcedBeans.add(beanName);<br>            Object[] specificInterceptors =<br>                getAdvicesAndAdvisorsForBean(beanClass, beanName, targetSource);<br>            Object proxy = createProxy(beanClass, beanName, specificInterceptors, targetSource);<br>            this.proxyTypes.put(cacheKey, proxy.getClass());<br>            return proxy;<br>        }<br>    }<br>    return null;<br>}<br>下面分部分对其进行说明。<br><br>应该代理 ?<br>Spring首先会对当前的beanClass进行检查(是否应该/可以对其进行代理)。<br><br>不应该代理的类分为两种情况:<br><br>用于实现AOP的Spring基础类，此种情况在isInfrastructureClass方法中完成检测(单词Infrastructure正是基础设施的意思)。<br>子类定义的应该跳过的类，默认AbstractAutoProxyCreator的实现直接返回false，即都不应该跳过。<br>基础类检测<br>AbstractAutoProxyCreator.isInfrastructureClass:<br><br>protected boolean isInfrastructureClass(Class&lt;?&gt; beanClass) {<br>    boolean retVal = Advice.class.isAssignableFrom(beanClass) ||<br>            Pointcut.class.isAssignableFrom(beanClass) ||<br>            Advisor.class.isAssignableFrom(beanClass) ||<br>            AopInfrastructureBean.class.isAssignableFrom(beanClass);<br>    return retVal;<br>}<br>可以看出，任何Advice、Pointcut、Advisor、AopInfrastructureBean的子类都被当做Spring实现AOP的基础设施类。<br><br>跳过类检测<br>即shouldSkip方法。前面提到了，AbstractAutoProxyCreator的默认实现直接返回fasle，这一特性被子类AspectJAwareAdvisorAutoProxyCreator重写:<br><br>@Override<br>protected boolean shouldSkip(Class&lt;?&gt; beanClass, String beanName) {<br>    List<advisor> candidateAdvisors = findCandidateAdvisors();<br>    for (Advisor advisor : candidateAdvisors) {<br>        if (advisor instanceof AspectJPointcutAdvisor) {<br>            if (((AbstractAspectJAdvice) advisor.getAdvice()).getAspectName().equals(beanName)) {<br>                return true;<br>            }<br>        }<br>    }<br>    return super.shouldSkip(beanClass, beanName);<br>}<br>那么此方法跳过的是谁呢？<br><br>其实就是我们通过aop:aspect标签配置的切面，即:<br><br><bean id="aopAdvice" class="base.aop.AopDemoAdvice"><br><aop:config><br>    <aop:aspect ref="aopAdvice"><br>    </aop:aspect><br></aop:config><br>里的aopAdvice。<br><br>从前面的aop:aspect一节中可以知道，Spring对于aop:config的解析其实是把aop:before/after等标签解析成为了AspectJPointcutAdvisor类型的BeanDefinition，而aopAdvice以AbstractAspectJAdvice的类型保存在其中。<br><br>所以可以得出结论: Spring跳过的是适用于当前bean的Advisor的Advice/Aspect对象。<br><br>AOP逻辑<br>AOP逻辑图<br><br>那么Spring又是如何找到适用于当前bean的Advisor的呢?<br><br>Advisor寻找<br>关键便是findCandidateAdvisors方法，此方法将逻辑委托给BeanFactoryAdvisorRetrievalHelper.findAdvisorBeans:<br><br>public List<advisor> findAdvisorBeans() {<br>    String[] advisorNames = null;<br>    synchronized (this) {<br>         // 结果缓存<br>        advisorNames = this.cachedAdvisorBeanNames;<br>        if (advisorNames == null) {<br>             // 去容器中寻找<br>            advisorNames = BeanFactoryUtils.beanNamesForTypeIncludingAncestors(<br>                    this.beanFactory, Advisor.class, true, false);<br>            this.cachedAdvisorBeanNames = advisorNames;<br>        }<br>    }<br>    if (advisorNames.length == 0) {<br>        return new LinkedList<advisor>();<br>    }<br>    List<advisor> advisors = new LinkedList<advisor>();<br>    for (String name : advisorNames) {<br>        if (isEligibleBean(name)) {<br>            if (!this.beanFactory.isCurrentlyInCreation(name)) {<br>                advisors.add(this.beanFactory.getBean(name, Advisor.class));<br>            }<br>        }<br>    }<br>    return advisors;<br>}<br>可以看出，首先是从容器中获取到所有的Advisor示例，然后调用isEligibleBean方法逐一判断Advisor是否适用于当前bean。<br><br>适用性检测<br>指的便是isEligibleBean方法。最终调用的是AbstractAdvisorAutoProxyCreator的同名方法:<br><br>protected boolean isEligibleAdvisorBean(String beanName) {<br>    return true;<br>}<br>而AbstractAdvisorAutoProxyCreator的子类AspectJAwareAdvisorAutoProxyCreator并没有覆盖此方法，所以此处会对容器中所有的Advisor的Advice进行跳过。<br><br>检测结果缓存<br>因为postProcessBeforeInstantiation方法会在每个bean初始化之前被调用，所以没有必要每次都真的进行基础类检测和跳过类检测，Spring使用了advisedBeans作为缓存用以提高性能。<br><br>TargetSource<br>从源码中可以看出，对于自定义的TargetSource，Spring会立即执行代理子类的创建。Spring的代理其实是针对TargetSource的，其类图:<br><br>TargetSource类图<br><br>关于此接口在此不展开叙述。<br><br>postProcessAfterInitialization<br>AbstractAutoProxyCreator.postProcessAfterInitialization:<br><br>@Override<br>public Object postProcessAfterInitialization(Object bean, String beanName) {<br>    if (bean != null) {<br>        Object cacheKey = getCacheKey(bean.getClass(), beanName);<br>        if (!this.earlyProxyReferences.contains(cacheKey)) {<br>            return wrapIfNecessary(bean, beanName, cacheKey);<br>        }<br>    }<br>    return bean;<br>}<br>关键便在于wrapIfNecessary方法:<br><br>protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) {<br>    //自定义TargetSource，已经进行过代理子类生成<br>    if (beanName != null &amp;&amp; this.targetSourcedBeans.contains(beanName)) {<br>        return bean;<br>    }<br>    if (Boolean.FALSE.equals(this.advisedBeans.get(cacheKey))) {<br>        return bean;<br>    }<br>    if (isInfrastructureClass(bean.getClass()) || shouldSkip(bean.getClass(), beanName)) {<br>        this.advisedBeans.put(cacheKey, Boolean.FALSE);<br>        return bean;<br>    }<br>    // Create proxy if we have advice.<br>    Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);<br>    if (specificInterceptors != DO_NOT_PROXY) {<br>        this.advisedBeans.put(cacheKey, Boolean.TRUE);<br>        // 创建<br>        Object proxy = createProxy(<br>                bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));<br>        this.proxyTypes.put(cacheKey, proxy.getClass());<br>        return proxy;<br>    }<br>    this.advisedBeans.put(cacheKey, Boolean.FALSE);<br>    return bean;<br>}<br>可以看出，在此方法的开头又进行了基础类以及跳过类的检测，再次不再赘述。<br><br>Advisor寻找<br>即getAdvicesAndAdvisorsForBean方法，这里进行的便是去容器中寻找适用于当前bean的Advisor，最终调用的是<br><br>AbstractAdvisorAutoProxyCreator.findEligibleAdvisors:<br><br>protected List<advisor> findEligibleAdvisors(Class&lt;?&gt; beanClass, String beanName) {<br>    List<advisor> candidateAdvisors = findCandidateAdvisors();<br>    List<advisor> eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);<br>    extendAdvisors(eligibleAdvisors);<br>    if (!eligibleAdvisors.isEmpty()) {<br>        eligibleAdvisors = sortAdvisors(eligibleAdvisors);<br>    }<br>    return eligibleAdvisors;<br>}<br>findCandidateAdvisors前面已经说过了。<br><br>适用性判断<br>findAdvisorsThatCanApply最终调用AopUtils.findAdvisorsThatCanApply:<br><br>public static List<advisor> findAdvisorsThatCanApply(List<advisor> candidateAdvisors, Class&lt;?&gt; clazz) {<br>    if (candidateAdvisors.isEmpty()) {<br>        return candidateAdvisors;<br>    }<br>    List<advisor> eligibleAdvisors = new LinkedList<advisor>();<br>    for (Advisor candidate : candidateAdvisors) {<br>        if (candidate instanceof IntroductionAdvisor &amp;&amp; canApply(candidate, clazz)) {<br>            eligibleAdvisors.add(candidate);<br>        }<br>    }<br>    boolean hasIntroductions = !eligibleAdvisors.isEmpty();<br>    for (Advisor candidate : candidateAdvisors) {<br>        if (candidate instanceof IntroductionAdvisor) {<br>            // already processed<br>            continue;<br>        }<br>        if (canApply(candidate, clazz, hasIntroductions)) {<br>            eligibleAdvisors.add(candidate);<br>        }<br>    }<br>    return eligibleAdvisors;<br>}<br>关键在于canApply方法，从源码中可以看出，对于Advisor的判断分为了IntroductionAdvisor以及非IntroductionAdvisor两种情况。<br><br>这种分开处理导致了IntroductionAdvisor在Advisor链中总是位于非IntroductionAdvisor前面。<br><br>canApply(candidate, clazz)其实等价于canApply(candidate, clazz, false):<br><br>public static boolean canApply(Advisor advisor, Class&lt;?&gt; targetClass, boolean hasIntroductions) {<br>    if (advisor instanceof IntroductionAdvisor) {<br>        return ((IntroductionAdvisor) advisor).getClassFilter().matches(targetClass);<br>    }<br>    else if (advisor instanceof PointcutAdvisor) {<br>        PointcutAdvisor pca = (PointcutAdvisor) advisor;<br>        return canApply(pca.getPointcut(), targetClass, hasIntroductions);<br>    }<br>    else {<br>        // It doesn’t have a pointcut so we assume it applies.<br>        return true;<br>    }<br>}<br>很明显，对于引入Advisor与其它Advisor是两种不同的判断方式。<br><br>引入<br>引入的概念在下面aop:scoped-proxy中有提到。因为引入的目的在于动态地向一个类添加另一种功能(接口)，所以只要判断给定的类是否是要引入到的类即可。<br><br>其它<br>AopUtils.canApply:<br><br>public static boolean canApply(Pointcut pc, Class&lt;?&gt; targetClass, boolean hasIntroductions) {<br>    //是否Pointcut可以匹配当前类<br>    if (!pc.getClassFilter().matches(targetClass)) {<br>        return false;<br>    }<br>    MethodMatcher methodMatcher = pc.getMethodMatcher();<br>    //是否Pointcut可以匹配所有方法<br>    if (methodMatcher == MethodMatcher.TRUE) {<br>        // No need to iterate the methods if we’re matching any method anyway…<br>        return true;<br>    }<br>    IntroductionAwareMethodMatcher introductionAwareMethodMatcher = null;<br>    if (methodMatcher instanceof IntroductionAwareMethodMatcher) {<br>        introductionAwareMethodMatcher = (IntroductionAwareMethodMatcher) methodMatcher;<br>    }<br>    Set<class<?>&gt; classes = new LinkedHashSet<class<?>&gt;<br>        (ClassUtils.getAllInterfacesForClassAsSet(targetClass));<br>    classes.add(targetClass);<br>    for (Class&lt;?&gt; clazz : classes) {<br>        Method[] methods = ReflectionUtils.getAllDeclaredMethods(clazz);<br>        for (Method method : methods) {<br>            if ((introductionAwareMethodMatcher != null &amp;&amp;<br>                    introductionAwareMethodMatcher<br>                        .matches(method, targetClass, hasIntroductions)) ||<br>                    methodMatcher.matches(method, targetClass)) {<br>                return true;<br>            }<br>        }<br>    }<br>    return false;<br>}<br>Spring的Pointcut由ClassFilter和MethodMatcher两部分组成，其中前者用以判断给定的类是否在Pointcut的匹配范围内，后者用以在ClassFilter匹配满足的情况下判断给定的方法是否在Pointcut匹配的范围内。<br><br>从源码中可以看出，如果ClassFilter匹配得到满足并且Pointcut并不能匹配此类的任意方法，便会用反射的方法获取targetClass(被检测类)的全部方法逐一交由Pointcut的MethodMatcher进行检测。<br><br>关于Pointcut表达式是如何解析及存储的在此不再展开。<br><br>Advisor扩展<br>AbstractAdvisorAutoProxyCreator.extendAdvisors允许子类向Advisor链表中添加自己的Advisor。子类AspectJAwareAdvisorAutoProxyCreator重写了此方法，其逻辑是:<br><br>如果Advisor链表中的Advisor含有AspectJ Advice，那么将会把一个ExposeInvocationInterceptor添加到链表的表头，目的在于将MethodInvocation以ThreadLocal的方式暴露给后面所有的Advisor，暂不知道具体的用途。<br><br>排序<br>即sortAdvisors方法，用于对实现了Ordered接口的Advisor进行排序。<br><br>创建<br>AbstractAutoProxyCreator.createProxy(略去非关键代码):<br><br>protected Object createProxy(<br>        Class&lt;?&gt; beanClass, String beanName, Object[] specificInterceptors, TargetSource targetSource) {<br>    ProxyFactory proxyFactory = new ProxyFactory();<br>    proxyFactory.copyFrom(this);<br>    //将interceptor适配为Advisor<br>    Advisor[] advisors = buildAdvisors(beanName, specificInterceptors);<br>    for (Advisor advisor : advisors) {<br>        proxyFactory.addAdvisor(advisor);<br>    }<br>    return proxyFactory.getProxy(getProxyClassLoader());<br>}<br>JDK动态代理 or Cglib<br>由DefaultAopProxyFactory.createAopProxy方法决定使用何种方式创建代理子类。<br><br>@Override<br>public AopProxy createAopProxy(AdvisedSupport config) throws AopConfigException {<br>    if (config.isOptimize() || config.isProxyTargetClass() ||<br>            hasNoUserSuppliedProxyInterfaces(config)) {<br>        Class&lt;?&gt; targetClass = config.getTargetClass();<br>        if (targetClass.isInterface() || Proxy.isProxyClass(targetClass)) {<br>            return new JdkDynamicAopProxy(config);<br>        }<br>        return new ObjenesisCglibAopProxy(config);<br>    } else {<br>        return new JdkDynamicAopProxy(config);<br>    }<br>}<br>逻辑很明显，如果指定了(proxy-target-classs设为true)使用Cglib，那么就会使用Cglib的方式，如果没有指定(或为false)，那么先回检测被代理类是否实现了自己的接口，如果实现了，那么就采用JDK动态代理的方式。<br><br>JDK动态代理<br>JdkDynamicAopProxy.getProxy:<br><br>@Override<br>public Object getProxy(ClassLoader classLoader) {<br>    //找到可以用来进行代理的接口<br>    Class&lt;?&gt;[] proxiedInterfaces = AopProxyUtils.completeProxiedInterfaces(this.advised, true);<br>    //用来代理的接口中是否定义了equals或者是hashCode方法?<br>    //结果保存在内部equalsDefined和hashCodeDefined两个成员变量中<br>    findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);<br>    return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);<br>}<br>可以看出，关键的InvocationHandler参数其实就是JdkDynamicAopProxy自身。<br><br>其invoke方法较长，源码就不贴了，下面进行分部分说明。<br><br>equals &amp; hashCode<br>如果被代理类实现了equals或者是hashCode方法，那么生成的代理子类的equals、hashCode方法实际上执行的是JdkDynamicAopProxy相应方法的逻辑。<br><br>invoke方法部分源码:<br><br>if (!this.equalsDefined &amp;&amp; AopUtils.isEqualsMethod(method)) {<br>    // The target does not implement the equals(Object) method itself.<br>    return equals(args[0]);<br>}<br>链式调用<br>对于切点方法，比如前面aop:aspect示例配置中的beforeSend<br><br><aop:before method="beforeSend" pointcut-ref="pointcut"><br>Spring会创建一个MethodInvocation对象对所有相关的Advisor进行链式调用。invoke相关源码:<br><br>List<object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);<br>invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);<br>Object retVal = invocation.proceed();<br>Cglib<br>同样是对于Advisor的链式调用，不再详细展开。<br><br>aop:scoped-proxy<br>此配置一般是这样使用:<br><br><bean id="userPreferences" class="com.foo.UserPreferences" scope="session"><br>    <aop:scoped-proxy><br></aop:scoped-proxy></bean><br><bean id="userManager" class="com.foo.UserManager"><br>    <property name="userPreferences" ref="userPreferences"><br></property></bean><br>对于ref属性，只会在userManager初始化时注入一次。这会造成什么问题呢?以session的Scope为例，因为只会注入一次，所以，userManager引用的始终是同一个userPreferences对象，即使现在可能已经过时了。此配置便可以使userManager引用的其实是一个对代理的引用，所以可以始终获取到最新的userPreferences。<br><br>其作用和注解@ScopedProxy相同。<br><br>其解析由ScopedProxyBeanDefinitionDecorator完成，类图:<br><br>ScopedProxyBeanDefinitionDecorator类图<br><br>解析<br>入口<br>从类图可以看出，ScopedProxyBeanDefinitionDecorator和之前的解析器都不同，它的调用入口不同以往:<br><br>DefaultBeanDefinitionDocumentReader.processBeanDefinition:<br><br>protected void processBeanDefinition(Element ele, BeanDefinitionParserDelegate delegate) {<br>    BeanDefinitionHolder bdHolder = delegate.parseBeanDefinitionElement(ele);<br>    if (bdHolder != null) {<br>         // 装饰<br>        bdHolder = delegate.decorateBeanDefinitionIfRequired(ele, bdHolder);<br>    }<br>}<br>BeanDefinitionParserDelegate.decorateIfRequired:<br><br>public BeanDefinitionHolder decorateIfRequired(<br>        Node node, BeanDefinitionHolder originalDef, BeanDefinition containingBd) {<br>    String namespaceUri = getNamespaceURI(node);<br>    if (!isDefaultNamespace(namespaceUri)) {<br>        NamespaceHandler handler = this.readerContext.getNamespaceHandlerResolver()<br>            .resolve(namespaceUri);<br>        if (handler != null) {<br>            return handler.<br>                decorate(node, originalDef, new ParserContext(this.readerContext, this, containingBd));<br>        }<br>    }<br>    return originalDef;<br>}<br>一目了然。<br><br>这么做(装饰)的原因就是此标签是用在bean内部的，从decorate的方法签名可以看出，第二个便是父(bean)BeanDefinition，所以叫做装饰。<br><br>装饰<br>@Override<br>public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext) {<br>    boolean proxyTargetClass = true;<br>    if (node instanceof Element) {<br>        Element ele = (Element) node;<br>        if (ele.hasAttribute(PROXY_TARGET_CLASS)) {<br>            proxyTargetClass = Boolean.valueOf(ele.getAttribute(PROXY_TARGET_CLASS));<br>        }<br>    }<br>    BeanDefinitionHolder holder =<br>            ScopedProxyUtils.<br>            createScopedProxy(definition, parserContext.getRegistry(), proxyTargetClass);<br>    String targetBeanName = ScopedProxyUtils.getTargetBeanName(definition.getBeanName());<br>    // 空实现<br>    parserContext.getReaderContext().fireComponentRegistered(<br>            new BeanComponentDefinition(definition.getBeanDefinition(), targetBeanName));<br>    return holder;<br>}<br>核心便是createScopedProxy方法，其源码较长，但是这个套路之前见识过了，就是一个偷天换日: 创建一个新的BeanDefinition对象，beanName为被代理的bean的名字，被代理的bean名字为scopedTarget.原名字。被代理的bean扔将被注册到容器中。<br><br>新的BeanDefintion的beanClass为ScopedProxyFactoryBean，其类图:<br><br>ScopedProxyFactoryBean类图<br><br>代理生成<br>入口便是setBeanFactory方法:<br><br>@Override<br>public void setBeanFactory(BeanFactory beanFactory) {<br>    ConfigurableBeanFactory cbf = (ConfigurableBeanFactory) beanFactory;<br>    this.scopedTargetSource.setBeanFactory(beanFactory);<br>    ProxyFactory pf = new ProxyFactory();<br>    pf.copyFrom(this);<br>    pf.setTargetSource(this.scopedTargetSource);<br><br>    Class&lt;?&gt; beanType = beanFactory.getType(this.targetBeanName);<br>    if (!isProxyTargetClass() || beanType.isInterface() ||<br>        Modifier.isPrivate(beanType.getModifiers())) {<br>         // JDK动态代理可用的接口<br>        pf.setInterfaces(ClassUtils.getAllInterfacesForClass(beanType, cbf.getBeanClassLoader()));<br>    }<br>    // Add an introduction that implements only the methods on ScopedObject.<br>    ScopedObject scopedObject = new DefaultScopedObject<br>        (cbf, this.scopedTargetSource.getTargetBeanName());<br>    pf.addAdvice(new DelegatingIntroductionInterceptor(scopedObject));<br>    // Add the AopInfrastructureBean marker to indicate that the scoped proxy<br>    // itself is not subject to auto-proxying! Only its target bean is.<br>    pf.addInterface(AopInfrastructureBean.class);<br>    this.proxy = pf.getProxy(cbf.getBeanClassLoader());<br>}<br>这个套路上面也见过了。<br><br>Advisor<br>核心的拦截逻辑是通过DelegatingIntroductionInterceptor来完成的，其类图:<br><br>DelegatingIntroductionInterceptor类图<br><br>AdvisedSupport.addAdvice方法将其转化为Advisor:<br><br>@Override<br>public void addAdvice(int pos, Advice advice) throws AopConfigException {<br>    if (advice instanceof IntroductionInfo) {<br>        // We don’t need an IntroductionAdvisor for this kind of introduction:<br>        // It’s fully self-describing.<br>        addAdvisor(pos, new DefaultIntroductionAdvisor(advice, (IntroductionInfo) advice));<br>    } else if (advice instanceof DynamicIntroductionAdvice) {<br>        // We need an IntroductionAdvisor for this kind of introduction.<br>    } else {<br>        addAdvisor(pos, new DefaultPointcutAdvisor(advice));<br>    }<br>}<br>显然，DelegatingIntroductionInterceptor被包装为DefaultIntroductionAdvisor对象。<br><br>DelegatingIntroductionInterceptor到底是个什么东西呢?这其实就引出了Spring的Introduction(引入)概念。<br><br>引入<br>通常意义上的Spring AOP一般是在方法层面上进行逻辑的改变，而引入指的是在不修改类源码的情况下，直接为一个类添加新的功能。下面是一个引入使用的例子:<br><br>SpringAOP中的IntroductionInterceptor<br><br>例子<br>自定义Scope<br>为了便于测试，我们定义一个生存周期仅仅在于一次调用的Scope，源码:<br><br>public class OneScope implements Scope {<br><br>    private int index = 0;<br><br>    @Override<br>    public Object get(String name, ObjectFactory&lt;?&gt; objectFactory) {<br>        System.out.println(“get被调用”);<br>        return new Student(“skywalker-“ + (index++), index);<br>    }<br>    //忽略其它方法<br>}<br>将其注册到容器中，有两种方法:<br><br>在代码中:<br><br>context.getBeanFactory().registerScope(“one”, new OneScope());<br>配置文件:<br><br><bean class="org.springframework.beans.factory.config.CustomScopeConfigurer"><br>  <property name="scopes"><br>      <map><br>          <entry key="one"><br>              <bean class="base.scope.OneScope"><br>          </bean></entry><br>      </map><br>  </property><br></bean><br>配置<br>此时就可以使用我们自己的Scope了:<br><br><bean class="base.SimpleBean" id="simpleBean"><br>    <property name="student" ref="student"><br></property></bean>
+
+<p><bean id="student" class="base.Student" scope="one"><br>    <aop:scoped-proxy><br></aop:scoped-proxy></bean><br>测试<br>执行以下代码:</p>
+<p>SimpleBean simpleBean = context.getBean(SimpleBean.class);<br>System.out.println(simpleBean.getStudent().getName());<br>System.out.println(simpleBean.getStudent().getName());<br>可以看到以下输出:</p>
+<p>get被调用<br>skywalker-0<br>get被调用<br>skywalker-1<br>可以得出结论: 当调用被代理的bean的方法时才会触发Scoped的语义，只是获得其对象(getStudent)没有效果。</p>
+<p>原理<br>doGetBean<br>从根本上来说在于AbstractBeanFactory.doGetBean，部分源码:</p>
+<p>//scope非prototype和Singleton<br>else {<br>    String scopeName = mbd.getScope();<br>    final Scope scope = this.scopes.get(scopeName);<br>    Object scopedInstance = scope.get(beanName, new ObjectFactory<object>() {<br>        @Override<br>        public Object getObject() throws BeansException {<br>            beforePrototypeCreation(beanName);<br>            try {<br>                return createBean(beanName, mbd, args);<br>            }<br>            finally {<br>                afterPrototypeCreation(beanName);<br>            }<br>        }<br>    });<br>    bean = getObjectForBeanInstance(scopedInstance, name, beanName, mbd);<br>}<br>scopes是BeanFactory内部的一个 LinkedHashMap<string, scope="">类型的对象。scope.get实际上调用的就是我们的OneSocpe的get方法，没有用到ObjectFactory。</string,></object></p>
+<p>所以，每调用一次getBean，就会导致一个新的Sudent被创建并返回。</p>
+<p>代理子类<br>还有一个关键的问题，从上面可以知道SimpleBean内部的student引用其实是一个CGLIB代理子类的对象，那么当调用这个代理对象的相应方法(比如getName)时，是怎样导致Student重新创建(或是getBean被调用)的?</p>
+<p>CallbackFilter &amp; Callback<br>必须首先理解下CGLIB的这两个概念。</p>
+<p>Callback<br>Callback是Cglib所有自定义逻辑(增强)的共同接口。</p>
+<p>其简略类图:</p>
+<p>Callback类图</p>
+<p>CallbackFilter<br>在CGLib回调时可以设置对不同方法执行不同的回调逻辑，或者根本不执行回调。</p>
+<p>jdk并不支持这么搞，只支持设置一个InvocationHandler处理(拦截)所有的方法。其类图:</p>
+<p>CallbackFilter类图</p>
+<p>Cglib的Enhancer可以指定一个Callback数组，而accept方法的返回值是一个int值，其实就是Callback数组的下标，这样便达到了指定回调逻辑的目的。</p>
+<p>参考:</p>
+<p>CGLIB介绍与原理</p>
+<p>回调<br>一般的方法使用的是DynamicAdvisedInterceptor作为回调逻辑，其intercept关键源码:</p>
+<p>@Override<br>public Object intercept(Object proxy, Method method, Object[] args, MethodProxy methodProxy) {<br>    Object target = getTarget();<br>}<br>target就是被代理对象。</p>
+<p>getTarget:</p>
+<p>protected Object getTarget() throws Exception {<br>    return this.advised.getTargetSource().getTarget();<br>}<br>TargetSource前面说过了，默认是SimpleBeanTargetSource:</p>
+<p>@Override<br>public Object getTarget() throws Exception {<br>    return getBeanFactory().getBean(getTargetBeanName());<br>}<br>至此，真相大白。</p>
+<p>aop:aspectj-autoproxy<br>此标签用以开启对于@AspectJ注解风格AOP的支持。</p>
+<p>属性<br>proxy-target-class<br>你懂的。</p>
+<p>expose-proxy<br>是否应该把代理对象暴露给AopContext，默认false。</p>
+<p>栗子<br>切面<br>@Aspect<br>public class AspectDemo {<br>    @Pointcut(“execution(void base.aop.AopDemo.send(..))”)<br>    public void beforeSend() {}<br>    @Before(“beforeSend()”)<br>    public void before() {<br>        System.out.println(“send之前”);<br>    }<br>}<br>被代理类<br>public class AopDemo implements AopDemoInter {<br>    public void send() {<br>        System.out.println(“send from aopdemo”);<br>    }<br>    public void receive() {<br>        System.out.println(“receive from aopdemo”);<br>    }<br>    @Override<br>    public void inter() {<br>        System.out.println(“inter”);<br>    }<br>}<br>配置</p>
+<p><aop:aspectj-autoproxy proxy-target-class="true"></aop:aspectj-autoproxy></p>
+<p><bean class="base.aop.AopDemo"></bean></p>
+<p><bean class="base.aop.annotation.AspectDemo"><br>因为AopDemo实现了AopDemoInter接口，但做实验的send方法又不在此接口里定义，所以只能用cglib的方式代理。</bean></p>
+<p>可以看出，即使标注了@Aspect注解，仍然需要将切面自己配置到Spring容器中。</p>
+<p>解析<br>AspectJAutoProxyBeanDefinitionParser.parse:</p>
+<p>@Override<br>public BeanDefinition parse(Element element, ParserContext parserContext) {<br>    AopNamespaceUtils.<br>        registerAspectJAnnotationAutoProxyCreatorIfNecessary(parserContext, element);<br>    extendBeanDefinition(element, parserContext);<br>    return null;<br>}<br>注册最终在AopConfigUtils.registerOrEscalateApcAsRequired方法中完成，创建器实际上是一个AnnotationAwareAspectJAutoProxyCreator类的对象，此类是前面AspectJAwareAdvisorAutoProxyCreator的子类。</p>
+<p>原理<br>既然是AspectJAwareAdvisorAutoProxyCreator的子类，那么其代理子类的创建等核心逻辑自然是一样的。这里所需要关注的地方自然是所不一样的地方: 即是如何体现其注解的特性的。</p>
+<p>前面说过，AspectJAwareAdvisorAutoProxyCreator通过findCandidateAdvisors方法来找到适用于bean的Advisor，所以注解的特性也是通过重写此方法来体现。</p>
+<p>AnnotationAwareAspectJAutoProxyCreator.findCandidateAdvisors:</p>
+<p>@Override<br>protected List<advisor> findCandidateAdvisors() {<br>    List<advisor> advisors = super.findCandidateAdvisors();<br>    //这里<br>    advisors.addAll(this.aspectJAdvisorsBuilder.buildAspectJAdvisors());<br>    return advisors;<br>}<br>buildAspectJAdvisors方法所做的便是从容器中得到所有的bean，逐一判断是不是一个Aspect。那么判断Aspect的依据是什么?</advisor></advisor></p>
+<p>AbstractAspectJAdvisorFactory.isAspect:</p>
+<p>@Override<br>public boolean isAspect(Class&lt;?&gt; clazz) {<br>    return (hasAspectAnnotation(clazz) &amp;&amp; !compiledByAjc(clazz));<br>}<br>至于其它的实现细节不再探究。</p>
+<p>总结<br>Spring对于AspectJ风格AOP的支持停留在外表(注解)上面，内部的实现仍然是自己的东西。</p>
+<p>拾遗<br>AOP切面的坑<br>定义在private方法上的切面不会被执行，这个很容易理解，毕竟子类不能覆盖父类的私有方法。<br>同一个代理子类内部的方法相互调用不会再次执行切面。<br>这里以Cglib为例对第二点进行说明，cglib的相关核心组件可以参考前面CallbackFilter &amp; Callback部分。对于配置了一个切面的典型场景，Spring内部的执行流程可总结如下图:</p>
+<p>Cglib调用流程</p>
+<p>核心便是对目标方法的调用上，这里由CglibMethodInvocation的invokeJoinpoint实现:</p>
+<p>@Override<br>protected Object invokeJoinpoint() throws Throwable {<br>    if (this.publicMethod) {<br>        return this.methodProxy.invoke(this.target, this.arguments);<br>    } else {<br>        return super.invokeJoinpoint();<br>    }<br>}<br>如果是非public方法，那么Spring将使用反射的方法对其进行调用，因为反射将其可访问性设为true。MethodProxy是Cglib对方法代理的抽象，这里的关键是方法调用的对象(目标)是我们的原生类对象，而不是Cglib代理子类的对象，这就从根本上决定了对同类方法的调用不会再次经过切面。</p>
+<p>总结<br>前面aop:aspectj-autoproxy-属性-expose-proxy一节提到了，Spring允许我们将代理子类暴露出来，可以进行如下配置:</p>
+<p><aop:config expose-proxy="true"><br>    <aop:advisor advice-ref="simpleMethodInterceptor" pointcut="execution(* aop.SimpleAopBean.*(..))"><br></aop:advisor></aop:config><br>当我们需要在一个被代理方法中调用同类的方法时(此方法也需要经过切面)，可以这样调用:</p>
+<p>public void testB() {<br>    System.out.println(“testB执行”);<br>    ((SimpleAopBean) AopContext.currentProxy()).testC();<br>}<br>这里其实是一个ThreadLocal，当Cglib代理子类创建调用链之间便会将代理类设置到其中，DynamicAdvisedInterceptor.intercept相关源码:</p>
+<p>if (this.advised.exposeProxy) {<br>    // Make invocation available if necessary.<br>    oldProxy = AopContext.setCurrentProxy(proxy);<br>    setProxyContext = true;<br>}</p>
+</object></aop:before></class<?></class<?></advisor></advisor></advisor></advisor></advisor></advisor></advisor></advisor></advisor></advisor></advisor></bean></advisor></bean></aop:declare-parents></bean></bean>
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw6fyl7gbj30fk0f6wfl.jpg" alt="haianzwh wechat" style="width: 200px; max-width: 100%;"/>
+    <div></div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw1ic1wv3j30bj0bq3z7.jpg" alt="haianzwh 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw1m49s06j309309974r.jpg" alt="haianzwh 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    haianzwh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://haianzwh.github.io/2018/06/08/Spring-aop/" title="Spring-aop">http://haianzwh.github.io/2018/06/08/Spring-aop/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/haianzwh.github.io/tags/源码剖析/" rel="tag"># 源码剖析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/haianzwh.github.io/2018/06/04/Spring IOC 容器源码分析/" rel="next" title="Spring-core">
+                <i class="fa fa-chevron-left"></i> Spring-core
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/haianzwh.github.io/2018/06/12/Spring-transaction/" rel="prev" title="Spring-transaction">
+                Spring-transaction <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+ <div id="gitalk-container"></div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+
+      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://ws1.sinaimg.cn/large/00649eqogy1fyw15ah7hhj3021021mx0.jpg"
+                alt="haianzwh" />
+            
+              <p class="site-author-name" itemprop="name">haianzwh</p>
+              <p class="site-description motion-element" itemprop="description">每一步做到极致 <br> 下一步美好自然呈现</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/haianzwh.github.io/archives">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/haianzwh.github.io/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/haianzwh.github.io/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/haianzwh" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                 <a title="收藏到书签，偶尔High一下^_^" rel="alternate" class="mw-harlem_shake_slow wobble shake" href='javascript:(function() {
+    function c() {
+        var e = document.createElement("link");
+        e.setAttribute("type", "text/css");
+        e.setAttribute("rel", "stylesheet");
+        e.setAttribute("href", f);
+        e.setAttribute("class", l);
+        document.body.appendChild(e)
+    }
+
+    function h() {
+        var e = document.getElementsByClassName(l);
+        for (var t = 0; t < e.length; t++) {
+            document.body.removeChild(e[t])
+        }
+    }
+
+    function p() {
+        var e = document.createElement("div");
+        e.setAttribute("class", a);
+        document.body.appendChild(e);
+        setTimeout(function() {
+            document.body.removeChild(e)
+        }, 100)
+    }
+
+    function d(e) {
+        return {
+            height : e.offsetHeight,
+            width : e.offsetWidth
+        }
+    }
+
+    function v(i) {
+        var s = d(i);
+        return s.height > e && s.height < n && s.width > t && s.width < r
+    }
+
+    function m(e) {
+        var t = e;
+        var n = 0;
+        while (!!t) {
+            n += t.offsetTop;
+            t = t.offsetParent
+        }
+        return n
+    }
+
+    function g() {
+        var e = document.documentElement;
+        if (!!window.innerWidth) {
+            return window.innerHeight
+        } else if (e && !isNaN(e.clientHeight)) {
+            return e.clientHeight
+        }
+        return 0
+    }
+
+    function y() {
+        if (window.pageYOffset) {
+            return window.pageYOffset
+        }
+        return Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    }
+
+    function E(e) {
+        var t = m(e);
+        return t >= w && t <= b + w
+    }
+
+    function S() {
+        var e = document.createElement("audio");
+        e.setAttribute("class", l);
+        e.src = i;
+        e.loop = false;
+        e.addEventListener("canplay", function() {
+            setTimeout(function() {
+                x(k)
+            }, 500);
+            setTimeout(function() {
+                N();
+                p();
+                for (var e = 0; e < O.length; e++) {
+                    T(O[e])
+                }
+            }, 15500)
+        }, true);
+        e.addEventListener("ended", function() {
+            N();
+            h()
+        }, true);
+        e.innerHTML = " <p>If you are reading this, it is because your browser does not support the audio element. We recommend that you get a new browser.</p> <p>";
+        document.body.appendChild(e);
+        e.play()
+    }
+
+    function x(e) {
+        e.className += " " + s + " " + o
+    }
+
+    function T(e) {
+        e.className += " " + s + " " + u[Math.floor(Math.random() * u.length)]
+    }
+
+    function N() {
+        var e = document.getElementsByClassName(s);
+        var t = new RegExp("\\b" + s + "\\b");
+        for (var n = 0; n < e.length; ) {
+            e[n].className = e[n].className.replace(t, "")
+        }
+    }
+
+    var e = 30;
+    var t = 30;
+    var n = 350;
+    var r = 350;
+    var i = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake.mp3";
+    var s = "mw-harlem_shake_me";
+    var o = "im_first";
+    var u = ["im_drunk", "im_baked", "im_trippin", "im_blown"];
+    var a = "mw-strobe_light";
+    var f = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake-style.css";
+    var l = "mw_added_css";
+    var b = g();
+    var w = y();
+    var C = document.getElementsByTagName("*");
+    var k = null;
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            if (E(A)) {
+                k = A;
+                break
+            }
+        }
+    }
+    if (A === null) {
+        console.warn("Could not find a node of the right size. Please try a different page.");
+        return
+    }
+    c();
+    S();
+    var O = [];
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            O.push(A)
+        }
+    }
+})()'><i class="fa fa-music"></i> High</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="haianzwh@gmail.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                 <a title="收藏到书签，偶尔High一下^_^" rel="alternate" class="mw-harlem_shake_slow wobble shake" href='javascript:(function() {
+    function c() {
+        var e = document.createElement("link");
+        e.setAttribute("type", "text/css");
+        e.setAttribute("rel", "stylesheet");
+        e.setAttribute("href", f);
+        e.setAttribute("class", l);
+        document.body.appendChild(e)
+    }
+
+    function h() {
+        var e = document.getElementsByClassName(l);
+        for (var t = 0; t < e.length; t++) {
+            document.body.removeChild(e[t])
+        }
+    }
+
+    function p() {
+        var e = document.createElement("div");
+        e.setAttribute("class", a);
+        document.body.appendChild(e);
+        setTimeout(function() {
+            document.body.removeChild(e)
+        }, 100)
+    }
+
+    function d(e) {
+        return {
+            height : e.offsetHeight,
+            width : e.offsetWidth
+        }
+    }
+
+    function v(i) {
+        var s = d(i);
+        return s.height > e && s.height < n && s.width > t && s.width < r
+    }
+
+    function m(e) {
+        var t = e;
+        var n = 0;
+        while (!!t) {
+            n += t.offsetTop;
+            t = t.offsetParent
+        }
+        return n
+    }
+
+    function g() {
+        var e = document.documentElement;
+        if (!!window.innerWidth) {
+            return window.innerHeight
+        } else if (e && !isNaN(e.clientHeight)) {
+            return e.clientHeight
+        }
+        return 0
+    }
+
+    function y() {
+        if (window.pageYOffset) {
+            return window.pageYOffset
+        }
+        return Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    }
+
+    function E(e) {
+        var t = m(e);
+        return t >= w && t <= b + w
+    }
+
+    function S() {
+        var e = document.createElement("audio");
+        e.setAttribute("class", l);
+        e.src = i;
+        e.loop = false;
+        e.addEventListener("canplay", function() {
+            setTimeout(function() {
+                x(k)
+            }, 500);
+            setTimeout(function() {
+                N();
+                p();
+                for (var e = 0; e < O.length; e++) {
+                    T(O[e])
+                }
+            }, 15500)
+        }, true);
+        e.addEventListener("ended", function() {
+            N();
+            h()
+        }, true);
+        e.innerHTML = " <p>If you are reading this, it is because your browser does not support the audio element. We recommend that you get a new browser.</p> <p>";
+        document.body.appendChild(e);
+        e.play()
+    }
+
+    function x(e) {
+        e.className += " " + s + " " + o
+    }
+
+    function T(e) {
+        e.className += " " + s + " " + u[Math.floor(Math.random() * u.length)]
+    }
+
+    function N() {
+        var e = document.getElementsByClassName(s);
+        var t = new RegExp("\\b" + s + "\\b");
+        for (var n = 0; n < e.length; ) {
+            e[n].className = e[n].className.replace(t, "")
+        }
+    }
+
+    var e = 30;
+    var t = 30;
+    var n = 350;
+    var r = 350;
+    var i = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake.mp3";
+    var s = "mw-harlem_shake_me";
+    var o = "im_first";
+    var u = ["im_drunk", "im_baked", "im_trippin", "im_blown"];
+    var a = "mw-strobe_light";
+    var f = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake-style.css";
+    var l = "mw_added_css";
+    var b = g();
+    var w = y();
+    var C = document.getElementsByTagName("*");
+    var k = null;
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            if (E(A)) {
+                k = A;
+                break
+            }
+        }
+    }
+    if (A === null) {
+        console.warn("Could not find a node of the right size. Please try a different page.");
+        return
+    }
+    c();
+    S();
+    var O = [];
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            O.push(A)
+        }
+    }
+})()'><i class="fa fa-music"></i> High</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friends
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://haofly.net" title="精通各种语言全栈攻城狮豪豪" target="_blank">精通各种语言全栈攻城狮豪豪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://tanjiangfu.github.io" title="精通运维兼开发攻城狮贱贱" target="_blank">精通运维兼开发攻城狮贱贱</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lqstone.github.io" title="精通前端开发攻城狮巧巧" target="_blank">精通前端开发攻城狮巧巧</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ycllang.github.io/" title="live in Happyness" target="_blank">live in Happyness</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">haianzwh</span>
+  <div class="powered-by">
+  <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+    本站访客数:<span id="busuanzi_value_site_uv"></span>
+  </span>
+  </div>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/haianzwh.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.js"></script>
+
+  
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.css"/>
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+ 
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'cd0069b0b40c322f7a01',
+          clientSecret: '1dc259144561fb634c3e346e64f8e2e1e23b7656',
+          repo: 'haianzwh.github.io',
+          owner: 'haianzwh',
+          admin: ['haianzwh'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/haianzwh.github.io/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/haianzwh.github.io/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/haianzwh.github.io/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/haianzwh.github.io/js/src/algolia-search.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+<script src="/haianzwh.github.io/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>

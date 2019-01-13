@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/haianzwh.github.io/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/haianzwh.github.io/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/haianzwh.github.io/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/haianzwh.github.io/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/haianzwh.github.io/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/haianzwh.github.io/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/haianzwh.github.io/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="源码剖析," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="配置以最简单的jdbc事务为例: 1234567891011&amp;lt;!-- 数据源以Sping自带为例，每次请求均返回一个新的连接 --&amp;gt;&amp;lt;bean id=&amp;quot;dataSource&amp;quot; class=&amp;quot;org.springframewo">
+<meta name="keywords" content="源码剖析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring-transaction">
+<meta property="og:url" content="http://haianzwh.github.io/2018/06/12/Spring-transaction/index.html">
+<meta property="og:site_name" content="蘸酒拭剑">
+<meta property="og:description" content="配置以最简单的jdbc事务为例: 1234567891011&amp;lt;!-- 数据源以Sping自带为例，每次请求均返回一个新的连接 --&amp;gt;&amp;lt;bean id=&amp;quot;dataSource&amp;quot; class=&amp;quot;org.springframework.jdbc.datasource.DriverManagerDataSource&amp;quot;&amp;gt;    &amp;lt;prop">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/InfrastructureAdvisorAutoProxyCreator.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/BeanFactoryTransactionAttributeSourceAdvisor.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/TransactionAttributeSourcePointcut.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/DataSourceTransactionManager.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/DriverManagerDataSource.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/DataSourceTransactionObject.jpg">
+<meta property="og:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/Savepoint.jpg">
+<meta property="og:updated_time" content="2019-01-13T11:20:50.246Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring-transaction">
+<meta name="twitter:description" content="配置以最简单的jdbc事务为例: 1234567891011&amp;lt;!-- 数据源以Sping自带为例，每次请求均返回一个新的连接 --&amp;gt;&amp;lt;bean id=&amp;quot;dataSource&amp;quot; class=&amp;quot;org.springframework.jdbc.datasource.DriverManagerDataSource&amp;quot;&amp;gt;    &amp;lt;prop">
+<meta name="twitter:image" content="https://github.com/seaswalker/Spring/raw/master/note/images/InfrastructureAdvisorAutoProxyCreator.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/haianzwh.github.io/',
+    scheme: 'Pisces',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":true,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://haianzwh.github.io/2018/06/12/Spring-transaction/"/>
+
+
+
+
+
+  <title>Spring-transaction | 蘸酒拭剑</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/haianzwh.github.io/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">蘸酒拭剑</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Unless i do not want to win <br> Otherwise nothing make me lose.</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-首页">
+          <a href="/haianzwh.github.io/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-关于">
+          <a href="/haianzwh.github.io/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/haianzwh.github.io/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-日志">
+          <a href="/haianzwh.github.io/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            日志
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-简历">
+          <a href="/haianzwh.github.io/resume" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            简历
+          </a>
+        </li>
+      
+
+      
+        <li class="menu-item menu-item-search">
+          
+            <a href="javascript:;" class="popup-trigger">
+          
+            
+              <i class="menu-item-icon fa fa-search fa-fw"></i> <br />
+            
+            搜索
+          </a>
+        </li>
+      
+    </ul>
+  
+
+  
+    <div class="site-search">
+      
+  
+  <div class="algolia-popup popup search-popup">
+    <div class="algolia-search">
+      <div class="algolia-search-input-icon">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="algolia-search-input" id="algolia-search-input"></div>
+    </div>
+
+    <div class="algolia-results">
+      <div id="algolia-stats"></div>
+      <div id="algolia-hits"></div>
+      <div id="algolia-pagination" class="algolia-pagination"></div>
+    </div>
+
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+  </div>
+
+
+
+
+    </div>
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://haianzwh.github.io/haianzwh.github.io/2018/06/12/Spring-transaction/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="haianzwh">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://ws1.sinaimg.cn/large/00649eqogy1fyw15ah7hhj3021021mx0.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="蘸酒拭剑">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring-transaction</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-12T23:44:51+08:00">
+                2018-06-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/haianzwh.github.io/categories/源码剖析/" itemprop="url" rel="index">
+                    <span itemprop="name">源码剖析</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 浏览
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>以最简单的jdbc事务为例:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 数据源以Sping自带为例，每次请求均返回一个新的连接 --&gt;</span><br><span class="line">&lt;bean id=&quot;dataSource&quot; class=&quot;org.springframework.jdbc.datasource.DriverManagerDataSource&quot;&gt;</span><br><span class="line">    &lt;property name=&quot;driverClassName&quot; value=&quot;$&#123;jdbc.driverClassName&#125;&quot; /&gt;</span><br><span class="line">    &lt;property name=&quot;url&quot; value=&quot;$&#123;jdbc.url&#125;&quot; /&gt;</span><br><span class="line">    &lt;property name=&quot;username&quot; value=&quot;$&#123;jdbc.username&#125;&quot; /&gt;</span><br><span class="line">    &lt;property name=&quot;password&quot; value=&quot;$&#123;jdbc.password&#125;&quot; /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line">&lt;bean id=&quot;transactionManager&quot; class=&quot;org.springframework.jdbc.datasource.DataSourceTransactionManager&quot;&gt;</span><br><span class="line">    &lt;property name=&quot;dataSource&quot; ref=&quot;dataSource&quot;/&gt;</span><br><span class="line">&lt;/bean&gt;</span><br><span class="line">&lt;tx:annotation-driven transaction-manager=&quot;transactionManager&quot;/&gt;</span><br></pre></td></tr></table></figure>
+<h1 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h1><p>TxNamespaceHandler.init:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public void init() &#123;</span><br><span class="line">    registerBeanDefinitionParser(&quot;advice&quot;, new TxAdviceBeanDefinitionParser());</span><br><span class="line">    registerBeanDefinitionParser(&quot;annotation-driven&quot;, </span><br><span class="line">        new AnnotationDrivenBeanDefinitionParser());</span><br><span class="line">    registerBeanDefinitionParser(&quot;jta-transaction-manager&quot;, new JtaTransactionManagerBeanDefinitionParser());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>明显解析的入口便在AnnotationDrivenBeanDefinitionParser.parse:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public BeanDefinition parse(Element element, ParserContext parserContext) &#123;</span><br><span class="line">    registerTransactionalEventListenerFactory(parserContext);</span><br><span class="line">    String mode = element.getAttribute(&quot;mode&quot;);</span><br><span class="line">    if (&quot;aspectj&quot;.equals(mode)) &#123;</span><br><span class="line">        // mode=&quot;aspectj&quot;</span><br><span class="line">        registerTransactionAspect(element, parserContext);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // mode=&quot;proxy&quot;</span><br><span class="line">        AopAutoProxyConfigurer.configureAutoProxyCreator(element, parserContext);</span><br><span class="line">    &#125;</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>下面分部分进行说明。</p>
+<h2 id="TransactionalEventListener"><a href="#TransactionalEventListener" class="headerlink" title="TransactionalEventListener"></a>TransactionalEventListener</h2><p>第一部分用于向Spring容器注册TransactionalEventListener工厂，TransactionalEventListener是Spring4.2引入的新特性，允许我们自定义监听器监听事务的提交或其它动作。</p>
+<h2 id="主要组件注册"><a href="#主要组件注册" class="headerlink" title="主要组件注册"></a>主要组件注册</h2><p>即configureAutoProxyCreator方法，此方法的最终作用便是在Spring容器中加入这样的bean结构:</p>
+<p>BeanFactoryTransactionAttributeSourceAdvisor-&gt;TransactionInterceptor-&gt;AnnotationTransactionAttributeSource</p>
+<p>其中AnnotationTransactionAttributeSource用于解析@Transactional注解的相关属性。</p>
+<h2 id="代理类生成"><a href="#代理类生成" class="headerlink" title="代理类生成"></a>代理类生成</h2><p>与aop模块类似，入口位于configureAutoProxyCreator里注册的bean: InfrastructureAdvisorAutoProxyCreator，其类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/InfrastructureAdvisorAutoProxyCreator.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/InfrastructureAdvisorAutoProxyCreator.jpg" alt="InfrastructureAdvisorAutoProxyCreator类图"></a></p>
+<p>此类的特殊之处从其名字上可以体现: <strong>只考虑Spring内部使用的基础设施Advisor</strong>。</p>
+<p>为类创建代理的入口位于AbstractAutoProxyCreator.postProcessAfterInitialization:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException &#123;</span><br><span class="line">    if (bean != null) &#123;</span><br><span class="line">        Object cacheKey = getCacheKey(bean.getClass(), beanName);</span><br><span class="line">        if (!this.earlyProxyReferences.contains(cacheKey)) &#123;</span><br><span class="line">            return wrapIfNecessary(bean, beanName, cacheKey);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return bean;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>wrapIfNecessary核心逻辑:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">protected Object wrapIfNecessary(Object bean, String beanName, Object cacheKey) &#123;</span><br><span class="line">    // Create proxy if we have advice.</span><br><span class="line">    Object[] specificInterceptors = getAdvicesAndAdvisorsForBean(bean.getClass(), beanName, null);</span><br><span class="line">    if (specificInterceptors != DO_NOT_PROXY) &#123;</span><br><span class="line">        this.advisedBeans.put(cacheKey, Boolean.TRUE);</span><br><span class="line">        Object proxy = createProxy(</span><br><span class="line">            bean.getClass(), beanName, specificInterceptors, new SingletonTargetSource(bean));</span><br><span class="line">        this.proxyTypes.put(cacheKey, proxy.getClass());</span><br><span class="line">        return proxy;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Advisor寻找"><a href="#Advisor寻找" class="headerlink" title="Advisor寻找"></a>Advisor寻找</h3><p>getAdvicesAndAdvisorsForBean用于去容器中寻找适合当前bean的Advisor，其最终调用AbstractAdvisorAutoProxyCreator.findEligibleAdvisors:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">protected List&lt;Advisor&gt; findEligibleAdvisors(Class&lt;?&gt; beanClass, String beanName) &#123;</span><br><span class="line">    List&lt;Advisor&gt; candidateAdvisors = findCandidateAdvisors();</span><br><span class="line">    List&lt;Advisor&gt; eligibleAdvisors = findAdvisorsThatCanApply(candidateAdvisors, beanClass, beanName);</span><br><span class="line">    extendAdvisors(eligibleAdvisors);</span><br><span class="line">    if (!eligibleAdvisors.isEmpty()) &#123;</span><br><span class="line">        //按照@Ordered排序</span><br><span class="line">        eligibleAdvisors = sortAdvisors(eligibleAdvisors);</span><br><span class="line">    &#125;</span><br><span class="line">    return eligibleAdvisors;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这个方法在spring-aop中已经详细说明过了，这里再强调一下具体的查找逻辑:</p>
+<ul>
+<li>首先去容器找出所有实现了Advisor接口的bean，对应findCandidateAdvisors方法.</li>
+<li>逐一判断Advisor是否适用于当前bean，对应findAdvisorsThatCanApply方法，判断逻辑为:<ul>
+<li>如果Advisor是IntroductionAdvisor，那么判断其ClassFilter是否可以匹配bean的类.</li>
+<li>如果Advisor是PointcutAdvisor，那么首先进行ClassFilter匹配，如果匹配失败，那么再获得Advisor的MethodMatcher对象，如果MethodMatcher可以匹配任意方法，那么返回true，否则反射获取给定bean的所有方法逐一进行匹配，只要有一个匹配成功，即返回true.</li>
+<li>其它情况，直接返回true.</li>
+</ul>
+</li>
+</ul>
+<p>对于spring事务来说，我们有唯一的Advisor: BeanFactoryTransactionAttributeSourceAdvisor,其类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/BeanFactoryTransactionAttributeSourceAdvisor.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/BeanFactoryTransactionAttributeSourceAdvisor.jpg" alt="BeanFactoryTransactionAttributeSourceAdvisor类图"></a></p>
+<p>可以看出，BeanFactoryTransactionAttributeSourceAdvisor其实是一个PointcutAdvisor，所以<strong>是否可以匹配取决于其Pointcut</strong>。此Advisor的pointcut是一个TransactionAttributeSourcePointcut对象，类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/TransactionAttributeSourcePointcut.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/TransactionAttributeSourcePointcut.jpg" alt="TransactionAttributeSourcePointcut类图"></a></p>
+<p><strong>Pointcut的核心在于其ClassFilter和MethodMatcher</strong>。</p>
+<p>ClassFilter:</p>
+<p>位于StaticMethodMatcherPointcut:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">private ClassFilter classFilter = ClassFilter.TRUE;</span><br></pre></td></tr></table></figure>
+<p>即: 类检查全部通过。</p>
+<p>MethodMatcher:</p>
+<p>TransactionAttributeSourcePointcut.matches:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public boolean matches(Method method, Class&lt;?&gt; targetClass) &#123;</span><br><span class="line">    //如果已经是事务代理，那么不应该再次代理</span><br><span class="line">    if (TransactionalProxy.class.isAssignableFrom(targetClass)) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    TransactionAttributeSource tas = getTransactionAttributeSource();</span><br><span class="line">    return (tas == null || tas.getTransactionAttribute(method, targetClass) != null);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>getTransactionAttribute方法使用了缓存的思想，但其核心逻辑位于AbstractFallbackTransactionAttributeSource.computeTransactionAttribute:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">protected TransactionAttribute computeTransactionAttribute(Method method, Class&lt;?&gt; targetClass) &#123;</span><br><span class="line">    // Don&apos;t allow no-public methods as required.</span><br><span class="line">    if (allowPublicMethodsOnly() &amp;&amp; !Modifier.isPublic(method.getModifiers())) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    // Ignore CGLIB subclasses - introspect the actual user class.</span><br><span class="line">    Class&lt;?&gt; userClass = ClassUtils.getUserClass(targetClass);</span><br><span class="line">    // The method may be on an interface, but we need attributes from the target class.</span><br><span class="line">    // If the target class is null, the method will be unchanged.</span><br><span class="line">    Method specificMethod = ClassUtils.getMostSpecificMethod(method, userClass);</span><br><span class="line">    // If we are dealing with method with generic parameters, find the original method.</span><br><span class="line">    specificMethod = BridgeMethodResolver.findBridgedMethod(specificMethod);</span><br><span class="line">    // First try is the method in the target class.</span><br><span class="line">    TransactionAttribute txAtt = findTransactionAttribute(specificMethod);</span><br><span class="line">    if (txAtt != null) &#123;</span><br><span class="line">        return txAtt;</span><br><span class="line">    &#125;</span><br><span class="line">    // Second try is the transaction attribute on the target class.</span><br><span class="line">    txAtt = findTransactionAttribute(specificMethod.getDeclaringClass());</span><br><span class="line">    if (txAtt != null &amp;&amp; ClassUtils.isUserLevelMethod(method)) &#123;</span><br><span class="line">        return txAtt;</span><br><span class="line">    &#125;</span><br><span class="line">    if (specificMethod != method) &#123;</span><br><span class="line">        // Fallback is to look at the original method.</span><br><span class="line">        txAtt = findTransactionAttribute(method);</span><br><span class="line">        if (txAtt != null) &#123;</span><br><span class="line">            return txAtt;</span><br><span class="line">        &#125;</span><br><span class="line">        // Last fallback is the class of the original method.</span><br><span class="line">        txAtt = findTransactionAttribute(method.getDeclaringClass());</span><br><span class="line">        if (txAtt != null &amp;&amp; ClassUtils.isUserLevelMethod(method)) &#123;</span><br><span class="line">            return txAtt;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return null;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>很明显可以看出，<strong>首先去方法上查找是否有相应的事务注解(比如@Transactional)，如果没有，那么再去类上查找</strong>。</p>
+<h1 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h1><p>以JDK动态代理为例，JdkDynamicAopProxy.invoke简略版源码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;</span><br><span class="line">    List&lt;Object&gt; chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);</span><br><span class="line">    if (chain.isEmpty()) &#123;.</span><br><span class="line">        //没有可用的拦截器，直接调用原方法</span><br><span class="line">        Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);</span><br><span class="line">        retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // We need to create a method invocation...</span><br><span class="line">        invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);</span><br><span class="line">        // Proceed to the joinpoint through the interceptor chain.</span><br><span class="line">        Object retVal = invocation.proceed();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="调用链生成"><a href="#调用链生成" class="headerlink" title="调用链生成"></a>调用链生成</h2><p>即getInterceptorsAndDynamicInterceptionAdvice方法，其原理是:</p>
+<p><strong>遍历所有使用的 Advisor，获得其Advice，将Advice转为MethodInterceptor</strong>。那么是如何转的呢?</p>
+<p>根据Spring的定义，Advice可以是一个MethodInterceptor，也可以是类似于Aspectj的before, after通知。转换由DefaultAdvisorAdapterRegistry.getInterceptors完成:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public MethodInterceptor[] getInterceptors(Advisor advisor) throws UnknownAdviceTypeException &#123;</span><br><span class="line">    List&lt;MethodInterceptor&gt; interceptors = new ArrayList&lt;MethodInterceptor&gt;(3);</span><br><span class="line">    Advice advice = advisor.getAdvice();</span><br><span class="line">    if (advice instanceof MethodInterceptor) &#123;</span><br><span class="line">        interceptors.add((MethodInterceptor) advice);</span><br><span class="line">    &#125;</span><br><span class="line">    for (AdvisorAdapter adapter : this.adapters) &#123;</span><br><span class="line">        if (adapter.supportsAdvice(advice)) &#123;</span><br><span class="line">            interceptors.add(adapter.getInterceptor(advisor));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    if (interceptors.isEmpty()) &#123;</span><br><span class="line">        throw new UnknownAdviceTypeException(advisor.getAdvice());</span><br><span class="line">    &#125;</span><br><span class="line">    return interceptors.toArray(new MethodInterceptor[interceptors.size()]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AdvisorAdapter接口用以支持用户自定义的Advice类型，并将自定义的类型转为拦截器。默认adapters含有MethodBeforeAdviceAdapter、AfterReturningAdviceAdapter和ThrowsAdviceAdapter三种类型，用以分别支持MethodBeforeAdvice、AfterReturningAdvice和ThrowsAdvice。</p>
+<p><strong>对于我们的BeanFactoryTransactionAttributeSourceAdvisor来说，有且只有一个拦截器: TransactionInterceptor</strong>.</p>
+<h2 id="调用链调用"><a href="#调用链调用" class="headerlink" title="调用链调用"></a>调用链调用</h2><p>ReflectiveMethodInvocation.proceed:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object proceed() throws Throwable &#123;</span><br><span class="line">    if (this.currentInterceptorIndex == this.interceptorsAndDynamicMethodMatchers.size() - 1) &#123;</span><br><span class="line">        //拦截器执行完毕，调用原本的方法</span><br><span class="line">        return invokeJoinpoint();</span><br><span class="line">    &#125;</span><br><span class="line">    Object interceptorOrInterceptionAdvice =</span><br><span class="line">            this.interceptorsAndDynamicMethodMatchers.get(++this.currentInterceptorIndex);</span><br><span class="line">    if (interceptorOrInterceptionAdvice instanceof InterceptorAndDynamicMethodMatcher) &#123;</span><br><span class="line">        InterceptorAndDynamicMethodMatcher dm =</span><br><span class="line">                (InterceptorAndDynamicMethodMatcher) interceptorOrInterceptionAdvice;</span><br><span class="line">        if (dm.methodMatcher.matches(this.method, this.targetClass, this.arguments)) &#123;</span><br><span class="line">            return dm.interceptor.invoke(this);</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            // Dynamic matching failed.</span><br><span class="line">            return proceed();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //调用拦截器的invoke方法</span><br><span class="line">        return ((MethodInterceptor) interceptorOrInterceptionAdvice).invoke(this);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，这其实是一个<strong>逐个调用拦截器的invoke方法，最终调用原本方法(被代理方法)的过程</strong>。所以，事务添加的核心逻辑(入口)在TransactionInterceptor的invoke方法。</p>
+<h2 id="TransactionInterceptor"><a href="#TransactionInterceptor" class="headerlink" title="TransactionInterceptor"></a>TransactionInterceptor</h2><p>invoke方法:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object invoke(final MethodInvocation invocation) throws Throwable &#123;</span><br><span class="line">    Class&lt;?&gt; targetClass = (invocation.getThis() != null ? </span><br><span class="line">             AopUtils.getTargetClass(invocation.getThis()) : null);</span><br><span class="line">    // Adapt to TransactionAspectSupport&apos;s invokeWithinTransaction...</span><br><span class="line">    return invokeWithinTransaction(invocation.getMethod(), targetClass, new InvocationCallback() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public Object proceedWithInvocation() throws Throwable &#123;</span><br><span class="line">            //事务执行完毕后调用链继续向下执行</span><br><span class="line">            return invocation.proceed();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>invokeWithinTransaction简略版源码(仅保留PlatformTransactionManager部分):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">protected Object invokeWithinTransaction(Method method, Class&lt;?&gt; targetClass, final InvocationCallback invocation)&#123;</span><br><span class="line">    // If the transaction attribute is null, the method is non-transactional.</span><br><span class="line">    final TransactionAttribute txAttr = getTransactionAttributeSource()</span><br><span class="line">        .getTransactionAttribute(method, targetClass);</span><br><span class="line">    final PlatformTransactionManager tm = determineTransactionManager(txAttr);</span><br><span class="line">    //得到方法名</span><br><span class="line">    final String joinpointIdentification = methodIdentification(method, targetClass);</span><br><span class="line">    if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) &#123;</span><br><span class="line">        // Standard transaction demarcation with getTransaction and commit/rollback calls.</span><br><span class="line">        TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);</span><br><span class="line">        Object retVal = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            // This is an around advice: Invoke the next interceptor in the chain.</span><br><span class="line">            // This will normally result in a target object being invoked.</span><br><span class="line">            retVal = invocation.proceedWithInvocation();</span><br><span class="line">        &#125; catch (Throwable ex) &#123;</span><br><span class="line">            // target invocation exception</span><br><span class="line">            completeTransactionAfterThrowing(txInfo, ex);</span><br><span class="line">            throw ex;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            cleanupTransactionInfo(txInfo);</span><br><span class="line">        &#125;</span><br><span class="line">        commitTransactionAfterReturning(txInfo);</span><br><span class="line">        return retVal;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="事务管理器"><a href="#事务管理器" class="headerlink" title="事务管理器"></a>事务管理器</h3><p>determineTransactionManager方法用以确定使用的事务管理器:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">protected PlatformTransactionManager determineTransactionManager(TransactionAttribute txAttr) &#123;</span><br><span class="line">    //如果没有事务属性，那么仅从缓存中查找，找不到返回null</span><br><span class="line">    if (txAttr == null || this.beanFactory == null) &#123;</span><br><span class="line">        return getTransactionManager();</span><br><span class="line">    &#125;</span><br><span class="line">    String qualifier = txAttr.getQualifier();</span><br><span class="line">    //如果@Transactional注解配置了transactionManager或value属性(用以决定使用哪个事务管理器):</span><br><span class="line">    //首先查找缓存，找不到再去容器中按名称寻找</span><br><span class="line">    if (StringUtils.hasText(qualifier)) &#123;</span><br><span class="line">        return determineQualifiedTransactionManager(qualifier);</span><br><span class="line">    &#125; else if (StringUtils.hasText(this.transactionManagerBeanName)) &#123;</span><br><span class="line">        return determineQualifiedTransactionManager(this.transactionManagerBeanName);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        //去容器中按类型(Class)查找</span><br><span class="line">        PlatformTransactionManager defaultTransactionManager = getTransactionManager();</span><br><span class="line">        if (defaultTransactionManager == null) &#123;</span><br><span class="line">            defaultTransactionManager = this.beanFactory.getBean(PlatformTransactionManager.class);</span><br><span class="line">            this.transactionManagerCache.putIfAbsent(</span><br><span class="line">                    DEFAULT_TRANSACTION_MANAGER_KEY, defaultTransactionManager);</span><br><span class="line">        &#125;</span><br><span class="line">        return defaultTransactionManager;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对于我们使用的DataSourceTransactionManager，类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/DataSourceTransactionManager.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/DataSourceTransactionManager.jpg" alt="DataSourceTransactionManager"></a></p>
+<p>afterPropertiesSet方法只是对dataSource进行了检查。</p>
+<h3 id="DataSource"><a href="#DataSource" class="headerlink" title="DataSource"></a>DataSource</h3><p>DriverManagerDataSource类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/DriverManagerDataSource.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/DriverManagerDataSource.jpg" alt="DriverManagerDataSource类图"></a></p>
+<p>其中CommonDataSource、Wrapper、DataSource均位于javax.sql包下。</p>
+<h3 id="事务开启"><a href="#事务开启" class="headerlink" title="事务开启"></a>事务开启</h3><p>invocation.proceedWithInvocation()便是我们的逻辑，而createTransactionIfNecessary便是在逻辑执行前开启事务。</p>
+<p>TransactionAspectSupport.createTransactionIfNecessary:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">protected TransactionInfo createTransactionIfNecessary(</span><br><span class="line">    PlatformTransactionManager tm, TransactionAttribute txAttr, final String joinpointIdentification) &#123;</span><br><span class="line">    // If no name specified, apply method identification as transaction name.</span><br><span class="line">    if (txAttr != null &amp;&amp; txAttr.getName() == null) &#123;</span><br><span class="line">        txAttr = new DelegatingTransactionAttribute(txAttr) &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public String getName() &#123;</span><br><span class="line">                return joinpointIdentification;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    TransactionStatus status = null;</span><br><span class="line">    if (txAttr != null) &#123;</span><br><span class="line">        if (tm != null) &#123;</span><br><span class="line">            status = tm.getTransaction(txAttr);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return prepareTransactionInfo(tm, txAttr, joinpointIdentification, status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此部分的核心逻辑在getTransaction和prepareTransactionInfo方法，源码较长，下面依然按部分整理。</p>
+<h4 id="是否已存在事务"><a href="#是否已存在事务" class="headerlink" title="是否已存在事务"></a>是否已存在事务</h4><p>目的在于支撑事务的传播性。</p>
+<p>源码位于DataSourceTransactionManager.doGetTransaction，核心逻辑在TransactionSynchronizationManager.doGetResource:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private static Object doGetResource(Object actualKey) &#123;</span><br><span class="line">    Map&lt;Object, Object&gt; map = resources.get();</span><br><span class="line">    if (map == null) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    Object value = map.get(actualKey);</span><br><span class="line">    // Transparently remove ResourceHolder that was marked as void...</span><br><span class="line">    if (value instanceof ResourceHolder &amp;&amp; ((ResourceHolder) value).isVoid()) &#123;</span><br><span class="line">        map.remove(actualKey);</span><br><span class="line">        // Remove entire ThreadLocal if empty...</span><br><span class="line">        if (map.isEmpty()) &#123;</span><br><span class="line">            resources.remove();</span><br><span class="line">        &#125;</span><br><span class="line">        value = null;</span><br><span class="line">    &#125;</span><br><span class="line">    return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>actualKey实际上是DataSource对象，resources是一个ThreadLocal对象，其声明源码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">private static final ThreadLocal&lt;Map&lt;Object, Object&gt;&gt; resources =</span><br><span class="line">            new NamedThreadLocal&lt;Map&lt;Object, Object&gt;&gt;(&quot;Transactional resources&quot;);</span><br></pre></td></tr></table></figure>
+<p>从这里可以得出结论:</p>
+<p><strong>是否存在事务指的是在当前线程、当前数据源(DataSource)中是否存在处于活动状态的事务</strong>。</p>
+<h4 id="事务已存在"><a href="#事务已存在" class="headerlink" title="事务已存在"></a>事务已存在</h4><p>如果检测到已存在事务，那么就要考虑事务的传播特性(行为).此部分源码位于AbstractPlatformTransactionManager.handleExistingTransaction，下面按照不同的传播特性展开。</p>
+<h5 id="PROPAGATION-NEVER"><a href="#PROPAGATION-NEVER" class="headerlink" title="PROPAGATION_NEVER"></a>PROPAGATION_NEVER</h5><p>即当前方法需要在非事务的环境下执行，如果有事务存在，那么抛出异常。相关源码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NEVER) &#123;</span><br><span class="line">    throw new IllegalTransactionStateException(</span><br><span class="line">        &quot;Existing transaction found for transaction marked with propagation &apos;never&apos;&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="PROPAGATION-NOT-SUPPORTED"><a href="#PROPAGATION-NOT-SUPPORTED" class="headerlink" title="PROPAGATION_NOT_SUPPORTED"></a>PROPAGATION_NOT_SUPPORTED</h5><p>与前者的区别在于，如果有事务存在，那么将事务挂起，而不是抛出异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NOT_SUPPORTED) &#123;</span><br><span class="line">    Object suspendedResources = suspend(transaction);</span><br><span class="line">    boolean newSynchronization = (getTransactionSynchronization() == SYNCHRONIZATION_ALWAYS);</span><br><span class="line">    return prepareTransactionStatus(</span><br><span class="line">        definition, null, false, newSynchronization, debugEnabled, suspendedResources);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h6 id="事务挂起"><a href="#事务挂起" class="headerlink" title="事务挂起"></a>事务挂起</h6><p>此部分的核心在于suspend方法，最终调用TransactionSynchronizationManager.doUnbindResource:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">private static Object doUnbindResource(Object actualKey) &#123;</span><br><span class="line">    Map&lt;Object, Object&gt; map = resources.get();</span><br><span class="line">    if (map == null) &#123;</span><br><span class="line">        return null;</span><br><span class="line">    &#125;</span><br><span class="line">    Object value = map.remove(actualKey);</span><br><span class="line">    // Remove entire ThreadLocal if empty...</span><br><span class="line">    if (map.isEmpty()) &#123;</span><br><span class="line">        resources.remove();</span><br><span class="line">    &#125;</span><br><span class="line">    // Transparently suppress a ResourceHolder that was marked as void...</span><br><span class="line">    if (value instanceof ResourceHolder &amp;&amp; ((ResourceHolder) value).isVoid()) &#123;</span><br><span class="line">        value = null;</span><br><span class="line">    &#125;</span><br><span class="line">    return value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，<strong>所谓的事务挂起其实就是一个移除当前线程、数据源活动事务对象的过程</strong>。</p>
+<p>同时注意getTransaction方法返回的是一个TransactionStatus对象，<strong>被挂起的事务的各种状态都被保存在此对象中</strong>。</p>
+<p>那么挂起这个操作到底是如何实现(起作用)的呢?</p>
+<p>DataSourceTransactionManager.doSuspend:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected Object doSuspend(Object transaction) &#123;</span><br><span class="line">    DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;</span><br><span class="line">    txObject.setConnectionHolder(null);</span><br><span class="line">    ConnectionHolder conHolder = (ConnectionHolder)</span><br><span class="line">            TransactionSynchronizationManager.unbindResource(this.dataSource);</span><br><span class="line">    return conHolder;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>其实玄机就在于将ConnectionHolder设为null这一行，因为<strong>一个ConnectionHolder对象就代表了一个数据库连接，将ConnectionHolder设为null就意味着我们下次要使用连接时，将重新从连接池获取，而新的连接的自动提交是为true的</strong>。</p>
+<h5 id="PROPAGATION-REQUIRES-NEW"><a href="#PROPAGATION-REQUIRES-NEW" class="headerlink" title="PROPAGATION_REQUIRES_NEW"></a>PROPAGATION_REQUIRES_NEW</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_REQUIRES_NEW) &#123;</span><br><span class="line">    SuspendedResourcesHolder suspendedResources = suspend(transaction);</span><br><span class="line">    boolean newSynchronization = (getTransactionSynchronization() != SYNCHRONIZATION_NEVER);</span><br><span class="line">    DefaultTransactionStatus status = newTransactionStatus(</span><br><span class="line">            definition, transaction, true, newSynchronization, debugEnabled, suspendedResources);</span><br><span class="line">    doBegin(transaction, definition);</span><br><span class="line">    prepareSynchronization(status, definition);</span><br><span class="line">    return status;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，这其实是一个<strong>挂起当前活动事务并创建新事务的过程</strong>，doBegin方法是事务开启的核心，将在后面进行说明。</p>
+<h5 id="PROPAGATION-NESTED"><a href="#PROPAGATION-NESTED" class="headerlink" title="PROPAGATION_NESTED"></a>PROPAGATION_NESTED</h5><p>其意义:</p>
+<blockquote>
+<p>PROPAGATION_NESTED 开始一个 “嵌套的” 事务,  它是已经存在事务的一个真正的子事务. 嵌套事务开始执行时,  它将取得一个 savepoint. 如果这个嵌套事务失败, 我们将回滚到此 savepoint. 嵌套事务是外部事务的一部分, 只有外部事务结束后它才会被提交. </p>
+</blockquote>
+<p>摘自: <a href="http://www.iteye.com/topic/35907" target="_blank" rel="noopener">解惑 spring 嵌套事务</a></p>
+<p>核心源码(忽略JTA部分):</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">if (definition.getPropagationBehavior() == TransactionDefinition.PROPAGATION_NESTED) &#123;</span><br><span class="line">    if (useSavepointForNestedTransaction()) &#123;</span><br><span class="line">        // Create savepoint within existing Spring-managed transaction,</span><br><span class="line">        // through the SavepointManager API implemented by TransactionStatus.</span><br><span class="line">        // Usually uses JDBC 3.0 savepoints. Never activates Spring synchronization.</span><br><span class="line">        DefaultTransactionStatus status =</span><br><span class="line">            prepareTransactionStatus(definition, transaction, false, false, debugEnabled, null);</span><br><span class="line">        status.createAndHoldSavepoint();</span><br><span class="line">        return status;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>关键在于如何创建SavePoint, AbstractTransactionStatus.createAndHoldSavepoint:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public void createAndHoldSavepoint() throws TransactionException &#123;</span><br><span class="line">    setSavepoint(getSavepointManager().createSavepoint());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>DefaultTransactionStatus.getSavepointManager:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected SavepointManager getSavepointManager() &#123;</span><br><span class="line">    if (!isTransactionSavepointManager()) &#123;</span><br><span class="line">        throw new NestedTransactionNotSupportedException(</span><br><span class="line">            &quot;Transaction object [&quot; + getTransaction() + &quot;] does not support savepoints&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">    return (SavepointManager) getTransaction();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看出，SavepointManager实际上从Transaction强转而来，Transaction在Spring都是用Object引用的，那么这到底是个什么东西?</p>
+<h6 id="debug环境搭建"><a href="#debug环境搭建" class="headerlink" title="debug环境搭建"></a>debug环境搭建</h6><ul>
+<li><p>安装Mysql数据库(或其它支持jdbc)并正确配置数据库连接.</p>
+</li>
+<li><p>定义两个bean，代表我们的业务逻辑:</p>
+<ul>
+<li><p>TransactionBean:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class TransactionBean &#123;</span><br><span class="line">    private NestedBean nestedBean;</span><br><span class="line">    public NestedBean getNestedBean() &#123;</span><br><span class="line">        return nestedBean;</span><br><span class="line">    &#125;</span><br><span class="line">    public void setNestedBean(NestedBean nestedBean) &#123;</span><br><span class="line">        this.nestedBean = nestedBean;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    @Transactional(propagation = Propagation.REQUIRED)</span><br><span class="line">    public void process() &#123;</span><br><span class="line">        System.out.println(&quot;事务执行&quot;);</span><br><span class="line">        nestedBean.nest();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>NestedBean:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class NestedBean &#123;</span><br><span class="line">    @Transactional(propagation = Propagation.NESTED)</span><br><span class="line">    public void nest() &#123;</span><br><span class="line">        System.out.println(&quot;嵌套事务&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p>配置文件:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;bean id=&quot;nestedBean&quot; class=&quot;base.transaction.NestedBean&quot; /&gt;</span><br><span class="line">&lt;bean class=&quot;base.transaction.TransactionBean&quot;&gt;</span><br><span class="line">  &lt;property name=&quot;nestedBean&quot; ref=&quot;nestedBean&quot; /&gt;</span><br><span class="line">&lt;/bean&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>入口:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">public static void main(String[] args) &#123;</span><br><span class="line">  ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;config.xml&quot;);</span><br><span class="line">    TransactionBean bean = context.getBean(TransactionBean.class);</span><br><span class="line">    bean.process();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>这样将断点打在合适的位置便可以得到事务对象究竟是什么。</p>
+<p>注意:</p>
+<p><strong>nest方法必须在一个单独的业务bean中</strong>，否则对nest的调用并不会导致事务获取的触发。这是由JDK动态代理的实现机制决定的，<strong>调用当前类的方法并不会触发代理逻辑(InvocationHandler)</strong>。</p>
+<p>这一点可以运行demo:test.proxy.JDKProxy看出。</p>
+<p>运行debug可以发现，<strong>对于DataSourceTransactionManager，事务对象其实是其内部类DataSourceTransactionObject</strong>.</p>
+<h6 id="事务对象"><a href="#事务对象" class="headerlink" title="事务对象"></a>事务对象</h6><p>DataSourceTransactionObject的类图如下:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/DataSourceTransactionObject.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/DataSourceTransactionObject.jpg" alt="DataSourceTransactionObject类图"></a></p>
+<h6 id="Savepoint"><a href="#Savepoint" class="headerlink" title="Savepoint"></a>Savepoint</h6><p>位于java.sql包下，对于Mysql来说，由Mysql驱动提供实现，类图:</p>
+<p><a href="https://github.com/seaswalker/Spring/blob/master/note/images/Savepoint.jpg" target="_blank" rel="noopener"><img src="https://github.com/seaswalker/Spring/raw/master/note/images/Savepoint.jpg" alt="Savepoint类图"></a></p>
+<p>下面来看一下Savepoint到底是如何被创建的。</p>
+<p>JdbcTransactionObjectSupport.createSavepoint简略版源码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">public Object createSavepoint() throws TransactionException &#123;</span><br><span class="line">    ConnectionHolder conHolder = getConnectionHolderForSavepoint();</span><br><span class="line">    return conHolder.createSavepoint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>ConnectionHolder.createSavepoint:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public Savepoint createSavepoint() throws SQLException &#123;</span><br><span class="line">    this.savepointCounter++;</span><br><span class="line">    return getConnection().setSavepoint(SAVEPOINT_NAME_PREFIX + this.savepointCounter);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们可以得出这样的结论:</p>
+<p><strong>Savepoint由java SQL标准定义，具体实现由数据库完成</strong>。从mysql的客户端可以直接执行命令<code>savepoint xx</code>可以看出这一点。</p>
+<h5 id="其它"><a href="#其它" class="headerlink" title="其它"></a>其它</h5><p>略。</p>
+<h4 id="事务创建"><a href="#事务创建" class="headerlink" title="事务创建"></a>事务创建</h4><p>如果之前不存在事务，那么就需要创建了，核心逻辑位于DataSourceTransactionManager.doBegin:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">protected void doBegin(Object transaction, TransactionDefinition definition) &#123;</span><br><span class="line">    //此时，txObject不为null，只是其核心的ConnectHolder属性为null</span><br><span class="line">    DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;</span><br><span class="line">    Connection con = null;</span><br><span class="line">    if (txObject.getConnectionHolder() == null ||</span><br><span class="line">            txObject.getConnectionHolder().isSynchronizedWithTransaction()) &#123;</span><br><span class="line">        Connection newCon = this.dataSource.getConnection();</span><br><span class="line">        //获得连接，可以看出ConnectionHolder是对Connection的包装</span><br><span class="line">        txObject.setConnectionHolder(new ConnectionHolder(newCon), true);</span><br><span class="line">    &#125;</span><br><span class="line">    txObject.getConnectionHolder().setSynchronizedWithTransaction(true);</span><br><span class="line">    con = txObject.getConnectionHolder().getConnection();</span><br><span class="line">    //设置是否只读和隔离级别</span><br><span class="line">    Integer previousIsolationLevel = DataSourceUtils.prepareConnectionForTransaction(con, definition);</span><br><span class="line">    txObject.setPreviousIsolationLevel(previousIsolationLevel);</span><br><span class="line">    // Switch to manual commit if necessary. This is very expensive in some JDBC drivers,</span><br><span class="line">    // so we don&apos;t want to do it unnecessarily (for example if we&apos;ve explicitly</span><br><span class="line">    // configured the connection pool to set it already).</span><br><span class="line">    if (con.getAutoCommit()) &#123;</span><br><span class="line">        txObject.setMustRestoreAutoCommit(true);</span><br><span class="line">        con.setAutoCommit(false);</span><br><span class="line">    &#125;</span><br><span class="line">    txObject.getConnectionHolder().setTransactionActive(true);</span><br><span class="line">    int timeout = determineTimeout(definition);</span><br><span class="line">    if (timeout != TransactionDefinition.TIMEOUT_DEFAULT) &#123;</span><br><span class="line">        txObject.getConnectionHolder().setTimeoutInSeconds(timeout);</span><br><span class="line">    &#125;</span><br><span class="line">    // Bind the session holder to the thread.</span><br><span class="line">    if (txObject.isNewConnectionHolder()) &#123;</span><br><span class="line">        TransactionSynchronizationManager.bindResource(getDataSource(), txObject.getConnectionHolder());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>到这里便可以得出结论:</p>
+<p><strong>Spring事务的开启实际上是将数据库的自动提交设为false</strong>。</p>
+<h3 id="事务提交-amp-回滚"><a href="#事务提交-amp-回滚" class="headerlink" title="事务提交 &amp; 回滚"></a>事务提交 &amp; 回滚</h3><p>其实就是对jdbc相应方法的封装，不再展开。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>事务的本质其实是对数据库自动提交的关闭与开启，传播特性是Spring提出、实现、控制的概念，而隔离级别是对数据库实现的封装。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+      <div>
+        <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
+    <img id="wechat_subscriber_qcode" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw6fyl7gbj30fk0f6wfl.jpg" alt="haianzwh wechat" style="width: 200px; max-width: 100%;"/>
+    <div></div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <div style="padding: 10px 0; margin: 20px auto; width: 90%; text-align: center;">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button id="rewardButton" disable="enable" onclick="var qr = document.getElementById('QR'); if (qr.style.display === 'none') {qr.style.display='block';} else {qr.style.display='none'}">
+    <span>打赏</span>
+  </button>
+  <div id="QR" style="display: none;">
+
+    
+      <div id="wechat" style="display: inline-block">
+        <img id="wechat_qr" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw1ic1wv3j30bj0bq3z7.jpg" alt="haianzwh 微信支付"/>
+        <p>微信支付</p>
+      </div>
+    
+
+    
+      <div id="alipay" style="display: inline-block">
+        <img id="alipay_qr" src="https://ws1.sinaimg.cn/large/00649eqogy1fyw1m49s06j309309974r.jpg" alt="haianzwh 支付宝"/>
+        <p>支付宝</p>
+      </div>
+    
+
+    
+
+  </div>
+</div>
+
+      </div>
+    
+
+    
+      <div>
+        <ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者：</strong>
+    haianzwh
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://haianzwh.github.io/2018/06/12/Spring-transaction/" title="Spring-transaction">http://haianzwh.github.io/2018/06/12/Spring-transaction/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>
+    本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/3.0/" rel="external nofollow" target="_blank">CC BY-NC-SA 3.0</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+
+      </div>
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/haianzwh.github.io/tags/源码剖析/" rel="tag"># 源码剖析</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/haianzwh.github.io/2018/06/08/Spring-aop/" rel="next" title="Spring-aop">
+                <i class="fa fa-chevron-left"></i> Spring-aop
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/haianzwh.github.io/2018/06/12/Spring-context/" rel="prev" title="Spring-context">
+                Spring-context <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+ <div id="gitalk-container"></div>
+  
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://ws1.sinaimg.cn/large/00649eqogy1fyw15ah7hhj3021021mx0.jpg"
+                alt="haianzwh" />
+            
+              <p class="site-author-name" itemprop="name">haianzwh</p>
+              <p class="site-description motion-element" itemprop="description">每一步做到极致 <br> 下一步美好自然呈现</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/haianzwh.github.io/archives">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/haianzwh.github.io/categories/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/haianzwh.github.io/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/haianzwh" target="_blank" title="GitHub">
+                    
+                      <i class="fa fa-fw fa-github"></i>GitHub</a>
+                 <a title="收藏到书签，偶尔High一下^_^" rel="alternate" class="mw-harlem_shake_slow wobble shake" href='javascript:(function() {
+    function c() {
+        var e = document.createElement("link");
+        e.setAttribute("type", "text/css");
+        e.setAttribute("rel", "stylesheet");
+        e.setAttribute("href", f);
+        e.setAttribute("class", l);
+        document.body.appendChild(e)
+    }
+
+    function h() {
+        var e = document.getElementsByClassName(l);
+        for (var t = 0; t < e.length; t++) {
+            document.body.removeChild(e[t])
+        }
+    }
+
+    function p() {
+        var e = document.createElement("div");
+        e.setAttribute("class", a);
+        document.body.appendChild(e);
+        setTimeout(function() {
+            document.body.removeChild(e)
+        }, 100)
+    }
+
+    function d(e) {
+        return {
+            height : e.offsetHeight,
+            width : e.offsetWidth
+        }
+    }
+
+    function v(i) {
+        var s = d(i);
+        return s.height > e && s.height < n && s.width > t && s.width < r
+    }
+
+    function m(e) {
+        var t = e;
+        var n = 0;
+        while (!!t) {
+            n += t.offsetTop;
+            t = t.offsetParent
+        }
+        return n
+    }
+
+    function g() {
+        var e = document.documentElement;
+        if (!!window.innerWidth) {
+            return window.innerHeight
+        } else if (e && !isNaN(e.clientHeight)) {
+            return e.clientHeight
+        }
+        return 0
+    }
+
+    function y() {
+        if (window.pageYOffset) {
+            return window.pageYOffset
+        }
+        return Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    }
+
+    function E(e) {
+        var t = m(e);
+        return t >= w && t <= b + w
+    }
+
+    function S() {
+        var e = document.createElement("audio");
+        e.setAttribute("class", l);
+        e.src = i;
+        e.loop = false;
+        e.addEventListener("canplay", function() {
+            setTimeout(function() {
+                x(k)
+            }, 500);
+            setTimeout(function() {
+                N();
+                p();
+                for (var e = 0; e < O.length; e++) {
+                    T(O[e])
+                }
+            }, 15500)
+        }, true);
+        e.addEventListener("ended", function() {
+            N();
+            h()
+        }, true);
+        e.innerHTML = " <p>If you are reading this, it is because your browser does not support the audio element. We recommend that you get a new browser.</p> <p>";
+        document.body.appendChild(e);
+        e.play()
+    }
+
+    function x(e) {
+        e.className += " " + s + " " + o
+    }
+
+    function T(e) {
+        e.className += " " + s + " " + u[Math.floor(Math.random() * u.length)]
+    }
+
+    function N() {
+        var e = document.getElementsByClassName(s);
+        var t = new RegExp("\\b" + s + "\\b");
+        for (var n = 0; n < e.length; ) {
+            e[n].className = e[n].className.replace(t, "")
+        }
+    }
+
+    var e = 30;
+    var t = 30;
+    var n = 350;
+    var r = 350;
+    var i = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake.mp3";
+    var s = "mw-harlem_shake_me";
+    var o = "im_first";
+    var u = ["im_drunk", "im_baked", "im_trippin", "im_blown"];
+    var a = "mw-strobe_light";
+    var f = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake-style.css";
+    var l = "mw_added_css";
+    var b = g();
+    var w = y();
+    var C = document.getElementsByTagName("*");
+    var k = null;
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            if (E(A)) {
+                k = A;
+                break
+            }
+        }
+    }
+    if (A === null) {
+        console.warn("Could not find a node of the right size. Please try a different page.");
+        return
+    }
+    c();
+    S();
+    var O = [];
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            O.push(A)
+        }
+    }
+})()'><i class="fa fa-music"></i> High</a>
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="haianzwh@gmail.com" target="_blank" title="E-Mail">
+                    
+                      <i class="fa fa-fw fa-globe"></i>E-Mail</a>
+                 <a title="收藏到书签，偶尔High一下^_^" rel="alternate" class="mw-harlem_shake_slow wobble shake" href='javascript:(function() {
+    function c() {
+        var e = document.createElement("link");
+        e.setAttribute("type", "text/css");
+        e.setAttribute("rel", "stylesheet");
+        e.setAttribute("href", f);
+        e.setAttribute("class", l);
+        document.body.appendChild(e)
+    }
+
+    function h() {
+        var e = document.getElementsByClassName(l);
+        for (var t = 0; t < e.length; t++) {
+            document.body.removeChild(e[t])
+        }
+    }
+
+    function p() {
+        var e = document.createElement("div");
+        e.setAttribute("class", a);
+        document.body.appendChild(e);
+        setTimeout(function() {
+            document.body.removeChild(e)
+        }, 100)
+    }
+
+    function d(e) {
+        return {
+            height : e.offsetHeight,
+            width : e.offsetWidth
+        }
+    }
+
+    function v(i) {
+        var s = d(i);
+        return s.height > e && s.height < n && s.width > t && s.width < r
+    }
+
+    function m(e) {
+        var t = e;
+        var n = 0;
+        while (!!t) {
+            n += t.offsetTop;
+            t = t.offsetParent
+        }
+        return n
+    }
+
+    function g() {
+        var e = document.documentElement;
+        if (!!window.innerWidth) {
+            return window.innerHeight
+        } else if (e && !isNaN(e.clientHeight)) {
+            return e.clientHeight
+        }
+        return 0
+    }
+
+    function y() {
+        if (window.pageYOffset) {
+            return window.pageYOffset
+        }
+        return Math.max(document.documentElement.scrollTop, document.body.scrollTop)
+    }
+
+    function E(e) {
+        var t = m(e);
+        return t >= w && t <= b + w
+    }
+
+    function S() {
+        var e = document.createElement("audio");
+        e.setAttribute("class", l);
+        e.src = i;
+        e.loop = false;
+        e.addEventListener("canplay", function() {
+            setTimeout(function() {
+                x(k)
+            }, 500);
+            setTimeout(function() {
+                N();
+                p();
+                for (var e = 0; e < O.length; e++) {
+                    T(O[e])
+                }
+            }, 15500)
+        }, true);
+        e.addEventListener("ended", function() {
+            N();
+            h()
+        }, true);
+        e.innerHTML = " <p>If you are reading this, it is because your browser does not support the audio element. We recommend that you get a new browser.</p> <p>";
+        document.body.appendChild(e);
+        e.play()
+    }
+
+    function x(e) {
+        e.className += " " + s + " " + o
+    }
+
+    function T(e) {
+        e.className += " " + s + " " + u[Math.floor(Math.random() * u.length)]
+    }
+
+    function N() {
+        var e = document.getElementsByClassName(s);
+        var t = new RegExp("\\b" + s + "\\b");
+        for (var n = 0; n < e.length; ) {
+            e[n].className = e[n].className.replace(t, "")
+        }
+    }
+
+    var e = 30;
+    var t = 30;
+    var n = 350;
+    var r = 350;
+    var i = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake.mp3";
+    var s = "mw-harlem_shake_me";
+    var o = "im_first";
+    var u = ["im_drunk", "im_baked", "im_trippin", "im_blown"];
+    var a = "mw-strobe_light";
+    var f = "//s3.amazonaws.com/moovweb-marketing/playground/harlem-shake-style.css";
+    var l = "mw_added_css";
+    var b = g();
+    var w = y();
+    var C = document.getElementsByTagName("*");
+    var k = null;
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            if (E(A)) {
+                k = A;
+                break
+            }
+        }
+    }
+    if (A === null) {
+        console.warn("Could not find a node of the right size. Please try a different page.");
+        return
+    }
+    c();
+    S();
+    var O = [];
+    for (var L = 0; L < C.length; L++) {
+        var A = C[L];
+        if (v(A)) {
+            O.push(A)
+        }
+    }
+})()'><i class="fa fa-music"></i> High</a>
+                </span>
+              
+            
+          </div>
+
+          
+          
+
+          
+          
+            <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+              <div class="links-of-blogroll-title">
+                <i class="fa  fa-fw fa-link"></i>
+                Friends
+              </div>
+              <ul class="links-of-blogroll-list">
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://haofly.net" title="精通各种语言全栈攻城狮豪豪" target="_blank">精通各种语言全栈攻城狮豪豪</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://tanjiangfu.github.io" title="精通运维兼开发攻城狮贱贱" target="_blank">精通运维兼开发攻城狮贱贱</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="http://lqstone.github.io" title="精通前端开发攻城狮巧巧" target="_blank">精通前端开发攻城狮巧巧</a>
+                  </li>
+                
+                  <li class="links-of-blogroll-item">
+                    <a href="https://ycllang.github.io/" title="live in Happyness" target="_blank">live in Happyness</a>
+                  </li>
+                
+              </ul>
+            </div>
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">1.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#解析"><span class="nav-number">2.</span> <span class="nav-text">解析</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#TransactionalEventListener"><span class="nav-number">2.1.</span> <span class="nav-text">TransactionalEventListener</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主要组件注册"><span class="nav-number">2.2.</span> <span class="nav-text">主要组件注册</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理类生成"><span class="nav-number">2.3.</span> <span class="nav-text">代理类生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Advisor寻找"><span class="nav-number">2.3.1.</span> <span class="nav-text">Advisor寻找</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#运行"><span class="nav-number">3.</span> <span class="nav-text">运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#调用链生成"><span class="nav-number">3.1.</span> <span class="nav-text">调用链生成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调用链调用"><span class="nav-number">3.2.</span> <span class="nav-text">调用链调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TransactionInterceptor"><span class="nav-number">3.3.</span> <span class="nav-text">TransactionInterceptor</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#事务管理器"><span class="nav-number">3.3.1.</span> <span class="nav-text">事务管理器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataSource"><span class="nav-number">3.3.2.</span> <span class="nav-text">DataSource</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务开启"><span class="nav-number">3.3.3.</span> <span class="nav-text">事务开启</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#是否已存在事务"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">是否已存在事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事务已存在"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">事务已存在</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#PROPAGATION-NEVER"><span class="nav-number">3.3.3.2.1.</span> <span class="nav-text">PROPAGATION_NEVER</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROPAGATION-NOT-SUPPORTED"><span class="nav-number">3.3.3.2.2.</span> <span class="nav-text">PROPAGATION_NOT_SUPPORTED</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#事务挂起"><span class="nav-number">3.3.3.2.2.1.</span> <span class="nav-text">事务挂起</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROPAGATION-REQUIRES-NEW"><span class="nav-number">3.3.3.2.3.</span> <span class="nav-text">PROPAGATION_REQUIRES_NEW</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#PROPAGATION-NESTED"><span class="nav-number">3.3.3.2.4.</span> <span class="nav-text">PROPAGATION_NESTED</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#debug环境搭建"><span class="nav-number">3.3.3.2.4.1.</span> <span class="nav-text">debug环境搭建</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#事务对象"><span class="nav-number">3.3.3.2.4.2.</span> <span class="nav-text">事务对象</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Savepoint"><span class="nav-number">3.3.3.2.4.3.</span> <span class="nav-text">Savepoint</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#其它"><span class="nav-number">3.3.3.2.5.</span> <span class="nav-text">其它</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#事务创建"><span class="nav-number">3.3.3.3.</span> <span class="nav-text">事务创建</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#事务提交-amp-回滚"><span class="nav-number">3.3.4.</span> <span class="nav-text">事务提交 & 回滚</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">4.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">haianzwh</span>
+  <div class="powered-by">
+  <i class="fa fa-user-md"></i><span id="busuanzi_container_site_uv">
+    本站访客数:<span id="busuanzi_value_site_uv"></span>
+  </span>
+  </div>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Pisces</a> v5.1.3</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 访问人数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 访问总量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/haianzwh.github.io/lib/canvas-nest/canvas-nest.min.js"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/affix.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/schemes/pisces.js?v=5.1.3"></script>
+
+
+
+  
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/haianzwh.github.io/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/haianzwh.github.io/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.min.js"></script>
+
+  
+  
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1.4.0/dist/gitalk.css"/>
+
+  
+  
+  <script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+
+ 
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+        var gitalk = new Gitalk({
+          clientID: 'cd0069b0b40c322f7a01',
+          clientSecret: '1dc259144561fb634c3e346e64f8e2e1e23b7656',
+          repo: 'haianzwh.github.io',
+          owner: 'haianzwh',
+          admin: ['haianzwh'],
+          id: location.pathname,
+          distractionFreeMode: 'true'
+        })
+        gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+  <script type="text/javascript">
+    // Popup Window;
+    var isfetched = false;
+    var isXml = true;
+    // Search DB path;
+    var search_path = "search.xml";
+    if (search_path.length === 0) {
+      search_path = "search.xml";
+    } else if (/json$/i.test(search_path)) {
+      isXml = false;
+    }
+    var path = "/haianzwh.github.io/" + search_path;
+    // monitor main search box;
+
+    var onPopupClose = function (e) {
+      $('.popup').hide();
+      $('#local-search-input').val('');
+      $('.search-result-list').remove();
+      $('#no-result').remove();
+      $(".local-search-pop-overlay").remove();
+      $('body').css('overflow', '');
+    }
+
+    function proceedsearch() {
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay"></div>')
+        .css('overflow', 'hidden');
+      $('.search-popup-overlay').click(onPopupClose);
+      $('.popup').toggle();
+      var $localSearchInput = $('#local-search-input');
+      $localSearchInput.attr("autocapitalize", "none");
+      $localSearchInput.attr("autocorrect", "off");
+      $localSearchInput.focus();
+    }
+
+    // search function;
+    var searchFunc = function(path, search_id, content_id) {
+      'use strict';
+
+      // start loading animation
+      $("body")
+        .append('<div class="search-popup-overlay local-search-pop-overlay">' +
+          '<div id="search-loading-icon">' +
+          '<i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>' +
+          '</div>' +
+          '</div>')
+        .css('overflow', 'hidden');
+      $("#search-loading-icon").css('margin', '20% auto 0 auto').css('text-align', 'center');
+
+      $.ajax({
+        url: path,
+        dataType: isXml ? "xml" : "json",
+        async: true,
+        success: function(res) {
+          // get the contents from search data
+          isfetched = true;
+          $('.popup').detach().appendTo('.header-inner');
+          var datas = isXml ? $("entry", res).map(function() {
+            return {
+              title: $("title", this).text(),
+              content: $("content",this).text(),
+              url: $("url" , this).text()
+            };
+          }).get() : res;
+          var input = document.getElementById(search_id);
+          var resultContent = document.getElementById(content_id);
+          var inputEventFunction = function() {
+            var searchText = input.value.trim().toLowerCase();
+            var keywords = searchText.split(/[\s\-]+/);
+            if (keywords.length > 1) {
+              keywords.push(searchText);
+            }
+            var resultItems = [];
+            if (searchText.length > 0) {
+              // perform local searching
+              datas.forEach(function(data) {
+                var isMatch = false;
+                var hitCount = 0;
+                var searchTextCount = 0;
+                var title = data.title.trim();
+                var titleInLowerCase = title.toLowerCase();
+                var content = data.content.trim().replace(/<[^>]+>/g,"");
+                var contentInLowerCase = content.toLowerCase();
+                var articleUrl = decodeURIComponent(data.url);
+                var indexOfTitle = [];
+                var indexOfContent = [];
+                // only match articles with not empty titles
+                if(title != '') {
+                  keywords.forEach(function(keyword) {
+                    function getIndexByWord(word, text, caseSensitive) {
+                      var wordLen = word.length;
+                      if (wordLen === 0) {
+                        return [];
+                      }
+                      var startPosition = 0, position = [], index = [];
+                      if (!caseSensitive) {
+                        text = text.toLowerCase();
+                        word = word.toLowerCase();
+                      }
+                      while ((position = text.indexOf(word, startPosition)) > -1) {
+                        index.push({position: position, word: word});
+                        startPosition = position + wordLen;
+                      }
+                      return index;
+                    }
+
+                    indexOfTitle = indexOfTitle.concat(getIndexByWord(keyword, titleInLowerCase, false));
+                    indexOfContent = indexOfContent.concat(getIndexByWord(keyword, contentInLowerCase, false));
+                  });
+                  if (indexOfTitle.length > 0 || indexOfContent.length > 0) {
+                    isMatch = true;
+                    hitCount = indexOfTitle.length + indexOfContent.length;
+                  }
+                }
+
+                // show search results
+
+                if (isMatch) {
+                  // sort index by position of keyword
+
+                  [indexOfTitle, indexOfContent].forEach(function (index) {
+                    index.sort(function (itemLeft, itemRight) {
+                      if (itemRight.position !== itemLeft.position) {
+                        return itemRight.position - itemLeft.position;
+                      } else {
+                        return itemLeft.word.length - itemRight.word.length;
+                      }
+                    });
+                  });
+
+                  // merge hits into slices
+
+                  function mergeIntoSlice(text, start, end, index) {
+                    var item = index[index.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    var hits = [];
+                    var searchTextCountInSlice = 0;
+                    while (position + word.length <= end && index.length != 0) {
+                      if (word === searchText) {
+                        searchTextCountInSlice++;
+                      }
+                      hits.push({position: position, length: word.length});
+                      var wordEnd = position + word.length;
+
+                      // move to next position of hit
+
+                      index.pop();
+                      while (index.length != 0) {
+                        item = index[index.length - 1];
+                        position = item.position;
+                        word = item.word;
+                        if (wordEnd > position) {
+                          index.pop();
+                        } else {
+                          break;
+                        }
+                      }
+                    }
+                    searchTextCount += searchTextCountInSlice;
+                    return {
+                      hits: hits,
+                      start: start,
+                      end: end,
+                      searchTextCount: searchTextCountInSlice
+                    };
+                  }
+
+                  var slicesOfTitle = [];
+                  if (indexOfTitle.length != 0) {
+                    slicesOfTitle.push(mergeIntoSlice(title, 0, title.length, indexOfTitle));
+                  }
+
+                  var slicesOfContent = [];
+                  while (indexOfContent.length != 0) {
+                    var item = indexOfContent[indexOfContent.length - 1];
+                    var position = item.position;
+                    var word = item.word;
+                    // cut out 100 characters
+                    var start = position - 20;
+                    var end = position + 80;
+                    if(start < 0){
+                      start = 0;
+                    }
+                    if (end < position + word.length) {
+                      end = position + word.length;
+                    }
+                    if(end > content.length){
+                      end = content.length;
+                    }
+                    slicesOfContent.push(mergeIntoSlice(content, start, end, indexOfContent));
+                  }
+
+                  // sort slices in content by search text's count and hits' count
+
+                  slicesOfContent.sort(function (sliceLeft, sliceRight) {
+                    if (sliceLeft.searchTextCount !== sliceRight.searchTextCount) {
+                      return sliceRight.searchTextCount - sliceLeft.searchTextCount;
+                    } else if (sliceLeft.hits.length !== sliceRight.hits.length) {
+                      return sliceRight.hits.length - sliceLeft.hits.length;
+                    } else {
+                      return sliceLeft.start - sliceRight.start;
+                    }
+                  });
+
+                  // select top N slices in content
+
+                  var upperBound = parseInt('1');
+                  if (upperBound >= 0) {
+                    slicesOfContent = slicesOfContent.slice(0, upperBound);
+                  }
+
+                  // highlight title and content
+
+                  function highlightKeyword(text, slice) {
+                    var result = '';
+                    var prevEnd = slice.start;
+                    slice.hits.forEach(function (hit) {
+                      result += text.substring(prevEnd, hit.position);
+                      var end = hit.position + hit.length;
+                      result += '<b class="search-keyword">' + text.substring(hit.position, end) + '</b>';
+                      prevEnd = end;
+                    });
+                    result += text.substring(prevEnd, slice.end);
+                    return result;
+                  }
+
+                  var resultItem = '';
+
+                  if (slicesOfTitle.length != 0) {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + highlightKeyword(title, slicesOfTitle[0]) + "</a>";
+                  } else {
+                    resultItem += "<li><a href='" + articleUrl + "' class='search-result-title'>" + title + "</a>";
+                  }
+
+                  slicesOfContent.forEach(function (slice) {
+                    resultItem += "<a href='" + articleUrl + "'>" +
+                      "<p class=\"search-result\">" + highlightKeyword(content, slice) +
+                      "...</p>" + "</a>";
+                  });
+
+                  resultItem += "</li>";
+                  resultItems.push({
+                    item: resultItem,
+                    searchTextCount: searchTextCount,
+                    hitCount: hitCount,
+                    id: resultItems.length
+                  });
+                }
+              })
+            };
+            if (keywords.length === 1 && keywords[0] === "") {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-search fa-5x" /></div>'
+            } else if (resultItems.length === 0) {
+              resultContent.innerHTML = '<div id="no-result"><i class="fa fa-frown-o fa-5x" /></div>'
+            } else {
+              resultItems.sort(function (resultLeft, resultRight) {
+                if (resultLeft.searchTextCount !== resultRight.searchTextCount) {
+                  return resultRight.searchTextCount - resultLeft.searchTextCount;
+                } else if (resultLeft.hitCount !== resultRight.hitCount) {
+                  return resultRight.hitCount - resultLeft.hitCount;
+                } else {
+                  return resultRight.id - resultLeft.id;
+                }
+              });
+              var searchResultList = '<ul class=\"search-result-list\">';
+              resultItems.forEach(function (result) {
+                searchResultList += result.item;
+              })
+              searchResultList += "</ul>";
+              resultContent.innerHTML = searchResultList;
+            }
+          }
+
+          if ('auto' === 'auto') {
+            input.addEventListener('input', inputEventFunction);
+          } else {
+            $('.search-icon').click(inputEventFunction);
+            input.addEventListener('keypress', function (event) {
+              if (event.keyCode === 13) {
+                inputEventFunction();
+              }
+            });
+          }
+
+          // remove loading animation
+          $(".local-search-pop-overlay").remove();
+          $('body').css('overflow', '');
+
+          proceedsearch();
+        }
+      });
+    }
+
+    // handle and trigger popup window;
+    $('.popup-trigger').click(function(e) {
+      e.stopPropagation();
+      if (isfetched === false) {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      } else {
+        proceedsearch();
+      };
+    });
+
+    $('.popup-btn-close').click(onPopupClose);
+    $('.popup').click(function(e){
+      e.stopPropagation();
+    });
+    $(document).on('keyup', function (event) {
+      var shouldDismissSearchPopup = event.which === 27 &&
+        $('.search-popup').is(':visible');
+      if (shouldDismissSearchPopup) {
+        onPopupClose();
+      }
+    });
+  </script>
+
+
+
+
+  
+  
+  
+  <link rel="stylesheet" href="/haianzwh.github.io/lib/algolia-instant-search/instantsearch.min.css">
+
+  
+  
+  <script src="/haianzwh.github.io/lib/algolia-instant-search/instantsearch.min.js"></script>
+  
+
+  <script src="/haianzwh.github.io/js/src/algolia-search.js?v=5.1.3"></script>
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+    <script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/src/love.js"></script>
+<script src="/haianzwh.github.io/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+</html>
